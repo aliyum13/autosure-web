@@ -31,30 +31,33 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-ch-bg">
       {/* Hero */}
-      <div className="bg-white border-b border-ch-border py-12 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-blue bg-ch-blue-light px-3 py-1 rounded-full mb-4">
+      <div className="relative bg-white border-b border-ch-border py-16 px-4 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 right-0 w-80 h-80 bg-blue-50 rounded-full blur-3xl opacity-60" />
+        </div>
+        <div className="relative max-w-2xl mx-auto text-center">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-blue bg-ch-blue-light px-3 py-1 rounded-full mb-4 animate-fade-up">
             USA Vehicle Records
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3 animate-fade-up-delay-1">
             Check Your Tokunbo Car&apos;s History
           </h1>
-          <p className="text-ch-text-secondary mb-8">
+          <p className="text-ch-text-secondary mb-8 animate-fade-up-delay-2">
             Enter the 17-character VIN from the car&apos;s dashboard, door sticker, or import documents.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 animate-fade-up-delay-3">
             <Input
               value={vin}
               onChange={(e) => { setVin(e.target.value.toUpperCase()); setError(''); }}
               placeholder="Enter VIN — e.g. 1HGCM82633A004352"
               maxLength={17}
-              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-blue text-base"
+              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-blue text-base shadow-soft"
             />
             <Button
               type="submit"
               disabled={loading}
-              className="h-12 px-6 bg-ch-blue hover:bg-ch-blue-dark text-white"
+              className="h-12 px-6 bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift"
             >
               {loading
                 ? <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -83,7 +86,7 @@ export default function SearchPage() {
 
       {/* Tip */}
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white border border-ch-border rounded-xl p-5">
+        <div className="bg-white border border-ch-border rounded-2xl p-5 shadow-soft hover-lift">
           <p className="text-sm font-semibold text-ch-text mb-1">📍 Where to find the VIN</p>
           <p className="text-sm text-ch-text-secondary">
             Look on the driver&apos;s door sticker, the dashboard (visible through the windscreen),

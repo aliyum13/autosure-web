@@ -102,7 +102,7 @@ export default function PricingPage() {
               ))}
             </ul>
             <Link href="/search">
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">
+              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">
                 Get Report — ₦15,000
               </Button>
             </Link>

@@ -13,7 +13,7 @@ export default function PaymentFailedPage() {
         </p>
         <div className="flex flex-col gap-3">
           <Link href="/search">
-            <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Try Again</Button>
+            <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Try Again</Button>
           </Link>
           <a href="https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t">
             <Button variant="outline" className="w-full border-ch-border">Contact Support on WhatsApp</Button>

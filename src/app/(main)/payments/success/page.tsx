@@ -80,10 +80,10 @@ function PaymentSuccessContent() {
 
   return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-ch-border rounded-2xl p-8 text-center">
+      <div className="max-w-md w-full bg-white border border-ch-border rounded-2xl p-8 text-center shadow-soft-lg animate-fade-up">
         
         {/* Success icon */}
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-soft">
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
 
@@ -107,7 +107,7 @@ function PaymentSuccessContent() {
 
         <div className="flex flex-col gap-3">
           <Link href="/">
-            <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Check Another Car</Button>
+            <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check Another Car</Button>
           </Link>
           <a href="mailto:carhakisupport@gmail.com">
             <Button variant="outline" className="w-full border-ch-border text-sm">
