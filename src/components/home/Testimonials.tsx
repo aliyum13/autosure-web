@@ -27,12 +27,21 @@ export default function Testimonials() {
           <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-3">
             Trusted in Nigeria
           </p>
-          <h2 className="text-3xl font-bold text-ch-text">What Our Users Say</h2>
+          <h2 className="text-3xl font-bold text-ch-text mb-4">What Our Users Say</h2>
+          <div className="inline-flex items-center gap-2 bg-white border border-ch-border rounded-full px-4 py-2 shadow-soft">
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="text-amber-400 text-sm">★</span>
+              ))}
+            </div>
+            <span className="text-sm font-semibold text-ch-text">4.9</span>
+            <span className="text-xs text-ch-text-muted">from early users</span>
+          </div>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-6">
           {testimonials.map((t) => (
-            <div key={t.name} className="bg-white border border-ch-border rounded-xl p-6 shadow-sm">
+            <div key={t.name} className="bg-white border border-ch-border rounded-2xl p-6 shadow-soft hover-lift">
               <div className="flex gap-0.5 mb-4">
                 {[...Array(5)].map((_, i) => (
                   <span key={i} className="text-amber-400 text-sm">★</span>

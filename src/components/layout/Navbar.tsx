@@ -20,12 +20,12 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-ch-border shadow-sm">
+    <nav className="sticky top-0 z-50 glass border-b border-ch-border/60 shadow-soft">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-ch-blue rounded-lg flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 bg-ch-blue rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 shadow-blue-glow">
               <Shield className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-lg">
@@ -55,7 +55,7 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center">
             <Link href="/">
-              <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white">Check a Car</Button>
+              <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check a Car</Button>
             </Link>
           </div>
 

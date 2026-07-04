@@ -7,8 +7,8 @@ const singleFeatures = [
   'Odometer timeline — detect rollback',
   'Accident & damage records',
   'Open NHTSA recall alerts',
-  'Theft records',
-  'AI plain-English summary',
+  'Theft & stolen vehicle records',
+  'Auction sale history & photos',
   'Overall grade (A–F) with risk score',
   'PDF download + shareable link',
 ];
@@ -36,9 +36,9 @@ export default function PricingPreview() {
 
         <div className="grid sm:grid-cols-3 gap-6">
           {/* Single report */}
-          <div className="border-2 border-ch-blue rounded-xl p-6 relative">
+          <div className="border-2 border-ch-blue rounded-2xl p-6 relative shadow-blue-glow hover-lift bg-white">
             <div className="absolute -top-3 left-4">
-              <span className="bg-ch-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
+              <span className="bg-ch-blue text-white text-xs font-semibold px-3 py-1 rounded-full shadow-blue-glow">
                 MOST POPULAR
               </span>
             </div>
@@ -64,7 +64,7 @@ export default function PricingPreview() {
 
           {/* Bundles */}
           {bundles.map((bundle) => (
-            <div key={bundle.label} className="border border-ch-border rounded-xl p-6">
+            <div key={bundle.label} className="border border-ch-border rounded-2xl p-6 hover-lift bg-white shadow-soft">
               <p className="text-xs font-semibold uppercase tracking-wider text-ch-text-muted mb-1">
                 {bundle.label}
               </p>
