@@ -29,12 +29,7 @@ export default function Hero() {
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ch-text leading-tight mb-6 animate-fade-up-delay-1">
           Avoid Salvaged, Flooded &{' '}
-          <span className="relative">
-            <span className="text-ch-blue">Tampered</span>
-            <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 6 Q50 0 100 6 Q150 12 200 6" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.3"/>
-            </svg>
-          </span>{' '}
+          <span className="text-ch-blue">Tampered</span>{' '}
           Tokunbo Cars.
         </h1>
 
