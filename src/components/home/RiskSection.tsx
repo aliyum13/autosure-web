@@ -49,7 +49,7 @@ export default function RiskSection() {
           {risks.map((risk) => (
             <div
               key={risk.title}
-              className={`border rounded-2xl p-6 ${risk.color}`}
+              className={`border rounded-2xl p-6 ${risk.color} hover-lift`}
             >
               <div className={`w-12 h-12 ${risk.iconBg} rounded-xl flex items-center justify-center text-2xl mb-4`}>
                 {risk.icon}

@@ -20,14 +20,14 @@ export default function Hero() {
 
       <div className="relative max-w-3xl mx-auto text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 mb-8">
+        <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 mb-8 animate-fade-up">
           <span className="w-2 h-2 bg-ch-blue rounded-full animate-pulse" />
           <span className="text-xs font-semibold text-ch-blue tracking-wider uppercase">
             Powered by USA Government Records
           </span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ch-text leading-tight mb-6">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ch-text leading-tight mb-6 animate-fade-up-delay-1">
           Avoid Salvaged, Flooded &{' '}
           <span className="relative">
             <span className="text-ch-blue">Tampered</span>
@@ -38,12 +38,14 @@ export default function Hero() {
           Tokunbo Cars.
         </h1>
 
-        <p className="text-lg text-ch-text-secondary max-w-xl mx-auto mb-10 leading-relaxed">
+        <p className="text-lg text-ch-text-secondary max-w-xl mx-auto mb-10 leading-relaxed animate-fade-up-delay-2">
           Enter any USA VIN and get the full vehicle history in seconds —
           accident records, title brands, mileage, and open safety recalls.
         </p>
 
-        <VinInput size="large" className="max-w-2xl mx-auto" />
+        <div className="animate-fade-up-delay-3">
+          <VinInput size="large" className="max-w-2xl mx-auto" />
+        </div>
 
         <RecentlyViewed />
 
@@ -51,7 +53,7 @@ export default function Hero() {
           {trustPills.map((pill) => (
             <div
               key={pill.text}
-              className="flex items-center gap-1.5 bg-white border border-slate-200 shadow-sm rounded-full px-4 py-2"
+              className="flex items-center gap-1.5 bg-white border border-slate-200 shadow-soft rounded-full px-4 py-2 hover-lift"
             >
               <span className="text-sm">{pill.icon}</span>
               <span className="text-xs font-medium text-slate-600">{pill.text}</span>

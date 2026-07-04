@@ -42,7 +42,7 @@ export default function HowItWorks() {
           {steps.map((step) => (
             <div key={step.number} className="relative text-center">
               {/* Step number circle */}
-              <div className="relative inline-flex items-center justify-center w-20 h-20 bg-ch-blue rounded-2xl mb-5 shadow-lg shadow-blue-200">
+              <div className="relative inline-flex items-center justify-center w-20 h-20 bg-ch-blue rounded-2xl mb-5 shadow-blue-glow hover-lift">
                 <span className="text-3xl">{step.emoji}</span>
                 <span className="absolute -top-2 -right-2 w-6 h-6 bg-slate-900 text-white text-xs font-bold rounded-full flex items-center justify-center">
                   {step.number.replace('0', '')}
@@ -56,7 +56,7 @@ export default function HowItWorks() {
 
         <div className="text-center mt-12">
           <Link href="/search">
-            <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white px-10 h-12 text-base font-semibold shadow-lg shadow-blue-200">
+            <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white px-10 h-12 text-base font-semibold shadow-blue-glow hover-lift">
               Check a Car Now →
             </Button>
           </Link>
