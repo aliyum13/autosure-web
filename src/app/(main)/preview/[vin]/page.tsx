@@ -56,6 +56,7 @@ export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', ref_code: '' });
   const [refValid, setRefValid] = useState<boolean | null>(null);
   const [ordering, setOrdering] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [orderError, setOrderError] = useState('');
 
   useEffect(() => {
@@ -106,16 +107,29 @@ export default function PreviewPage() {
       });
       const data = await res.json();
       if (data.authorization_url) {
+        // Keep the loading state active — do NOT reset ordering, page is navigating away
+        setRedirecting(true);
         window.location.href = data.authorization_url;
+        return;
       } else {
         setOrderError(data.error || 'Could not create order. Please try again.');
+        setOrdering(false);
       }
     } catch {
       setOrderError('Something went wrong. Please try again.');
-    } finally {
       setOrdering(false);
     }
   };
+
+  if (redirecting) return (
+    <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm flex items-center justify-center">
+      <div className="text-center px-6">
+        <Loader2 className="w-10 h-10 animate-spin text-ch-blue mx-auto mb-4" />
+        <h2 className="text-lg font-bold text-ch-text mb-1">Redirecting to secure payment...</h2>
+        <p className="text-sm text-ch-text-secondary">Please wait, do not close this page.</p>
+      </div>
+    </div>
+  );
 
   if (loading) return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center">
