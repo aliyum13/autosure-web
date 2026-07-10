@@ -90,6 +90,13 @@ export default function PreviewPage() {
       setOrderError('Name and email are required.');
       return;
     }
+    // Validate VIN check digit before allowing payment
+    const { validateVIN } = await import('@/lib/vin');
+    const vinCheck = validateVIN(vin);
+    if (!vinCheck.valid) {
+      setOrderError(vinCheck.reason || 'This VIN appears to be invalid.');
+      return;
+    }
     setOrdering(true);
     setOrderError('');
     try {

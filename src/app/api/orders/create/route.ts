@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { validateVIN } from '@/lib/vin';
 
 export async function POST(req: NextRequest) {
   try {
     const { vin, bundle_id, name, email, phone, ref_code } = await req.json();
     const upperVin = vin?.toUpperCase();
 
-    if (!upperVin || upperVin.length !== 17) {
-      return NextResponse.json({ error: 'Invalid VIN.' }, { status: 400 });
+    const vinCheck = validateVIN(upperVin || '');
+    if (!vinCheck.valid) {
+      return NextResponse.json({ error: vinCheck.reason || 'Invalid VIN.' }, { status: 400 });
     }
     if (!name?.trim()) {
       return NextResponse.json({ error: 'Full name is required.' }, { status: 400 });
