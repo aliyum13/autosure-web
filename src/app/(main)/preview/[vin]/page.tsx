@@ -180,6 +180,20 @@ export default function PreviewPage() {
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
 
         {/* Header card */}
+        {preview.source === 'nhtsa' && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+            <span className="text-lg shrink-0">⚠️</span>
+            <div>
+              <p className="text-sm font-semibold text-amber-800 mb-1">Limited history data for this VIN</p>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                Our primary database has limited records for this specific VIN. You&apos;ll receive verified vehicle
+                specifications and any open safety recalls, but detailed accident, title, and auction history may
+                not be available. Please double-check the VIN is entered correctly before purchasing.
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
           <div className="px-6 pt-6 pb-4 border-b border-slate-100">
             <div className="flex items-start justify-between gap-4">

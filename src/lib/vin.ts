@@ -10,10 +10,13 @@ const TRANSLIT: Record<string, number> = {
 const WEIGHTS = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
 
 /**
- * Validates a 17-character VIN including the check digit (position 9).
- * Returns { valid, reason }.
+ * Validates a 17-character VIN.
+ * Length and character checks are HARD (catch typos).
+ * Check digit is SOFT — returned as `checkDigitValid` but does not fail validation,
+ * because some real VINs (certain plants/older models) don't conform to the standard
+ * yet still exist in NMVTIS. Blocking on check digit alone would reject real sales.
  */
-export function validateVIN(vin: string): { valid: boolean; reason?: string } {
+export function validateVIN(vin: string): { valid: boolean; reason?: string; checkDigitValid?: boolean } {
   const v = vin.trim().toUpperCase();
 
   if (v.length !== 17) {
@@ -30,7 +33,7 @@ export function validateVIN(vin: string): { valid: boolean; reason?: string } {
     return { valid: false, reason: 'VIN contains invalid characters.' };
   }
 
-  // Check digit validation (position 9, index 8)
+  // Check digit — computed but NOT used to block
   let sum = 0;
   for (let i = 0; i < 17; i++) {
     const value = TRANSLIT[v[i]];
@@ -39,18 +42,11 @@ export function validateVIN(vin: string): { valid: boolean; reason?: string } {
     }
     sum += value * WEIGHTS[i];
   }
-
   const remainder = sum % 11;
   const expectedCheck = remainder === 10 ? 'X' : String(remainder);
+  const checkDigitValid = v[8] === expectedCheck;
 
-  if (v[8] !== expectedCheck) {
-    return {
-      valid: false,
-      reason: 'This VIN appears to be invalid (check digit mismatch). Please double-check you entered it correctly.',
-    };
-  }
-
-  return { valid: true };
+  return { valid: true, checkDigitValid };
 }
 
 /** Quick boolean helper */

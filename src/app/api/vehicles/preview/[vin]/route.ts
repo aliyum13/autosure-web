@@ -17,21 +17,6 @@ export async function GET(
     const result = await clearvinPreview(upperVin);
     const spec = result.vinSpec || {};
 
-    // Log raw result to see actual field names from ClearVin
-    console.log('ClearVin preview raw keys:', Object.keys(result));
-    console.log('ClearVin preview image fields:', JSON.stringify({
-      previewImageURL: result.previewImageURL,
-      imageURL: result.imageURL,
-      image: result.image,
-      photo: result.photo,
-      mainPhoto: result.mainPhoto,
-      vehiclePhoto: result.vehiclePhoto,
-      photoUrl: result.photoUrl,
-      previewImage: result.previewImage,
-      imagesAmount: result.imagesAmount,
-      auctionHistoryRecords: result.auctionHistoryRecords,
-    }));
-
     // Extract summary counts from ClearVin preview result
     const summaryItems = result.summaryItems || [];
     const getCount = (key: string): number | null => {
