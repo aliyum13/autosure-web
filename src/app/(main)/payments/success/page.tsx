@@ -9,10 +9,12 @@ import { Button } from '@/components/ui/button';
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const reference = searchParams.get('reference') || searchParams.get('trxref');
-  const [status, setStatus] = useState<'verifying' | 'success' | 'failed'>('verifying');
+  const isComp = searchParams.get('comp') === '1';
+  const [status, setStatus] = useState<'verifying' | 'success' | 'failed'>(isComp ? 'success' : 'verifying');
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    if (isComp) { setStatus('success'); return; }
     if (!reference) { setStatus('failed'); return; }
 
     const verify = async (tries = 0): Promise<void> => {
@@ -39,7 +41,7 @@ function PaymentSuccessContent() {
     };
 
     setTimeout(() => verify(), 1000);
-  }, [reference]);
+  }, [reference, isComp]);
 
   if (status === 'verifying') {
     return (
