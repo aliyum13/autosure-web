@@ -113,6 +113,12 @@ export default function PreviewPage() {
         }),
       });
       const data = await res.json();
+      if (data.comp) {
+        // Free internal report — no payment, go straight to success
+        setRedirecting(true);
+        window.location.href = '/payments/success?comp=1';
+        return;
+      }
       if (data.authorization_url) {
         // Keep the loading state active — do NOT reset ordering, page is navigating away
         setRedirecting(true);
