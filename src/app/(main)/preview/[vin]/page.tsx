@@ -37,6 +37,7 @@ type VehiclePreview = {
   accident_records?: number;
   insurance_records?: number;
   lien_records?: number;
+  source?: string;
 };
 
 const BUNDLES = [
