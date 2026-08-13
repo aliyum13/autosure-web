@@ -46,8 +46,16 @@ export async function clearvinPreview(vin: string) {
 export async function clearvinReportHTML(vin: string): Promise<string> {
   const token = await clearvinGetToken();
   console.log('[clearvin] Fetching HTML for VIN:', vin);
+
+  // Per ClearVin API docs: to receive the rendered HTML report, you MUST send
+  // Content-Type: text/html. Without it, the endpoint returns JSON (with an empty
+  // html_report wrapper), which is what caused blank reports.
   const res = await fetch(`${CLEARVIN_BASE}/report?vin=${vin}&format=html`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'text/html',
+      Accept: 'text/html',
+    },
   });
 
   const raw = await res.text();
@@ -58,36 +66,28 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
     throw new Error(msg);
   }
 
-  // ClearVin's format=html endpoint returns JSON: { status, result: { html_report } }.
-  // Older/other responses may return raw HTML directly. Handle both.
+  // With the text/html header, ClearVin returns raw HTML. But defensively handle
+  // the case where a JSON wrapper still comes back (extract html_report).
   let html = raw;
   const trimmed = raw.trimStart();
-  if (trimmed.startsWith('{')) {
+  if (trimmed.startsWith('{') && !trimmed.startsWith('<')) {
     try {
       const parsed = JSON.parse(raw);
-      html =
-        parsed?.result?.html_report ??
-        parsed?.result?.html ??
-        parsed?.result?.report ??
-        parsed?.html_report ??
-        parsed?.html ??
-        '';
-      // Log the shape so we can see what ClearVin actually returns
-      console.log('[clearvin] JSON keys:', Object.keys(parsed?.result || parsed || {}).join(','), '| html_report len:', (html || '').length);
-    } catch (e) {
-      console.warn('[clearvin] JSON parse failed, using raw:', (e as Error).message);
-    }
+      const extracted =
+        parsed?.result?.html_report ?? parsed?.result?.html ?? parsed?.html_report ?? '';
+      console.log('[clearvin] Got JSON instead of HTML. keys:', Object.keys(parsed?.result || parsed || {}).join(','), '| extracted len:', (extracted || '').length);
+      if (extracted) html = extracted;
+    } catch { /* keep raw */ }
   }
 
-  // Validate we actually got report content. Count non-whitespace, non-tag characters
-  // so an empty skeleton (just <html><body></body></html> + whitespace) is caught.
+  // Validate real report content (strip tags + whitespace).
   const textContent = (html || '').replace(/<[^>]*>/g, '').replace(/\s/g, '');
   if (textContent.length < 100) {
-    console.warn('[clearvin] Empty report — text content length:', textContent.length, '| raw html length:', (html || '').length);
-    throw new Error('ClearVin returned an empty report (no meaningful content)');
+    console.warn('[clearvin] Empty report — text length:', textContent.length, '| raw length:', raw.length);
+    throw new Error('ClearVin returned an empty report');
   }
 
-  console.log('[clearvin] HTML content length:', html.length, '| text content:', textContent.length);
+  console.log('[clearvin] HTML OK — raw:', raw.length, '| text:', textContent.length);
   return html;
 }
 
