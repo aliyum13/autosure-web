@@ -17,7 +17,7 @@ export async function generateReportAndEmail(
   console.log('[generate] START', { reportId, vin, guestEmail });
 
   await prisma.$executeRawUnsafe(
-    `UPDATE reports SET status = 'PROCESSING', updated_at = NOW() WHERE id = $1`, reportId
+    `UPDATE reports SET status = 'PROCESSING', grade_label = 'ENTERED-GENERATE', updated_at = NOW() WHERE id = $1`, reportId
   );
 
   // NHTSA vehicle info (fast, parallel)
