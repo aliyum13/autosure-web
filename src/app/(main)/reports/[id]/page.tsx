@@ -29,10 +29,11 @@ interface Report {
 
 function ClearVinFrame({ html }: { html: string }) {
   const [height, setHeight] = useState(800);
+  const [srcDoc, setSrcDoc] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    if (!iframeRef.current || !html) return;
+    if (!html) return;
 
     // Inject script to force all links (PDF download, gallery) to open in new tab
     const injectedScript = `
@@ -67,37 +68,30 @@ function ClearVinFrame({ html }: { html: string }) {
             margin: 0 !important;
             padding: 0 !important;
           }
-          /* Scale the whole document to fit width */
-          body {
-            zoom: 0.72;
-          }
-          * {
-            max-width: none !important;
-            overflow: visible !important;
-          }
+          body { zoom: 0.72; }
+          * { max-width: none !important; overflow: visible !important; }
           img { max-width: 100% !important; page-break-inside: avoid; }
           table { page-break-inside: avoid; }
           h1, h2, h3 { page-break-after: avoid; }
         }
       </style>
       <script>
+        function fixHeight() {
+          try {
+            var h = document.documentElement.scrollHeight;
+            parent.postMessage({ type: 'ch-report-height', height: h }, '*');
+          } catch (e) {}
+        }
         document.addEventListener('DOMContentLoaded', function() {
           document.querySelectorAll('a[href]').forEach(function(a) {
             a.setAttribute('target', '_blank');
             a.setAttribute('rel', 'noopener noreferrer');
           });
-          var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(m) {
-              m.addedNodes.forEach(function(node) {
-                if (node.nodeType === 1) {
-                  node.querySelectorAll && node.querySelectorAll('a[href]').forEach(function(a) {
-                    a.setAttribute('target', '_blank');
-                    a.setAttribute('rel', 'noopener noreferrer');
-                  });
-                }
-              });
-            });
-          });
+          fixHeight();
+          setTimeout(fixHeight, 500);
+          setTimeout(fixHeight, 1500);
+          window.addEventListener('load', fixHeight);
+          var observer = new MutationObserver(function() { fixHeight(); });
           observer.observe(document.body, { childList: true, subtree: true });
         });
       <\/script>
@@ -107,26 +101,24 @@ function ClearVinFrame({ html }: { html: string }) {
       ? html.replace('<head>', '<head>' + injectedScript)
       : injectedScript + html;
 
-    const blob = new Blob([modifiedHtml], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    iframeRef.current.src = url;
-
-    const handleLoad = () => {
-      try {
-        const doc = iframeRef.current?.contentDocument;
-        if (doc) {
-          setHeight(doc.documentElement.scrollHeight + 50);
-        }
-      } catch { /* cross-origin */ }
-    };
-
-    iframeRef.current.addEventListener('load', handleLoad);
-    return () => URL.revokeObjectURL(url);
+    setSrcDoc(modifiedHtml);
   }, [html]);
+
+  // Listen for height messages from the iframe (works cross-context on mobile)
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (e.data?.type === 'ch-report-height' && typeof e.data.height === 'number') {
+        setHeight(e.data.height + 50);
+      }
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
   return (
     <iframe
       ref={iframeRef}
+      srcDoc={srcDoc}
       style={{ width: '100%', height: `${height}px`, border: 'none' }}
       title="Vehicle History Report"
       sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
