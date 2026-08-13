@@ -66,10 +66,10 @@ export async function generateReportAndEmail(
 
   // If ClearVin returned nothing at all, don't deliver an empty report — flag for retry.
   if (!clearvinHtml && !pdfBuffer) {
-    console.error('[generate] ClearVin returned nothing for', vin, '— NEEDS_RETRY');
+    console.error('[generate] ClearVin returned nothing for', vin, '— marking FAILED');
     await prisma.$executeRawUnsafe(
-      `UPDATE reports SET status='NEEDS_RETRY', processed_data=$1::jsonb, updated_at=NOW() WHERE id=$2`,
-      JSON.stringify({ data_source: 'NEEDS_RETRY', vehicle: { vin, make, model, year }, needs_retry: true }),
+      `UPDATE reports SET status='FAILED', processed_data=$1::jsonb, updated_at=NOW() WHERE id=$2`,
+      JSON.stringify({ data_source: 'FAILED', vehicle: { vin, make, model, year }, needs_retry: true }),
       reportId
     );
     try {
