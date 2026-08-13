@@ -10,11 +10,13 @@ function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const reference = searchParams.get('reference') || searchParams.get('trxref');
   const isComp = searchParams.get('comp') === '1';
-  const [status, setStatus] = useState<'verifying' | 'success' | 'failed'>(isComp ? 'success' : 'verifying');
+  const isCredit = searchParams.get('credit') === '1';
+  const creditsRemaining = parseInt(searchParams.get('remaining') || '0', 10);
+  const [status, setStatus] = useState<'verifying' | 'success' | 'failed'>((isComp || isCredit) ? 'success' : 'verifying');
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    if (isComp) { setStatus('success'); return; }
+    if (isComp || isCredit) { setStatus('success'); return; }
     if (!reference) { setStatus('failed'); return; }
 
     const verify = async (tries = 0): Promise<void> => {
@@ -41,7 +43,7 @@ function PaymentSuccessContent() {
     };
 
     setTimeout(() => verify(), 1000);
-  }, [reference, isComp]);
+  }, [reference, isComp, isCredit]);
 
   if (status === 'verifying') {
     return (
@@ -89,7 +91,22 @@ function PaymentSuccessContent() {
           <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
 
-        <h1 className="text-2xl font-bold text-ch-text mb-2">Payment Successful! 🎉</h1>
+        <h1 className="text-2xl font-bold text-ch-text mb-2">
+          {isCredit ? 'Report Requested! 🎉' : 'Payment Successful! 🎉'}
+        </h1>
+
+        {/* Bundle credit remaining banner */}
+        {isCredit && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-2">
+            <p className="text-green-800 font-semibold text-sm">
+              This report was covered by your bundle 🎁
+            </p>
+            <p className="text-green-700 text-sm mt-1">
+              You have <strong>{creditsRemaining}</strong> {creditsRemaining === 1 ? 'report' : 'reports'} remaining.
+              Use the same email to check more cars — no extra payment needed.
+            </p>
+          </div>
+        )}
         
         {/* Email notice */}
         <div className="bg-ch-blue/5 border border-ch-blue/20 rounded-2xl p-5 my-6">

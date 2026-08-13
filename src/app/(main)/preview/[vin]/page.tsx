@@ -55,6 +55,16 @@ export default function PreviewPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedBundle, setSelectedBundle] = useState('single');
   const [form, setForm] = useState({ name: '', email: '', phone: '', ref_code: '' });
+  const [availableCredits, setAvailableCredits] = useState(0);
+
+  const checkCredits = async (email: string) => {
+    if (!email || !email.includes('@')) { setAvailableCredits(0); return; }
+    try {
+      const res = await fetch(`/api/credits/check?email=${encodeURIComponent(email.trim())}`);
+      const data = await res.json();
+      setAvailableCredits(data.credits || 0);
+    } catch { setAvailableCredits(0); }
+  };
   const [refValid, setRefValid] = useState<boolean | null>(null);
   const [ordering, setOrdering] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -117,7 +127,11 @@ export default function PreviewPage() {
       if (data.comp || data.credit_used) {
         // Free report — comp code or bundle credit — no payment
         setRedirecting(true);
-        window.location.href = '/payments/success?comp=1';
+        if (data.credit_used) {
+          window.location.href = `/payments/success?credit=1&remaining=${data.credits_remaining ?? 0}`;
+        } else {
+          window.location.href = '/payments/success?comp=1';
+        }
         return;
       }
       if (data.authorization_url) {
@@ -332,7 +346,15 @@ export default function PreviewPage() {
                 <div>
                   <Label className="text-xs text-slate-500 uppercase tracking-wide">EMAIL ADDRESS <span className="text-red-500">* REQUIRED</span></Label>
                   <Input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
+                    onBlur={(e) => checkCredits(e.target.value)}
                     placeholder="yourname@example.com" className="mt-1" />
+                  {availableCredits > 0 && (
+                    <div className="mt-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                      <p className="text-sm text-green-800 font-medium">
+                        🎁 You have {availableCredits} bundle {availableCredits === 1 ? 'report' : 'reports'} available — this check is free!
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <Label className="text-xs text-slate-500 uppercase tracking-wide">WHATSAPP PHONE (OPTIONAL)</Label>
@@ -382,7 +404,7 @@ export default function PreviewPage() {
               {orderError && <p className="text-sm text-red-500">{orderError}</p>}
 
               <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-blue hover:bg-ch-blue-dark text-white font-bold text-base rounded-xl">
-                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
+                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
 
               <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
