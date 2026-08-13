@@ -149,11 +149,13 @@ async function _generateReportAndEmail(
     ? { data_source: 'CLEARVIN', clearvin_html: clearvinHtml }
     : { data_source: 'CLEARVIN_PDF', vehicle: { vin, make, model, year }, recalls: recallsList, pdf_delivered: true };
 
+  await mark('before-final-write');
   await prisma.$executeRawUnsafe(`
     UPDATE reports SET status='COMPLETED', overall_grade=$1, risk_score=$2,
-      grade_label=$3, grade_colour=$4, processed_data=$5::jsonb, completed_at=NOW(), updated_at=NOW()
-    WHERE id=$6
-  `, grade, score, label, colour, JSON.stringify(processedData), reportId);
+      grade_colour=$3, processed_data=$4::jsonb, completed_at=NOW(), updated_at=NOW()
+    WHERE id=$5
+  `, grade, score, colour, JSON.stringify(processedData), reportId);
+  await mark('after-final-write-DONE');
   console.log('[generate] DB saved, source:', clearvinHtml ? 'CLEARVIN(html)' : 'CLEARVIN_PDF');
 
   // Send email
