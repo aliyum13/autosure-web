@@ -14,6 +14,32 @@ export async function generateReportAndEmail(
   guestName?: string,
   guestEmail?: string
 ) {
+  try {
+    await _generateReportAndEmail(reportId, vin, guestName, guestEmail);
+  } catch (err) {
+    // Capture the real error into the DB so it can be diagnosed via SQL (mobile-friendly).
+    const msg = (err instanceof Error ? err.message + ' | ' + (err.stack || '') : String(err)).slice(0, 1500);
+    console.error('[generate] UNCAUGHT ERROR:', msg);
+    try {
+      await prisma.$executeRawUnsafe(
+        `UPDATE reports SET status='ERROR', processed_data=$1::jsonb, updated_at=NOW() WHERE id=$2`,
+        JSON.stringify({ data_source: 'ERROR', error: msg }),
+        reportId
+      );
+    } catch (e2) {
+      console.error('[generate] could not record error:', e2);
+    }
+    // Re-throw so callers still know it failed (keeps existing behavior)
+    throw err;
+  }
+}
+
+async function _generateReportAndEmail(
+  reportId: string,
+  vin: string,
+  guestName?: string,
+  guestEmail?: string
+) {
   console.log('[generate] START', { reportId, vin, guestEmail });
 
   await prisma.$executeRawUnsafe(
