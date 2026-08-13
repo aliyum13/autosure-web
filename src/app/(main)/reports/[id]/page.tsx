@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 
@@ -207,6 +207,12 @@ export default function ReportPage() {
 
             {/* Action buttons — icon-only on mobile, icon+label on desktop */}
             <div className="flex items-center gap-1.5 shrink-0">
+              <a href={`/api/reports/${id}/pdf`} target="_blank" rel="noopener noreferrer">
+                <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-1.5 px-2 sm:px-3">
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline text-xs">Download PDF</span>
+                </Button>
+              </a>
               <Button size="sm" variant="outline" onClick={copyLink} className="border-ch-border gap-1.5 px-2 sm:px-3">
                 <Copy className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline text-xs">{copied ? 'Copied!' : 'Copy Link'}</span>

@@ -1,41 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
-import { clearvinReportById } from '@/lib/clearvin';
+import { clearvinReportPDF } from '@/lib/clearvin';
 
+export const maxDuration = 60;
+
+// Public PDF download by report ID — works for guest customers (no login).
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
     const { id } = await params;
 
     const reports = await prisma.$queryRawUnsafe(
-      `SELECT processed_data, vin FROM reports WHERE id = $1 AND user_id = $2 LIMIT 1`,
-      id, session.user.id
-    ) as Array<{ processed_data: { clearvin_report_id?: string }; vin: string }>;
+      `SELECT vin, processed_data FROM reports WHERE id = $1 AND status = 'COMPLETED' LIMIT 1`,
+      id
+    ) as Array<{ vin: string; processed_data: { data_source?: string } }>;
 
     const report = reports[0];
     if (!report) return NextResponse.json({ error: 'Report not found' }, { status: 404 });
 
-    const clearvinReportId = report.processed_data?.clearvin_report_id;
-    if (!clearvinReportId) return NextResponse.json({ error: 'PDF not available' }, { status: 404 });
+    // Only ClearVin reports have a PDF
+    if (report.processed_data?.data_source !== 'CLEARVIN') {
+      return NextResponse.json({ error: 'PDF not available for this report' }, { status: 404 });
+    }
 
-    const pdfBuffer = await clearvinReportById(clearvinReportId, 'pdf') as ArrayBuffer;
+    // Fetch fresh PDF from ClearVin by VIN (free re-download for already-run VINs)
+    const pdfBuffer = await clearvinReportPDF(report.vin);
+    if (!pdfBuffer) {
+      return NextResponse.json({ error: 'PDF could not be retrieved' }, { status: 502 });
+    }
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as ArrayBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="carhaki-report-${report.vin}.pdf"`,
-        'Cache-Control': 'private, max-age=3600',
+        'Content-Disposition': `attachment; filename="CarHaki-Report-${report.vin}.pdf"`,
       },
     });
   } catch (error) {
     console.error('PDF download error:', error);
-    return NextResponse.json({ error: 'Failed to download PDF' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to generate PDF' }, { status: 500 });
   }
 }
