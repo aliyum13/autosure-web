@@ -65,19 +65,29 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
   if (trimmed.startsWith('{')) {
     try {
       const parsed = JSON.parse(raw);
-      html = parsed?.result?.html_report ?? parsed?.result?.html ?? parsed?.html_report ?? '';
-    } catch {
-      // not JSON after all — keep raw
+      html =
+        parsed?.result?.html_report ??
+        parsed?.result?.html ??
+        parsed?.result?.report ??
+        parsed?.html_report ??
+        parsed?.html ??
+        '';
+      // Log the shape so we can see what ClearVin actually returns
+      console.log('[clearvin] JSON keys:', Object.keys(parsed?.result || parsed || {}).join(','), '| html_report len:', (html || '').length);
+    } catch (e) {
+      console.warn('[clearvin] JSON parse failed, using raw:', (e as Error).message);
     }
   }
 
-  // Validate we actually got report content, not empty whitespace or an empty wrapper.
-  const meaningful = (html || '').replace(/\s/g, '');
-  if (meaningful.length < 200) {
-    throw new Error('ClearVin returned an empty report (no html_report content)');
+  // Validate we actually got report content. Count non-whitespace, non-tag characters
+  // so an empty skeleton (just <html><body></body></html> + whitespace) is caught.
+  const textContent = (html || '').replace(/<[^>]*>/g, '').replace(/\s/g, '');
+  if (textContent.length < 100) {
+    console.warn('[clearvin] Empty report — text content length:', textContent.length, '| raw html length:', (html || '').length);
+    throw new Error('ClearVin returned an empty report (no meaningful content)');
   }
 
-  console.log('[clearvin] HTML content length:', html.length);
+  console.log('[clearvin] HTML content length:', html.length, '| text content:', textContent.length);
   return html;
 }
 
