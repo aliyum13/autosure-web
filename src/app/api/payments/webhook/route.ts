@@ -25,9 +25,9 @@ export async function POST(req: NextRequest) {
       if (!reference) return NextResponse.json({ received: true });
 
       const orders = await prisma.$queryRawUnsafe(
-        `SELECT id, vin, payment_status, user_id, guest_name, guest_email FROM orders WHERE paystack_reference = $1 LIMIT 1`,
+        `SELECT id, vin, payment_status, user_id, guest_name, guest_email, bundle_id, bundle_count FROM orders WHERE paystack_reference = $1 LIMIT 1`,
         reference
-      ) as Array<{ id: string; vin: string; payment_status: string; user_id: string; guest_name: string; guest_email: string }>;
+      ) as Array<{ id: string; vin: string; payment_status: string; user_id: string; guest_name: string; guest_email: string; bundle_id: string | null; bundle_count: number | null }>;
 
       const order = orders[0];
       if (!order) return NextResponse.json({ received: true });
@@ -38,7 +38,21 @@ export async function POST(req: NextRequest) {
         reference
       );
 
-      console.log('[webhook] Order:', order.id, '| VIN:', order.vin, '| email:', order.guest_email);
+      console.log('[webhook] Order:', order.id, '| VIN:', order.vin, '| email:', order.guest_email, '| bundle:', order.bundle_id, 'x', order.bundle_count);
+
+      // Bundle purchase: create (count - 1) reusable credits for this email.
+      // The first report is generated now; the rest become credits.
+      const bundleCount = order.bundle_count || 1;
+      if (bundleCount > 1 && order.guest_email) {
+        const extraCredits = bundleCount - 1;
+        const creditId = `cred_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO report_credits (id, email, order_id, bundle_id, credits_total, credits_used, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, 0, NOW(), NOW())`,
+          creditId, order.guest_email.toLowerCase(), order.id, order.bundle_id, extraCredits
+        );
+        console.log('[webhook] Created', extraCredits, 'credits for', order.guest_email);
+      }
 
       const reports = await prisma.$queryRawUnsafe(
         `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, order.id

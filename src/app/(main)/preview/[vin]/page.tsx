@@ -114,8 +114,8 @@ export default function PreviewPage() {
         }),
       });
       const data = await res.json();
-      if (data.comp) {
-        // Free internal report — no payment, go straight to success
+      if (data.comp || data.credit_used) {
+        // Free report — comp code or bundle credit — no payment
         setRedirecting(true);
         window.location.href = '/payments/success?comp=1';
         return;

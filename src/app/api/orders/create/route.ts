@@ -55,6 +55,61 @@ export async function POST(req: NextRequest) {
     }
     // ---- End comp code ----
 
+    // ---- Bundle credit: if this email has an unused credit, use it instead of charging ----
+    if (email?.trim()) {
+      const emailLower = email.trim().toLowerCase();
+      const creditRows = await prisma.$queryRawUnsafe(
+        `SELECT id, credits_total, credits_used FROM report_credits
+         WHERE email = $1 AND credits_used < credits_total
+         ORDER BY created_at ASC LIMIT 1`,
+        emailLower
+      ) as Array<{ id: string; credits_total: number; credits_used: number }>;
+
+      if (creditRows[0]) {
+        const credit = creditRows[0];
+        // Consume one credit atomically (guard against double-use)
+        const updated = await prisma.$executeRawUnsafe(
+          `UPDATE report_credits SET credits_used = credits_used + 1, updated_at = NOW()
+           WHERE id = $1 AND credits_used < credits_total`,
+          credit.id
+        );
+
+        if (updated === 1) {
+          const reference = `CH-CREDIT-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+          const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+          await prisma.$executeRawUnsafe(`
+            INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, payment_status,
+                               guest_name, guest_email, guest_phone, bundle_id, bundle_count, paid_at, created_at, updated_at)
+            VALUES ($1, NULL, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'credit', 1, NOW(), NOW(), NOW())
+          `, orderId, upperVin, reference, name.trim(), emailLower, phone?.trim() || null);
+
+          const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          await prisma.$executeRawUnsafe(
+            `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
+             VALUES ($1, $2, NULL, $3, 'PROCESSING', $4, false, NOW(), NOW())`,
+            reportId, orderId, upperVin, shareToken
+          );
+
+          const remaining = (credit.credits_total - credit.credits_used - 1);
+          console.log('[credit] Used 1 credit for', emailLower, '| VIN:', upperVin, '| remaining:', remaining);
+          await generateReportAndEmail(reportId, upperVin, name.trim(), emailLower);
+          console.log('[credit] Report complete:', reportId);
+
+          return NextResponse.json({
+            order_id: orderId,
+            credit_used: true,
+            report_id: reportId,
+            credits_remaining: remaining,
+            message: 'Report generated using your bundle credit.',
+            amount_ngn: 0,
+          });
+        }
+      }
+    }
+    // ---- End bundle credit ----
+
     const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
     if (!PAYSTACK_SECRET) {
       return NextResponse.json({ error: 'Payment service unavailable.' }, { status: 503 });
@@ -104,10 +159,10 @@ export async function POST(req: NextRequest) {
     const id = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     await prisma.$executeRawUnsafe(`
       INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, paystack_access_code, 
-                         payment_status, guest_name, guest_email, guest_phone, created_at, updated_at)
-      VALUES ($1, NULL, $2, $3, $4, $5, 'PENDING', $6, $7, $8, NOW(), NOW())
+                         payment_status, guest_name, guest_email, guest_phone, bundle_id, bundle_count, created_at, updated_at)
+      VALUES ($1, NULL, $2, $3, $4, $5, 'PENDING', $6, $7, $8, $9, $10, NOW(), NOW())
     `, id, upperVin, priceKobo, reference, paystackData.data.access_code || null,
-       name.trim(), email.trim().toLowerCase(), phone?.trim() || null);
+       name.trim(), email.trim().toLowerCase(), phone?.trim() || null, bundleKey, bundle.count);
 
     // Record referral if code provided
     if (ref_code) {
