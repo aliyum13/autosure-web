@@ -50,16 +50,16 @@ export async function generateReportAndEmail(
     }
   } catch { /* proceed */ }
 
-  // ClearVin HTML — fetch with retries (transient timeouts are common).
-  // Try up to 3 times with a generous timeout before falling back to NHTSA.
+  // ClearVin HTML — 2 attempts, tight timeout. Total budget must stay well under
+  // Vercel's 60s function limit (HTML + PDF combined), or the function is killed
+  // mid-execution and the report is left stuck at PROCESSING.
   let clearvinHtml: string | null = null;
-  for (let attempt = 1; attempt <= 3 && !clearvinHtml; attempt++) {
+  for (let attempt = 1; attempt <= 2 && !clearvinHtml; attempt++) {
     try {
-      clearvinHtml = await withTimeout(clearvinReportHTML(vin), 25000, `ClearVin HTML attempt ${attempt}`);
+      clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, `ClearVin HTML attempt ${attempt}`);
       console.log('[generate] ClearVin HTML OK on attempt', attempt);
     } catch (e) {
       console.warn(`[generate] ClearVin HTML attempt ${attempt} failed:`, (e as Error).message);
-      if (attempt < 3) await new Promise(r => setTimeout(r, 1500)); // brief backoff
     }
   }
 
@@ -69,10 +69,10 @@ export async function generateReportAndEmail(
   const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
   const colour = score>=90?'#16a34a':score>=75?'#2563eb':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
 
-  // Fetch the PDF (the real deliverable) — this endpoint works reliably.
+  // Fetch the PDF (the real deliverable) — tight 15s timeout to stay under 60s total.
   let pdfBuffer: ArrayBuffer | null = null;
   try {
-    pdfBuffer = await withTimeout(clearvinReportPDF(vin), 30000, 'ClearVin PDF');
+    pdfBuffer = await withTimeout(clearvinReportPDF(vin), 15000, 'ClearVin PDF');
     console.log('[generate] PDF fetched:', !!pdfBuffer, pdfBuffer?.byteLength);
   } catch (e) {
     console.warn('[generate] PDF failed:', (e as Error).message);

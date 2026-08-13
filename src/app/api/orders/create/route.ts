@@ -3,6 +3,9 @@ import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
 import { generateReportAndEmail } from '@/lib/generate';
 
+// Comp and bundle-credit paths run report generation inline — needs the full 60s.
+export const maxDuration = 60;
+
 // Internal 100%-off code for customer-service / comp reports. Not shown publicly.
 const COMP_CODE = 'CH-COMP-9X4K';
 
