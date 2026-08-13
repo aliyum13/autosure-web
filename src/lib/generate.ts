@@ -42,9 +42,18 @@ async function _generateReportAndEmail(
 ) {
   console.log('[generate] START', { reportId, vin, guestEmail });
 
+  const mark = async (step: string) => {
+    try {
+      await prisma.$executeRawUnsafe(
+        `UPDATE reports SET grade_label=$1, updated_at=NOW() WHERE id=$2`, `STEP:${step}`, reportId
+      );
+    } catch { /* ignore */ }
+  };
+
   await prisma.$executeRawUnsafe(
     `UPDATE reports SET status = 'PROCESSING', updated_at = NOW() WHERE id = $1`, reportId
   );
+  await mark('after-processing');
 
   // NHTSA vehicle info (fast, parallel)
   let make: string | undefined, model: string | undefined, year: number | undefined;
@@ -62,6 +71,7 @@ async function _generateReportAndEmail(
     if (recallRes.ok) recallsList = (await recallRes.json()).results || [];
     console.log('[generate] Vehicle:', { make, model, year, recalls: recallsList.length });
   } catch (e) { console.error('[generate] NHTSA failed:', e); }
+  await mark('after-nhtsa');
 
   // Guard: if this report (or another report for the same VIN+email) already has a
   // successful ClearVin result, do NOT regenerate/overwrite it with a possible fallback.
@@ -80,6 +90,7 @@ async function _generateReportAndEmail(
   // Vercel's 60s function limit (HTML + PDF combined), or the function is killed
   // mid-execution and the report is left stuck at PROCESSING.
   let clearvinHtml: string | null = null;
+  await mark('before-clearvin-html');
   for (let attempt = 1; attempt <= 2 && !clearvinHtml; attempt++) {
     try {
       clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, `ClearVin HTML attempt ${attempt}`);
@@ -88,6 +99,7 @@ async function _generateReportAndEmail(
       console.warn(`[generate] ClearVin HTML attempt ${attempt} failed:`, (e as Error).message);
     }
   }
+  await mark('after-clearvin-html');
 
   // Compute grade
   const score = Math.max(0, 100 - recallsList.length * 5);
@@ -103,6 +115,7 @@ async function _generateReportAndEmail(
   } catch (e) {
     console.warn('[generate] PDF failed:', (e as Error).message);
   }
+  await mark('after-pdf');
 
   // Decide report content:
   // 1. Best: real ClearVin HTML (for rich on-site view)
