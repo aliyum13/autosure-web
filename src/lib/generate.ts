@@ -69,51 +69,53 @@ export async function generateReportAndEmail(
   const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
   const colour = score>=90?'#16a34a':score>=75?'#2563eb':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
 
-  // If ClearVin failed after all retries, do NOT silently deliver a bare NHTSA report.
-  // Mark the report as NEEDS_RETRY so it can be regenerated, and skip the customer email.
-  // (A near-empty report after a paid ₦15,000 order is worse than a short delay.)
-  if (!clearvinHtml) {
-    console.error('[generate] ClearVin failed after retries for', vin, '— flagging NEEDS_RETRY, not emailing bare report');
+  // Fetch the PDF (the real deliverable) — this endpoint works reliably.
+  let pdfBuffer: ArrayBuffer | null = null;
+  try {
+    pdfBuffer = await withTimeout(clearvinReportPDF(vin), 30000, 'ClearVin PDF');
+    console.log('[generate] PDF fetched:', !!pdfBuffer, pdfBuffer?.byteLength);
+  } catch (e) {
+    console.warn('[generate] PDF failed:', (e as Error).message);
+  }
+
+  // Decide report content:
+  // 1. Best: real ClearVin HTML (for rich on-site view)
+  // 2. Good: PDF succeeded — deliver via PDF + preview data, mark COMPLETED
+  // 3. Fail: neither HTML nor PDF — flag NEEDS_RETRY, don't deliver empty
+  if (!clearvinHtml && !pdfBuffer) {
+    console.error('[generate] ClearVin returned nothing (no HTML, no PDF) for', vin, '— NEEDS_RETRY');
     await prisma.$executeRawUnsafe(
       `UPDATE reports SET status='NEEDS_RETRY',
          processed_data=$1::jsonb, updated_at=NOW()
        WHERE id=$2 AND (processed_data->>'data_source') IS DISTINCT FROM 'CLEARVIN'`,
-      JSON.stringify({ data_source: 'NHTSA_FALLBACK', vehicle: { vin, make, model, year }, recalls: recallsList, needs_retry: true }),
+      JSON.stringify({ data_source: 'NEEDS_RETRY', vehicle: { vin, make, model, year }, needs_retry: true }),
       reportId
     );
-    // Notify admin so it can be manually regenerated
     try {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
         to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
-        subject: `⚠️ ClearVin failed for ${vin} — needs retry`,
-        html: `<p>ClearVin did not return data for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).</p><p>Regenerate with the comp code or retry from admin.</p>`,
+        subject: `⚠️ ClearVin returned nothing for ${vin} — needs retry`,
+        html: `<p>No HTML and no PDF from ClearVin for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).</p>`,
       });
     } catch (e) { console.error('[generate] admin notify failed:', e); }
     return;
   }
 
-  const processedData = { data_source: 'CLEARVIN', clearvin_html: clearvinHtml };
+  // Build processed data. Prefer HTML if we got it; otherwise mark as PDF-delivered
+  // (report page will show preview-style summary, PDF has the full detail).
+  const processedData = clearvinHtml
+    ? { data_source: 'CLEARVIN', clearvin_html: clearvinHtml }
+    : { data_source: 'CLEARVIN_PDF', vehicle: { vin, make, model, year }, recalls: recallsList, pdf_delivered: true };
 
   await prisma.$executeRawUnsafe(`
     UPDATE reports SET status='COMPLETED', overall_grade=$1, risk_score=$2,
       grade_label=$3, grade_colour=$4, processed_data=$5::jsonb, completed_at=NOW(), updated_at=NOW()
     WHERE id=$6
   `, grade, score, label, colour, JSON.stringify(processedData), reportId);
-  console.log('[generate] DB saved with ClearVin data');
-
-  // ClearVin PDF — separate call with generous 30s timeout (Pro allows 60s total)
-  let pdfBuffer: ArrayBuffer | null = null;
-  if (clearvinHtml) {
-    try {
-      pdfBuffer = await withTimeout(clearvinReportPDF(vin), 30000, 'ClearVin PDF');
-      console.log('[generate] PDF fetched:', !!pdfBuffer, pdfBuffer?.byteLength);
-    } catch (e) {
-      console.warn('[generate] PDF failed (email sends without it):', (e as Error).message);
-    }
-  }
+  console.log('[generate] DB saved, source:', clearvinHtml ? 'CLEARVIN(html)' : 'CLEARVIN_PDF');
 
   // Send email
   if (guestEmail) {
