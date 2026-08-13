@@ -10,6 +10,7 @@ export async function sendReportReadyEmail({
   model,
   year,
   pdfBuffer,
+  reportId,
 }: {
   to: string;
   name: string;
@@ -18,9 +19,11 @@ export async function sendReportReadyEmail({
   model?: string;
   year?: number;
   pdfBuffer?: ArrayBuffer;
+  reportId?: string;
 }) {
   const carName = [year, make, model].filter(Boolean).join(' ') || vin;
   const firstName = name?.split(' ')[0] || 'there';
+  const reportUrl = reportId ? `https://carhaki.com/reports/${reportId}` : 'https://carhaki.com';
 
   const attachments = pdfBuffer
     ? [{ filename: `CarHaki-Report-${vin}.pdf`, content: Buffer.from(pdfBuffer) }]
@@ -74,6 +77,16 @@ export async function sendReportReadyEmail({
             <p style="margin:0;font-size:17px;font-weight:700;color:#1e293b;font-family:monospace;">${vin}</p>
             <p style="margin:4px 0 0;font-size:14px;color:#475569;">${carName}</p>
           </div>
+
+          <!-- View Report Online button — always works even if PDF attachment fails -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr><td align="center">
+            <a href="${reportUrl}" style="display:inline-block;background:#1a56db;color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;">
+              View Your Full Report →
+            </a>
+          </td></tr></table>
+          <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0 0 24px;line-height:1.6;">
+            ${pdfBuffer ? 'Your report is also attached as a PDF. ' : ''}Tap the button above to view your complete report online anytime — no login needed.
+          </p>
 
           ${pdfSection}
 

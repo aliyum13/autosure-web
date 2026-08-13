@@ -83,6 +83,7 @@ export async function generateReportAndEmail(
         name: guestName || guestEmail,
         vin, make, model, year,
         pdfBuffer: pdfBuffer ?? undefined,
+        reportId,
       });
       console.log('[generate] EMAIL SENT to:', guestEmail);
     } catch (e) {
