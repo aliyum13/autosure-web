@@ -49,13 +49,35 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
   const res = await fetch(`${CLEARVIN_BASE}/report?vin=${vin}&format=html`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  const raw = await res.text();
+
   if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as { message?: string };
-    throw new Error(err.message || `ClearVin HTML failed: ${res.status}`);
+    let msg = `ClearVin HTML failed: ${res.status}`;
+    try { msg = (JSON.parse(raw)?.message) || msg; } catch {}
+    throw new Error(msg);
   }
-  const html = await res.text();
-  if (!html || html.length < 100) throw new Error('ClearVin returned empty HTML');
-  console.log('[clearvin] HTML length:', html.length);
+
+  // ClearVin's format=html endpoint returns JSON: { status, result: { html_report } }.
+  // Older/other responses may return raw HTML directly. Handle both.
+  let html = raw;
+  const trimmed = raw.trimStart();
+  if (trimmed.startsWith('{')) {
+    try {
+      const parsed = JSON.parse(raw);
+      html = parsed?.result?.html_report ?? parsed?.result?.html ?? parsed?.html_report ?? '';
+    } catch {
+      // not JSON after all — keep raw
+    }
+  }
+
+  // Validate we actually got report content, not empty whitespace or an empty wrapper.
+  const meaningful = (html || '').replace(/\s/g, '');
+  if (meaningful.length < 200) {
+    throw new Error('ClearVin returned an empty report (no html_report content)');
+  }
+
+  console.log('[clearvin] HTML content length:', html.length);
   return html;
 }
 
