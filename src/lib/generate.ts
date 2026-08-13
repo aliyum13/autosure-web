@@ -37,13 +37,30 @@ export async function generateReportAndEmail(
     console.log('[generate] Vehicle:', { make, model, year, recalls: recallsList.length });
   } catch (e) { console.error('[generate] NHTSA failed:', e); }
 
-  // ClearVin HTML — fetch first (fast), 15s timeout
-  let clearvinHtml: string | null = null;
+  // Guard: if this report (or another report for the same VIN+email) already has a
+  // successful ClearVin result, do NOT regenerate/overwrite it with a possible fallback.
   try {
-    clearvinHtml = await withTimeout(clearvinReportHTML(vin), 15000, 'ClearVin HTML');
-    console.log('[generate] ClearVin HTML OK');
-  } catch (e) {
-    console.warn('[generate] ClearVin HTML failed:', (e as Error).message);
+    const existing = await prisma.$queryRawUnsafe(
+      `SELECT processed_data->>'data_source' AS source
+       FROM reports WHERE id = $1 LIMIT 1`, reportId
+    ) as Array<{ source: string | null }>;
+    if (existing[0]?.source === 'CLEARVIN') {
+      console.log('[generate] Report already has ClearVin data — skipping regeneration');
+      return;
+    }
+  } catch { /* proceed */ }
+
+  // ClearVin HTML — fetch with retries (transient timeouts are common).
+  // Try up to 3 times with a generous timeout before falling back to NHTSA.
+  let clearvinHtml: string | null = null;
+  for (let attempt = 1; attempt <= 3 && !clearvinHtml; attempt++) {
+    try {
+      clearvinHtml = await withTimeout(clearvinReportHTML(vin), 25000, `ClearVin HTML attempt ${attempt}`);
+      console.log('[generate] ClearVin HTML OK on attempt', attempt);
+    } catch (e) {
+      console.warn(`[generate] ClearVin HTML attempt ${attempt} failed:`, (e as Error).message);
+      if (attempt < 3) await new Promise(r => setTimeout(r, 1500)); // brief backoff
+    }
   }
 
   // Compute grade
@@ -52,16 +69,40 @@ export async function generateReportAndEmail(
   const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
   const colour = score>=90?'#16a34a':score>=75?'#2563eb':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
 
-  const processedData = clearvinHtml
-    ? { data_source: 'CLEARVIN', clearvin_html: clearvinHtml }
-    : { data_source: 'NHTSA_FALLBACK', vehicle: { vin, make, model, year }, recalls: recallsList };
+  // If ClearVin failed after all retries, do NOT silently deliver a bare NHTSA report.
+  // Mark the report as NEEDS_RETRY so it can be regenerated, and skip the customer email.
+  // (A near-empty report after a paid ₦15,000 order is worse than a short delay.)
+  if (!clearvinHtml) {
+    console.error('[generate] ClearVin failed after retries for', vin, '— flagging NEEDS_RETRY, not emailing bare report');
+    await prisma.$executeRawUnsafe(
+      `UPDATE reports SET status='NEEDS_RETRY',
+         processed_data=$1::jsonb, updated_at=NOW()
+       WHERE id=$2 AND (processed_data->>'data_source') IS DISTINCT FROM 'CLEARVIN'`,
+      JSON.stringify({ data_source: 'NHTSA_FALLBACK', vehicle: { vin, make, model, year }, recalls: recallsList, needs_retry: true }),
+      reportId
+    );
+    // Notify admin so it can be manually regenerated
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
+        to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
+        subject: `⚠️ ClearVin failed for ${vin} — needs retry`,
+        html: `<p>ClearVin did not return data for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).</p><p>Regenerate with the comp code or retry from admin.</p>`,
+      });
+    } catch (e) { console.error('[generate] admin notify failed:', e); }
+    return;
+  }
+
+  const processedData = { data_source: 'CLEARVIN', clearvin_html: clearvinHtml };
 
   await prisma.$executeRawUnsafe(`
     UPDATE reports SET status='COMPLETED', overall_grade=$1, risk_score=$2,
       grade_label=$3, grade_colour=$4, processed_data=$5::jsonb, completed_at=NOW(), updated_at=NOW()
     WHERE id=$6
   `, grade, score, label, colour, JSON.stringify(processedData), reportId);
-  console.log('[generate] DB saved, data_source:', clearvinHtml ? 'CLEARVIN' : 'NHTSA_FALLBACK');
+  console.log('[generate] DB saved with ClearVin data');
 
   // ClearVin PDF — separate call with generous 30s timeout (Pro allows 60s total)
   let pdfBuffer: ArrayBuffer | null = null;
