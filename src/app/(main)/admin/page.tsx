@@ -33,6 +33,45 @@ export default function AdminPage() {
 
   const ADMIN_PW = process.env.NEXT_PUBLIC_ADMIN_PW || 'carhaki2026';
 
+  // --- Stuck report recovery ---
+  const [recovering, setRecovering] = useState(false);
+  const [recoverLog, setRecoverLog] = useState<string[]>([]);
+  const [recoverRemaining, setRecoverRemaining] = useState<number | null>(null);
+
+  const runRecovery = async () => {
+    setRecovering(true);
+    setRecoverLog([]);
+    let keepGoing = true;
+    let count = 0;
+    while (keepGoing) {
+      try {
+        const res = await fetch('/api/admin/recover', {
+          method: 'POST',
+          headers: { 'x-admin-key': ADMIN_PW },
+        });
+        const data = await res.json();
+        if (data.done) {
+          setRecoverLog(prev => [...prev, `✓ All done — no stuck reports remaining.`]);
+          setRecoverRemaining(0);
+          keepGoing = false;
+          break;
+        }
+        count++;
+        const p = data.processed;
+        setRecoverLog(prev => [...prev, `${p.ok ? '✓' : '✗'} ${p.email} (${p.vin})${p.ok ? '' : ' — ' + p.error}`]);
+        setRecoverRemaining(data.remaining);
+        if (data.remaining === 0) { keepGoing = false; }
+        // Safety cap
+        if (count > 100) { keepGoing = false; }
+      } catch (e) {
+        setRecoverLog(prev => [...prev, `✗ Error: ${(e as Error).message}. Tap again to continue.`]);
+        keepGoing = false;
+      }
+    }
+    setRecovering(false);
+  };
+
+
   const handleLogin = () => {
     if (pw === ADMIN_PW) {
       setAuthed(true);
@@ -123,6 +162,34 @@ export default function AdminPage() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">Admin</p>
           <h1 className="text-2xl font-bold text-ch-text">Referral Management</h1>
+        </div>
+
+        {/* Stuck report recovery */}
+        <div className="bg-white border border-amber-200 rounded-xl p-6">
+          <h2 className="font-semibold text-ch-text mb-1">🔧 Recover Stuck Reports</h2>
+          <p className="text-sm text-ch-text-secondary mb-4">
+            Regenerates all paid reports stuck at PROCESSING/FAILED and emails them to customers.
+            Runs one at a time; leave this open until it finishes.
+          </p>
+          <Button
+            onClick={runRecovery}
+            disabled={recovering}
+            className="bg-amber-600 hover:bg-amber-700 text-white"
+          >
+            {recovering ? `Recovering… ${recoverRemaining ?? ''} left` : 'Start Recovery'}
+          </Button>
+          {recoverRemaining !== null && !recovering && (
+            <p className="text-sm font-semibold text-green-700 mt-3">
+              {recoverRemaining === 0 ? '✓ All stuck reports recovered.' : `${recoverRemaining} remaining — tap again.`}
+            </p>
+          )}
+          {recoverLog.length > 0 && (
+            <div className="mt-4 max-h-64 overflow-y-auto bg-slate-50 rounded-lg p-3 text-xs font-mono space-y-1">
+              {recoverLog.map((line, i) => (
+                <div key={i} className={line.startsWith('✗') ? 'text-red-600' : 'text-slate-700'}>{line}</div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Create new code */}
