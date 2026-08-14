@@ -54,25 +54,34 @@ export async function POST(req: NextRequest) {
         console.log('[webhook] Created', extraCredits, 'credits for', order.guest_email);
       }
 
-      const reports = await prisma.$queryRawUnsafe(
-        `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, order.id
-      ) as Array<{ id: string }>;
+      // Advisory lock on this order — serializes against the verify route hitting the
+      // same order at nearly the same time (Paystack webhook + browser success-page poll).
+      await prisma.$executeRawUnsafe(`SELECT pg_advisory_lock(hashtext($1)::bigint)`, order.id);
+      try {
+        const reports = await prisma.$queryRawUnsafe(
+          `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, order.id
+        ) as Array<{ id: string }>;
 
-      if (!reports[0]) {
-        const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-        const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-        await prisma.$executeRawUnsafe(
-          `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, 'PROCESSING', $5, false, NOW(), NOW())`,
-          reportId, order.id, order.user_id, order.vin, shareToken
-        );
+        if (!reports[0]) {
+          const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          await prisma.$executeRawUnsafe(
+            `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, 'PROCESSING', $5, false, NOW(), NOW())`,
+            reportId, order.id, order.user_id, order.vin, shareToken
+          );
 
-        console.log('[webhook] Running generate directly for:', reportId);
+          console.log('[webhook] Running generate directly for:', reportId);
 
-        // Run generate directly — await so Vercel doesn't kill it
-        await generateReportAndEmail(reportId, order.vin, order.guest_name, order.guest_email);
+          // Run generate directly — await so Vercel doesn't kill it
+          await generateReportAndEmail(reportId, order.vin, order.guest_name, order.guest_email);
 
-        console.log('[webhook] Generate complete for:', reportId);
+          console.log('[webhook] Generate complete for:', reportId);
+        } else {
+          console.log('[webhook] Report already exists for order (verify route won the race):', reports[0].id);
+        }
+      } finally {
+        await prisma.$executeRawUnsafe(`SELECT pg_advisory_unlock(hashtext($1)::bigint)`, order.id);
       }
     }
 

@@ -16,6 +16,21 @@ export async function generateReportAndEmail(
 ) {
   console.log('[generate] START', { reportId, vin, guestEmail });
 
+  // Guard: if this report already completed with real ClearVin data, don't regenerate.
+  // Prevents duplicate ClearVin credit usage if this function is triggered twice for the
+  // same report (e.g. an admin retry, or webhook/verify both firing close together).
+  try {
+    const existing = await prisma.$queryRawUnsafe(
+      `SELECT status, processed_data->>'data_source' AS source FROM reports WHERE id = $1 LIMIT 1`,
+      reportId
+    ) as Array<{ status: string; source: string | null }>;
+    const row = existing[0];
+    if (row && row.status === 'COMPLETED' && (row.source === 'CLEARVIN' || row.source === 'CLEARVIN_PDF')) {
+      console.log('[generate] Report already COMPLETED with real ClearVin data — skipping regeneration');
+      return;
+    }
+  } catch (e) { console.warn('[generate] idempotency check failed, proceeding:', e); }
+
   await prisma.$executeRawUnsafe(
     `UPDATE reports SET status = 'PROCESSING', updated_at = NOW() WHERE id = $1`, reportId
   );
@@ -38,15 +53,15 @@ export async function generateReportAndEmail(
     console.log('[generate] Vehicle:', { make, model, year, recalls: recallsList.length });
   } catch (e) { console.error('[generate] NHTSA failed:', e); }
 
-  // ClearVin HTML — 2 attempts, tight timeout to stay well under Vercel's 60s limit.
+  // ClearVin HTML — single attempt, tight timeout to stay well under Vercel's 60s limit.
+  // No retry: a client-side timeout doesn't mean the request failed on ClearVin's end —
+  // retrying risks generating (and paying for) a second report for the same VIN.
   let clearvinHtml: string | null = null;
-  for (let attempt = 1; attempt <= 2 && !clearvinHtml; attempt++) {
-    try {
-      clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, `ClearVin HTML attempt ${attempt}`);
-      console.log('[generate] ClearVin HTML OK on attempt', attempt);
-    } catch (e) {
-      console.warn(`[generate] ClearVin HTML attempt ${attempt} failed:`, (e as Error).message);
-    }
+  try {
+    clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, 'ClearVin HTML');
+    console.log('[generate] ClearVin HTML OK');
+  } catch (e) {
+    console.warn('[generate] ClearVin HTML failed:', (e as Error).message);
   }
 
   // ClearVin PDF (the real deliverable) — tight 15s timeout.

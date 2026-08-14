@@ -44,29 +44,36 @@ export async function GET(req: NextRequest) {
       reference
     );
 
-    // Check if report already exists (webhook may have just fired)
-    const existingReports = await prisma.$queryRawUnsafe(
-      `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
-    ) as Array<{ id: string }>;
+    // Advisory lock on this order — serializes against the webhook route hitting the
+    // same order at nearly the same time (Paystack webhook + this browser poll).
+    await prisma.$executeRawUnsafe(`SELECT pg_advisory_lock(hashtext($1)::bigint)`, existingOrder.id);
+    try {
+      // Check if report already exists (webhook may have just fired, or won the lock race)
+      const existingReports = await prisma.$queryRawUnsafe(
+        `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
+      ) as Array<{ id: string }>;
 
-    if (existingReports[0]) {
-      console.log('[verify] Report already exists:', existingReports[0].id);
-      return NextResponse.json({ status: 'success', report_id: existingReports[0].id, vin: existingOrder.vin });
+      if (existingReports[0]) {
+        console.log('[verify] Report already exists:', existingReports[0].id);
+        return NextResponse.json({ status: 'success', report_id: existingReports[0].id, vin: existingOrder.vin });
+      }
+
+      // Webhook missed — create report and generate directly (await, not fire-and-forget)
+      const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
+         VALUES ($1, $2, NULL, $3, 'PROCESSING', $4, true, NOW(), NOW())`,
+        reportId, existingOrder.id, existingOrder.vin, shareToken
+      );
+
+      console.log('[verify] Webhook missed — running generate directly for:', reportId);
+      await generateReportAndEmail(reportId, existingOrder.vin, existingOrder.guest_name, existingOrder.guest_email);
+
+      return NextResponse.json({ status: 'success', report_id: reportId, vin: existingOrder.vin });
+    } finally {
+      await prisma.$executeRawUnsafe(`SELECT pg_advisory_unlock(hashtext($1)::bigint)`, existingOrder.id);
     }
-
-    // Webhook missed — create report and generate directly (await, not fire-and-forget)
-    const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
-       VALUES ($1, $2, NULL, $3, 'PROCESSING', $4, true, NOW(), NOW())`,
-      reportId, existingOrder.id, existingOrder.vin, shareToken
-    );
-
-    console.log('[verify] Webhook missed — running generate directly for:', reportId);
-    await generateReportAndEmail(reportId, existingOrder.vin, existingOrder.guest_name, existingOrder.guest_email);
-
-    return NextResponse.json({ status: 'success', report_id: reportId, vin: existingOrder.vin });
   } catch (error) {
     console.error('[verify] Error:', error);
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
