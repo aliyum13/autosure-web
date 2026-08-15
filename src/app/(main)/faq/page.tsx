@@ -103,14 +103,26 @@ export default function FAQPage() {
         <div className="mt-10 bg-ch-navy rounded-2xl p-6 text-center text-white">
           <p className="font-semibold mb-2">Still have questions?</p>
           <p className="text-slate-400 text-sm mb-4">
-            Join our WhatsApp channel for updates, or email us at carhakisupport@gmail.com for support.
+            Chat with us directly on WhatsApp, join our community channel, or email carhakisupport@gmail.com.
           </p>
-          <a
-            href="https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t"
-            className="inline-block bg-ch-blue hover:bg-ch-blue-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
-          >
-            Join WhatsApp Channel
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="https://wa.me/2348168696869"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-ch-blue hover:bg-ch-blue-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
+            >
+              💬 Chat with us — 0816 869 6869
+            </a>
+            <a
+              href="https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-white border border-ch-blue text-ch-blue hover:bg-blue-50 text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
+            >
+              Join WhatsApp Channel
+            </a>
+          </div>
         </div>
       </div>
     </div>

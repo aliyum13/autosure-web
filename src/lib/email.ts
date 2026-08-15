@@ -92,7 +92,7 @@ export async function sendReportReadyEmail({
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
             Need help? Email us at <a href="mailto:carhakisupport@gmail.com" style="color:#1a56db;">carhakisupport@gmail.com</a>
-            or join our <a href="https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t" style="color:#1a56db;">WhatsApp channel</a>.
+            or WhatsApp us directly at <a href="https://wa.me/2348168696869" style="color:#1a56db;">0816 869 6869</a>.
           </p>
         </td></tr>
 

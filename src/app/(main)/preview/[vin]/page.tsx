@@ -409,6 +409,11 @@ export default function PreviewPage() {
 
               <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
 
+              <p className="text-center text-xs text-slate-500">
+                Questions before you pay? WhatsApp us:{' '}
+                <a href="https://wa.me/2348168696869" target="_blank" rel="noopener noreferrer" className="text-ch-blue font-semibold">0816 869 6869</a>
+              </p>
+
               <p className="text-center text-xs text-slate-400">
                 By clicking ORDER REPORT NOW you agree to{' '}
                 <a href="/terms" className="text-ch-blue hover:underline">Terms and Conditions</a>{' '}
