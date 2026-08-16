@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearvinGetToken } from '@/lib/clearvin';
 
+const allowedDomains = ['clearvin.com', 'iaai.com', 'copart.com', 'manheim.com', 'amazonaws.com'];
+
+function matchesAllowedDomain(hostname: string, domain: string): boolean {
+  return hostname === domain || hostname.endsWith(`.${domain}`);
+}
+
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get('url');
   if (!url) return new NextResponse('Missing url', { status: 400 });
 
-  // Allow ClearVin and common auction image CDNs
-  const allowedDomains = ['clearvin.com', 'iaai.com', 'copart.com', 'manheim.com', 'amazonaws.com'];
-  const isAllowed = allowedDomains.some(d => url.includes(d));
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return new NextResponse('Invalid url', { status: 400 });
+  }
+
+  if (parsedUrl.protocol !== 'https:') {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
+
+  const isAllowed = allowedDomains.some(d => matchesAllowedDomain(parsedUrl.hostname, d));
   if (!isAllowed) return new NextResponse('Forbidden', { status: 403 });
 
   try {
@@ -16,9 +31,9 @@ export async function GET(req: NextRequest) {
       'Accept': 'image/*,*/*',
       'Referer': 'https://www.clearvin.com/',
     };
-    
+
     // Add auth for ClearVin API endpoints (not CDN images)
-    if (url.includes('clearvin.com') && !url.includes('/images/auctions/')) {
+    if (matchesAllowedDomain(parsedUrl.hostname, 'clearvin.com') && !url.includes('/images/auctions/')) {
       try {
         const token = await clearvinGetToken();
         headers['Authorization'] = `Bearer ${token}`;
