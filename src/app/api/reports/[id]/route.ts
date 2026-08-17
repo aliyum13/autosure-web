@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 
 export async function GET(
@@ -7,11 +6,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth();
     const { id } = await params;
 
-    // Allow public access — reports are viewable by anyone with the link
-    // If logged in, check own reports first; otherwise fetch by ID only
+    // Public access — reports are viewable by anyone with the link.
     const reports = await prisma.$queryRawUnsafe(
       `SELECT id, vin, status, overall_grade, risk_score, grade_label, grade_colour,
               processed_data, ai_summary, share_token, is_public, completed_at, created_at, user_id
