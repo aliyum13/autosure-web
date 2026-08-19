@@ -5,6 +5,12 @@ import { isAdminSession } from '@/lib/dal';
 
 export const maxDuration = 60;
 
+// General safeguard against the recovery-tool-infinite-loop class of bug —
+// bounds retries per report regardless of WHY it keeps failing, not just the
+// one specific ClearVin rejection message migration 004 classifies. See
+// migrations/005.
+const MAX_RECOVERY_ATTEMPTS = 3;
+
 // One-at-a-time recovery of stuck paid reports.
 // Auth: admin session cookie (ADMIN_EMAILS allowlist). Processes a small
 // batch per call to stay under the function time limit — call repeatedly
@@ -14,7 +20,8 @@ export async function POST() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Grab ONE stuck paid report (oldest first), excluding the owner's test email.
+  // Grab ONE stuck paid report (oldest first), excluding the owner's test
+  // email and anything that's already exhausted its retry budget.
   const stuck = await prisma.$queryRawUnsafe(
     `SELECT r.id AS report_id, r.vin, o.guest_name, o.guest_email
      FROM reports r
@@ -22,8 +29,10 @@ export async function POST() {
      WHERE r.status IN ('PROCESSING','FAILED')
        AND o.payment_status = 'SUCCESS'
        AND o.guest_email <> 'aliyumauwal13@gmail.com'
+       AND r.recovery_attempts < $1
      ORDER BY r.created_at ASC
-     LIMIT 1`
+     LIMIT 1`,
+    MAX_RECOVERY_ATTEMPTS
   ) as Array<{ report_id: string; vin: string; guest_name: string; guest_email: string }>;
 
   if (!stuck.length) {
@@ -32,6 +41,14 @@ export async function POST() {
 
   const job = stuck[0];
   let result: { report_id: string; vin: string; email: string; ok: boolean; error?: string };
+
+  // Increment before attempting, so a crash mid-generation still counts —
+  // the whole point is bounding retries even when the failure mode is one
+  // we haven't seen before.
+  await prisma.$executeRawUnsafe(
+    `UPDATE reports SET recovery_attempts = recovery_attempts + 1 WHERE id = $1`,
+    job.report_id
+  );
 
   try {
     await generateReportAndEmail(job.report_id, job.vin, job.guest_name, job.guest_email);
@@ -46,7 +63,9 @@ export async function POST() {
      FROM reports r JOIN orders o ON o.id = r.order_id
      WHERE r.status IN ('PROCESSING','FAILED')
        AND o.payment_status = 'SUCCESS'
-       AND o.guest_email <> 'aliyumauwal13@gmail.com'`
+       AND o.guest_email <> 'aliyumauwal13@gmail.com'
+       AND r.recovery_attempts < $1`,
+    MAX_RECOVERY_ATTEMPTS
   ) as Array<{ n: number }>;
 
   return NextResponse.json({
