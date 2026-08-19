@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { clearvinReportHTML, clearvinReportPDF } from '@/lib/clearvin';
 import { sendReportReadyEmail } from '@/lib/email';
+import { isEmailSuppressed } from '@/lib/suppression';
 
 const withTimeout = <T>(p: Promise<T>, ms: number, label: string): Promise<T> =>
   Promise.race([
@@ -121,14 +122,30 @@ export async function generateReportAndEmail(
   // Email (non-fatal if it fails)
   if (guestEmail) {
     try {
-      await sendReportReadyEmail({
-        to: guestEmail,
-        name: guestName || guestEmail,
-        vin, make, model, year,
-        pdfBuffer: pdfBuffer ?? undefined,
-        reportId,
-      });
-      console.log('[generate] EMAIL SENT to:', guestEmail);
+      if (await isEmailSuppressed(guestEmail)) {
+        console.error('[generate] EMAIL SUPPRESSED — skipping send, report complete but undelivered:', guestEmail);
+        try {
+          const { Resend } = await import('resend');
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
+            to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
+            subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
+            html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list (prior hard bounce or complaint).
+              Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>
+              <p>Follow the "paid but didn't receive report" SOP to deliver manually.</p>`,
+          });
+        } catch (e) { console.error('[generate] admin suppression alert failed:', e); }
+      } else {
+        await sendReportReadyEmail({
+          to: guestEmail,
+          name: guestName || guestEmail,
+          vin, make, model, year,
+          pdfBuffer: pdfBuffer ?? undefined,
+          reportId,
+        });
+        console.log('[generate] EMAIL SENT to:', guestEmail);
+      }
     } catch (e) {
       console.error('[generate] Email failed (report still completed):', e);
     }

@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useSession } from 'next-auth/react';
+import Cookies from 'js-cookie';
 
 interface Report {
   id: string;
@@ -129,7 +129,10 @@ function ClearVinFrame({ html }: { html: string }) {
 export default function ReportPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: session, status } = useSession();
+  // Pure UI hint read from a non-httpOnly cookie set at login — not an
+  // authorization check. See src/lib/session.ts.
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => setAuthed(Cookies.get('carhaki_authed') === '1'), []);
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -138,14 +141,14 @@ export default function ReportPage() {
 
 
   useEffect(() => {
-    if (!id || status === 'loading') return;
+    if (!id) return;
     // Fetch report publicly - no auth required to view
     fetch(`/api/reports/${id}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setReport)
       .catch(() => setLoading(false))
       .finally(() => setLoading(false));
-  }, [status, id]);
+  }, [id]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -167,7 +170,7 @@ export default function ReportPage() {
     return [...new Set([...imgs, ...imgs2, ...imgs3])];
   };
 
-  if (status === 'loading' || loading) {
+  if (loading) {
     return <div className="min-h-screen bg-ch-bg flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-ch-blue" /></div>;
   }
   if (!report) return (
@@ -192,9 +195,9 @@ export default function ReportPage() {
         <div className="bg-white border-b border-ch-border sticky top-0 z-10 print:hidden">
           <div className="max-w-6xl mx-auto px-3 py-2 flex items-center gap-2">
             {/* Back button */}
-            <Button variant="outline" size="sm" onClick={() => router.push(session?.user ? '/dashboard' : '/')} className="border-ch-border gap-1 shrink-0">
+            <Button variant="outline" size="sm" onClick={() => router.push(authed ? '/dashboard' : '/')} className="border-ch-border gap-1 shrink-0">
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{session?.user ? 'Dashboard' : 'CarHaki'}</span>
+              <span className="hidden sm:inline">{authed ? 'Dashboard' : 'CarHaki'}</span>
             </Button>
 
             {/* VIN + date — takes remaining space */}

@@ -113,6 +113,56 @@ export async function sendReportReadyEmail({
   return result;
 }
 
+export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
+  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CarHaki <onboarding@resend.dev>';
+
+  return resend.emails.send({
+    from: fromAddr,
+    to,
+    subject: `${code} is your CarHaki login code`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+        <!-- Header -->
+        <tr><td style="background:#1a56db;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
+          <img src="https://carhaki.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px;" alt="CarHaki">
+          <br>
+          <span style="color:#ffffff;font-size:22px;font-weight:800;">Car<span style="color:#93c5fd;">Haki</span></span>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="background:#ffffff;padding:32px;text-align:center;">
+          <h1 style="color:#1e293b;font-size:20px;margin:0 0 8px;">Your login code</h1>
+          <p style="color:#64748b;margin:0 0 24px;">Enter this code to sign in to CarHaki:</p>
+
+          <div style="background:#f1f5f9;border-radius:12px;padding:20px;margin:0 0 24px;">
+            <p style="margin:0;font-size:32px;font-weight:800;letter-spacing:0.15em;color:#1e293b;font-family:monospace;">${code}</p>
+          </div>
+
+          <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
+            This code expires in 10 minutes. If you didn't request this, you can safely ignore this email.
+          </p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="background:#0f172a;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
+          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CarHaki Nigeria. All rights reserved.</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`.trim(),
+  });
+}
+
 export async function sendAnalysisEmail({
   to,
   name,
