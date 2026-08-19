@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download, ExternalLink, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Cookies from 'js-cookie';
 
@@ -24,6 +24,52 @@ interface Report {
     odometer_records?: unknown[];
   } | null;
   created_at: string;
+  has_pdf?: boolean;
+}
+
+// Renders the stored PDF (reports.pdf_data, served by /api/reports/[id]/pdf).
+//
+// <object> natively falls back to its children when the browser can't display
+// the embedded type, which covers mobile browsers without user-agent sniffing.
+// But the "Open PDF" button below is rendered ALWAYS, not only in that
+// fallback: iOS Safari sometimes paints <object> as a blank box *without*
+// triggering fallback, and the whole point of this view is to stop customers
+// seeing a blank screen. A guaranteed working action beats a clever embed.
+function ReportPdfView({ id, vin }: { id: string; vin: string }) {
+  const pdfUrl = `/api/reports/${id}/pdf`;
+
+  return (
+    <div className="flex-1 flex flex-col">
+      <div className="max-w-4xl w-full mx-auto px-4 pt-4 print:hidden">
+        <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="block">
+          <Button className="w-full sm:w-auto bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
+            <ExternalLink className="w-4 h-4" />
+            Open Report PDF
+          </Button>
+        </a>
+        <p className="text-xs text-ch-text-muted mt-2">
+          Trouble viewing the report below? Tap &ldquo;Open Report PDF&rdquo; to view or download it directly.
+        </p>
+      </div>
+
+      <object data={pdfUrl} type="application/pdf" className="w-full flex-1 min-h-[70vh] mt-4">
+        {/* Shown when the browser can't render a PDF inline */}
+        <div className="max-w-md mx-auto px-4 py-12 text-center">
+          <FileText className="w-12 h-12 text-ch-text-muted mx-auto mb-3" />
+          <h2 className="font-semibold text-ch-text mb-1">Your report is ready</h2>
+          <p className="text-sm text-ch-text-secondary mb-5">
+            {vin} — your browser can&apos;t show the PDF inline, but you can open it here.
+          </p>
+          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+            <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
+              <Download className="w-4 h-4" />
+              Open Report PDF
+            </Button>
+          </a>
+        </div>
+      </object>
+    </div>
+  );
 }
 
 
@@ -184,11 +230,18 @@ export default function ReportPage() {
     </div>
   );
 
-  const isClearVin = report.processed_data?.data_source === 'CLEARVIN' && report.processed_data?.clearvin_html;
   const clearvinHtml = report.processed_data?.clearvin_html || '';
+  // Prefer the stored PDF when we have one. Reports generated before the
+  // pdf_data migration (and any where ClearVin's PDF fetch failed) have
+  // has_pdf false and keep the original iframe rendering below — unchanged,
+  // so nothing regresses for historical reports.
+  const hasPdf = report.has_pdf === true;
+  const isClearVin = report.processed_data?.data_source === 'CLEARVIN' && clearvinHtml;
 
-  // ClearVin report — render in iframe to isolate ClearVin's full HTML page
-  if (isClearVin) {
+  // Full-report view. Body is the stored PDF when we have one (self-contained,
+  // no dependency on ClearVin's assets), otherwise the original ClearVin iframe.
+  // Toolbar, photo gallery and disclaimer are shared by both.
+  if (hasPdf || isClearVin) {
     return (
       <div className="min-h-screen bg-ch-bg flex flex-col">
         {/* Toolbar */}
@@ -226,16 +279,21 @@ export default function ReportPage() {
                   <span className="hidden sm:inline text-xs">Share</span>
                 </Button>
               </a>
-              <Button size="sm" variant="outline" onClick={() => window.print()} className="border-ch-border gap-1.5 px-2 sm:px-3">
-                <Printer className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline text-xs">Print</span>
-              </Button>
+              {/* Print only on the iframe path — window.print() can't reach an
+                  embedded <object>'s PDF contents. The browser's own PDF viewer
+                  provides print for the PDF path. */}
+              {!hasPdf && (
+                <Button size="sm" variant="outline" onClick={() => window.print()} className="border-ch-border gap-1.5 px-2 sm:px-3">
+                  <Printer className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline text-xs">Print</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
 
-        {/* ClearVin HTML in iframe */}
-        <ClearVinFrame html={clearvinHtml} />
+        {/* Body: stored PDF when available, otherwise ClearVin's HTML in an iframe */}
+        {hasPdf ? <ReportPdfView id={id} vin={report.vin} /> : <ClearVinFrame html={clearvinHtml} />}
 
         {/* Gallery button - shown below iframe */}
         {clearvinHtml && (() => {

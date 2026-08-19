@@ -9,9 +9,13 @@ export async function GET(
     const { id } = await params;
 
     // Public access — reports are viewable by anyone with the link.
+    // NOTE: selects `pdf_data IS NOT NULL` as a boolean, never pdf_data itself —
+    // the column holds 0.6-2MB of binary per report, and returning it here would
+    // ship that as base64 JSON on every report view.
     const reports = await prisma.$queryRawUnsafe(
       `SELECT id, vin, status, overall_grade, risk_score, grade_label, grade_colour,
-              processed_data, ai_summary, share_token, is_public, completed_at, created_at, user_id
+              processed_data, ai_summary, share_token, is_public, completed_at, created_at, user_id,
+              (pdf_data IS NOT NULL) AS has_pdf
        FROM reports WHERE id = $1 AND status = 'COMPLETED' LIMIT 1`,
       id
     ) as Array<Record<string, unknown>>;
@@ -34,6 +38,7 @@ export async function GET(
       is_public: report.is_public,
       completed_at: report.completed_at,
       created_at: report.created_at,
+      has_pdf: report.has_pdf === true,
     });
   } catch (error) {
     console.error('Report fetch error:', error);
