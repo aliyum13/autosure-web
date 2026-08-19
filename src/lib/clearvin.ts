@@ -121,12 +121,3 @@ export async function clearvinReportPDF(vin: string): Promise<ArrayBuffer | null
   await logApiCall('clearvin', 'report_pdf', true);
   return pdf;
 }
-
-export async function clearvinReportById(reportId: string, format: 'html' | 'pdf' = 'html') {
-  const token = await clearvinGetToken();
-  const res = await fetch(`${CLEARVIN_BASE}/report?reportId=${reportId}&format=${format}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) throw new Error(`ClearVin re-fetch failed: ${res.status}`);
-  return format === 'pdf' ? res.arrayBuffer() : res.text();
-}

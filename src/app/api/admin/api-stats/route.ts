@@ -40,5 +40,14 @@ export async function GET() {
      LIMIT 25`
   );
 
-  return NextResponse.json({ stats, recentErrors });
+  // Recent scheduled-job runs, so it's visible the retention prune is actually
+  // firing rather than just configured.
+  const cronRuns = await prisma.$queryRawUnsafe(
+    `SELECT job, rows_deleted, note, created_at
+     FROM cron_run_log
+     ORDER BY created_at DESC
+     LIMIT 10`
+  );
+
+  return NextResponse.json({ stats, recentErrors, cronRuns });
 }
