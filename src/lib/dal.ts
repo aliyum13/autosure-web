@@ -34,9 +34,6 @@ function getAdminEmails(): string[] {
 export const verifyAdminSession = cache(async (): Promise<SessionPayload> => {
   const session = await verifySession();
   const adminEmails = getAdminEmails();
-  if (process.env.VERCEL_ENV !== 'production') {
-    console.log('[admin] DEBUG session.email =', JSON.stringify(session.email), '| ADMIN_EMAILS raw =', JSON.stringify(process.env.ADMIN_EMAILS), '| parsed =', JSON.stringify(adminEmails));
-  }
   if (!adminEmails.includes(session.email.toLowerCase())) {
     redirect('/');
   }

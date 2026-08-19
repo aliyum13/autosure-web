@@ -36,7 +36,7 @@ export interface ProcessedData {
 export interface Report {
   id: string;
   vin: string;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'INVALID_VIN';
   overall_grade: string;
   risk_score: number;
   grade_label: string;
