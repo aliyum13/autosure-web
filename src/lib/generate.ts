@@ -107,7 +107,15 @@ export async function generateReportAndEmail(
     // testing: one such VIN caused ~100 repeat ClearVin calls (triggering
     // ClearVin's own rate limit) and ~100 duplicate admin alerts before hitting
     // the recovery tool's client-side safety cap. See migrations/004.
-    const isPermanentlyInvalid = /is not valid/i.test(clearvinHtmlError || '');
+    // ClearVin words this rejection differently per endpoint — the report
+    // endpoint returns "Vin ... is not valid" while the preview endpoint
+    // returns "Vin ... is invalid" (both observed in api_call_log for the same
+    // VIN). Matching only one phrasing meant the recovery-loop protection
+    // depended on the two endpoints happening to disagree: if the report
+    // endpoint ever used the preview's wording, the report would be marked
+    // FAILED instead of INVALID_VIN and the admin recovery tool would retry it
+    // forever — the exact loop migration 004 exists to prevent.
+    const isPermanentlyInvalid = /\bis\s+(?:not\s+valid|invalid)\b/i.test(clearvinHtmlError || '');
     const status = isPermanentlyInvalid ? 'INVALID_VIN' : 'FAILED';
     console.error(`[generate] ClearVin returned nothing for`, vin, `— marking ${status}`);
     await prisma.$executeRawUnsafe(

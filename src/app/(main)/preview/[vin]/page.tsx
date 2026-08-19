@@ -205,11 +205,14 @@ export default function PreviewPage() {
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
             <span className="text-lg shrink-0">⚠️</span>
             <div>
-              <p className="text-sm font-semibold text-amber-800 mb-1">Limited history data for this VIN</p>
+              <p className="text-sm font-semibold text-amber-800 mb-1">
+                Limited data — a full report may be unavailable for this VIN
+              </p>
               <p className="text-xs text-amber-700 leading-relaxed">
-                Our primary database has limited records for this specific VIN. You&apos;ll receive verified vehicle
-                specifications and any open safety recalls, but detailed accident, title, and auction history may
-                not be available. Please double-check the VIN is entered correctly before purchasing.
+                Our main vehicle-history database returned no records for this VIN, so the details shown above come
+                from a basic VIN decode only. A full history report may be incomplete for this vehicle — and in some
+                cases cannot be generated at all. Please double-check the VIN matches your vehicle exactly before
+                purchasing.
               </p>
             </div>
           </div>
