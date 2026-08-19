@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Shield } from 'lucide-react';
+import Cookies from 'js-cookie';
+import { Menu, X, Shield, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -15,9 +16,28 @@ const navLinks = [
   { href: 'https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t', label: 'Support', external: true },
 ];
 
+// `carhaki_authed` is the non-httpOnly UI-hint cookie set alongside the real
+// httpOnly session (see lib/session.ts). It only decides which link to render —
+// /dashboard is independently gated server-side by verifySession(), so a spoofed
+// cookie just produces a link that bounces the visitor to /login.
+//
+// Read through useSyncExternalStore rather than useEffect + useState because
+// document.cookie is external mutable state: the server snapshot pins SSR to the
+// logged-out markup (no hydration mismatch), and the snapshot is re-read on
+// every render — including the re-render usePathname() triggers on navigation,
+// which is what makes login and logout reflect without a hard reload.
+// Module-level so the references stay stable across renders.
+const subscribeToAuthCookie = () => () => {};
+const getAuthedSnapshot = () => Cookies.get('carhaki_authed') === '1';
+const getAuthedServerSnapshot = () => false;
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const authed = useSyncExternalStore(subscribeToAuthCookie, getAuthedSnapshot, getAuthedServerSnapshot);
+
+  const accountHref = authed ? '/dashboard' : '/login';
+  const accountLabel = authed ? 'My Account' : 'Sign In';
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-ch-border/60 shadow-soft">
@@ -52,8 +72,14 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center">
+          {/* Desktop account + CTA */}
+          <div className="hidden md:flex items-center gap-5">
+            <Link href={accountHref}
+              className={cn('text-sm font-medium transition-colors inline-flex items-center gap-1.5',
+                pathname === accountHref ? 'text-ch-blue' : 'text-ch-text-secondary hover:text-ch-blue')}>
+              {authed && <User className="w-4 h-4" />}
+              {accountLabel}
+            </Link>
             <Link href="/">
               <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check a Car</Button>
             </Link>
@@ -84,6 +110,12 @@ export default function Navbar() {
               </Link>
             )
           ))}
+          <Link href={accountHref}
+            className="flex items-center gap-1.5 text-sm font-medium text-ch-text-secondary hover:text-ch-blue py-2"
+            onClick={() => setMobileOpen(false)}>
+            {authed && <User className="w-4 h-4" />}
+            {accountLabel}
+          </Link>
           <div className="pt-2">
             <Link href="/" onClick={() => setMobileOpen(false)}>
               <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Check a Car</Button>
