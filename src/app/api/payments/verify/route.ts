@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
+import { logApiCall } from '@/lib/apiLog';
 
 export const maxDuration = 60;
 
@@ -36,8 +37,12 @@ export async function GET(req: NextRequest) {
     const psData = await psRes.json();
 
     if (!psData.status || psData.data?.status !== 'success') {
+      // Not necessarily an API failure — an unpaid/abandoned transaction also
+      // lands here. Logged as a failed verify only when Paystack itself errored.
+      await logApiCall('paystack', 'verify', psRes.ok, psRes.ok ? null : (psData.message || `HTTP ${psRes.status}`));
       return NextResponse.json({ status: 'failed', message: 'Payment not confirmed by Paystack' });
     }
+    await logApiCall('paystack', 'verify', true);
 
     await prisma.$executeRawUnsafe(
       `UPDATE orders SET payment_status = 'SUCCESS', paid_at = NOW(), updated_at = NOW() WHERE paystack_reference = $1`,

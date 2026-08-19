@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
+import { logApiCall } from '@/lib/apiLog';
 
 export const maxDuration = 60;
 
@@ -15,8 +16,13 @@ export async function POST(req: NextRequest) {
     const hash = crypto.createHmac('sha512', PAYSTACK_SECRET).update(rawBody).digest('hex');
 
     if (hash !== signature) {
+      // Worth surfacing in monitoring: repeated failures mean either a spoofing
+      // attempt or a PAYSTACK_SECRET_KEY mismatch silently dropping real
+      // payment notifications.
+      await logApiCall('paystack', 'webhook_signature', false, 'signature mismatch');
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
+    await logApiCall('paystack', 'webhook_signature', true);
 
     const event = JSON.parse(rawBody);
 

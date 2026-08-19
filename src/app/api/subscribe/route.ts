@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendTrackedEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     // Add to Resend audience (creates contact for email marketing)
     // Also send a welcome email
-    await resend.emails.send({
+    await sendTrackedEmail('send_subscribe_welcome', {
       from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
       to: email,
       subject: 'You\'re on the CarHaki Insights list 🚗',
@@ -37,7 +35,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Notify admin
-    await resend.emails.send({
+    await sendTrackedEmail('send_admin_alert', {
       from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
       to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
       subject: `New Insights subscriber: ${email}`,

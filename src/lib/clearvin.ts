@@ -1,3 +1,5 @@
+import { logApiCall } from '@/lib/apiLog';
+
 const CLEARVIN_BASE = 'https://www.clearvin.com/rest/vendor';
 
 let prodTokenCache: { token: string; expiresAt: number } | null = null;
@@ -16,6 +18,8 @@ export async function clearvinGetToken(): Promise<string> {
   const password = process.env.CLEARVIN_PASSWORD;
   if (!email || !password) throw new Error('ClearVin production credentials not configured');
 
+  // Only logged past the cache check above — a cache hit makes no HTTP call, and
+  // logging those would swamp the table with entries for calls that never happened.
   const res = await fetch(`${CLEARVIN_BASE}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -24,8 +28,10 @@ export async function clearvinGetToken(): Promise<string> {
 
   const data = await res.json();
   if (data.status !== 'ok' || !data.token) {
+    await logApiCall('clearvin', 'login', false, data.message || 'ClearVin login failed');
     throw new Error(data.message || 'ClearVin login failed');
   }
+  await logApiCall('clearvin', 'login', true);
 
   prodTokenCache = { token: data.token, expiresAt: now + 110 * 60 * 1000 };
   return data.token;
@@ -38,7 +44,11 @@ export async function clearvinPreview(vin: string) {
     next: { revalidate: 3600 },
   });
   const data = await res.json();
-  if (data.status !== 'ok') throw new Error(data.message || 'ClearVin preview failed');
+  if (data.status !== 'ok') {
+    await logApiCall('clearvin', 'preview', false, data.message || 'ClearVin preview failed');
+    throw new Error(data.message || 'ClearVin preview failed');
+  }
+  await logApiCall('clearvin', 'preview', true);
   return data.result;
 }
 
@@ -63,6 +73,7 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
   if (!res.ok) {
     let msg = `ClearVin HTML failed: ${res.status}`;
     try { msg = (JSON.parse(raw)?.message) || msg; } catch {}
+    await logApiCall('clearvin', 'report_html', false, msg);
     throw new Error(msg);
   }
 
@@ -84,10 +95,12 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
   const textContent = (html || '').replace(/<[^>]*>/g, '').replace(/\s/g, '');
   if (textContent.length < 100) {
     console.warn('[clearvin] Empty report — text length:', textContent.length, '| raw length:', raw.length);
+    await logApiCall('clearvin', 'report_html', false, 'ClearVin returned an empty report');
     throw new Error('ClearVin returned an empty report');
   }
 
   console.log('[clearvin] HTML OK — raw:', raw.length, '| text:', textContent.length);
+  await logApiCall('clearvin', 'report_html', true);
   return html;
 }
 
@@ -100,10 +113,12 @@ export async function clearvinReportPDF(vin: string): Promise<ArrayBuffer | null
   });
   if (!res.ok) {
     console.warn('[clearvin] PDF fetch failed:', res.status);
+    await logApiCall('clearvin', 'report_pdf', false, `PDF fetch failed: ${res.status}`);
     return null;
   }
   const pdf = await res.arrayBuffer();
   console.log('[clearvin] PDF size:', pdf?.byteLength);
+  await logApiCall('clearvin', 'report_pdf', true);
   return pdf;
 }
 
