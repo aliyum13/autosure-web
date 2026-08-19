@@ -58,11 +58,13 @@ export async function generateReportAndEmail(
   // No retry: a client-side timeout doesn't mean the request failed on ClearVin's end —
   // retrying risks generating (and paying for) a second report for the same VIN.
   let clearvinHtml: string | null = null;
+  let clearvinHtmlError: string | null = null;
   try {
     clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, 'ClearVin HTML');
     console.log('[generate] ClearVin HTML OK');
   } catch (e) {
-    console.warn('[generate] ClearVin HTML failed:', (e as Error).message);
+    clearvinHtmlError = (e as Error).message;
+    console.warn('[generate] ClearVin HTML failed:', clearvinHtmlError);
   }
 
   // ClearVin PDF (the real deliverable) — tight 15s timeout.
@@ -82,10 +84,21 @@ export async function generateReportAndEmail(
 
   // If ClearVin returned nothing at all, don't deliver an empty report — flag for retry.
   if (!clearvinHtml && !pdfBuffer) {
-    console.error('[generate] ClearVin returned nothing for', vin, '— marking FAILED');
+    // ClearVin permanently rejects some VINs ("Vin ... is not valid") — distinct
+    // from a transient failure (timeout, rate limit, momentary empty response).
+    // A permanent rejection must NOT stay 'FAILED': the admin recovery tool
+    // retries everything WHERE status IN ('PROCESSING','FAILED') forever, and a
+    // VIN that can never succeed would loop indefinitely. Confirmed by real
+    // testing: one such VIN caused ~100 repeat ClearVin calls (triggering
+    // ClearVin's own rate limit) and ~100 duplicate admin alerts before hitting
+    // the recovery tool's client-side safety cap. See migrations/004.
+    const isPermanentlyInvalid = /is not valid/i.test(clearvinHtmlError || '');
+    const status = isPermanentlyInvalid ? 'INVALID_VIN' : 'FAILED';
+    console.error(`[generate] ClearVin returned nothing for`, vin, `— marking ${status}`);
     await prisma.$executeRawUnsafe(
-      `UPDATE reports SET status='FAILED', processed_data=$1::jsonb, updated_at=NOW() WHERE id=$2`,
-      JSON.stringify({ data_source: 'FAILED', vehicle: { vin, make, model, year }, needs_retry: true }),
+      `UPDATE reports SET status=$1::report_status, processed_data=$2::jsonb, updated_at=NOW() WHERE id=$3`,
+      status,
+      JSON.stringify({ data_source: status, vehicle: { vin, make, model, year }, needs_retry: !isPermanentlyInvalid, clearvin_error: clearvinHtmlError }),
       reportId
     );
     try {
@@ -94,8 +107,10 @@ export async function generateReportAndEmail(
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
         to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
-        subject: `ClearVin returned nothing for ${vin} — needs retry`,
-        html: `<p>No HTML and no PDF from ClearVin for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).</p>`,
+        subject: isPermanentlyInvalid
+          ? `ClearVin rejects VIN ${vin} as invalid — not retryable`
+          : `ClearVin returned nothing for ${vin} — needs retry`,
+        html: `<p>No HTML and no PDF from ClearVin for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).${isPermanentlyInvalid ? ' ClearVin says this VIN is invalid — no further automatic retries will happen.' : ''}</p>`,
       });
     } catch (e) { console.error('[generate] admin notify failed:', e); }
     return;

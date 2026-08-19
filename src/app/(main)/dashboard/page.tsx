@@ -53,6 +53,9 @@ function StatusBadge({ status }: { status: string | null }) {
   if (status === 'FAILED') {
     return <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Failed</span>;
   }
+  if (status === 'INVALID_VIN') {
+    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Invalid VIN</span>;
+  }
   return null;
 }
 
