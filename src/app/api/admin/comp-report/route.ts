@@ -21,21 +21,27 @@ export async function POST(req: NextRequest) {
   const upperVin = vin?.trim().toUpperCase();
   const email = guest_email?.trim().toLowerCase();
 
+  // Every rejection below is logged. Previously a 400 returned to the client with
+  // no server-side trace, so an admin reporting "it failed" left nothing to
+  // diagnose after the fact — the reason had to be inferred from surrounding
+  // request timing.
+  const reject = (why: string, message: string) => {
+    console.warn('[comp-report] REJECTED', why, '| admin:', adminEmail, '| vin:', upperVin || '(none)', '| email:', email || '(none)');
+    return NextResponse.json({ error: message }, { status: 400 });
+  };
+
   const vinCheck = validateVIN(upperVin || '');
   if (!vinCheck.valid) {
-    return NextResponse.json({ error: vinCheck.reason || 'Invalid VIN.' }, { status: 400 });
+    return reject('invalid_vin_format', vinCheck.reason || 'Invalid VIN.');
   }
   if (!guest_name?.trim()) {
-    return NextResponse.json({ error: 'Customer name is required.' }, { status: 400 });
+    return reject('missing_name', 'Customer name is required.');
   }
   if (!email || !email.includes('@')) {
-    return NextResponse.json({ error: 'Valid customer email is required.' }, { status: 400 });
+    return reject('missing_or_invalid_email', 'Valid customer email is required.');
   }
   if (!linked_order_id?.trim() && !reason?.trim()) {
-    return NextResponse.json(
-      { error: 'Either a linked prior order or an explicit reason is required.' },
-      { status: 400 }
-    );
+    return reject('no_linked_order_and_no_reason', 'Either a linked prior order or an explicit reason is required.');
   }
 
   // If a prior order is claimed, verify it's real: belongs to this email and was actually paid.
@@ -45,9 +51,9 @@ export async function POST(req: NextRequest) {
       linked_order_id.trim(), email
     ) as Array<{ id: string }>;
     if (!priorOrder.length) {
-      return NextResponse.json(
-        { error: 'Linked order not found for this email, or was not a successful paid order.' },
-        { status: 400 }
+      return reject(
+        `linked_order_not_found (${linked_order_id.trim()})`,
+        'Linked order not found for this email, or was not a successful paid order.'
       );
     }
   }
@@ -77,13 +83,32 @@ export async function POST(req: NextRequest) {
   );
 
   console.log('[comp-report]', adminEmail, 'issued free report for VIN:', upperVin, '| email:', email, '| linked_order:', linked_order_id || '(none — reason logged)');
-  await generateReportAndEmail(reportId, upperVin, guest_name.trim(), email);
+  const outcome = await generateReportAndEmail(reportId, upperVin, guest_name.trim(), email);
+
+  // Report the real outcome. generateReportAndEmail records failures on the
+  // report row rather than throwing, so this route previously returned
+  // "Free report generated and sent." even when ClearVin rejected the VIN and
+  // the customer received nothing — telling support a case was resolved when
+  // it wasn't. The comp_report_log entry above is intentionally kept either
+  // way: it records that the comp was authorised, which is the audit point.
+  if (outcome !== 'delivered' && outcome !== 'skipped_duplicate') {
+    console.error('[comp-report] generation failed (', outcome, ') — nothing sent for report:', reportId);
+    return NextResponse.json({
+      error: outcome === 'invalid_vin'
+        ? `Our data provider rejected this VIN as invalid — no report was generated and nothing was sent to the customer. Report ${reportId} is marked INVALID_VIN. Double-check the VIN before retrying.`
+        : `Report generation failed — nothing was sent to the customer. Report ${reportId} is marked FAILED and can be retried.`,
+      report_id: reportId,
+      status: outcome,
+    }, { status: 502 });
+  }
+
   console.log('[comp-report] complete:', reportId);
 
   return NextResponse.json({
     order_id: orderId,
     comp: true,
     report_id: reportId,
+    status: outcome,
     message: 'Free report generated and sent.',
     amount_ngn: 0,
   });

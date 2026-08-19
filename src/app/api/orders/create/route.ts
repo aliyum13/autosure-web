@@ -62,7 +62,35 @@ export async function POST(req: NextRequest) {
 
           const remaining = (credit.credits_total - credit.credits_used - 1);
           console.log('[credit] Used 1 credit for', emailLower, '| VIN:', upperVin, '| remaining:', remaining);
-          await generateReportAndEmail(reportId, upperVin, name.trim(), emailLower);
+          const outcome = await generateReportAndEmail(reportId, upperVin, name.trim(), emailLower);
+
+          // Only claim success if a report actually exists. generateReportAndEmail
+          // records failures on the report row instead of throwing, so before this
+          // check the customer was told "report generated" and charged a credit
+          // even when ClearVin rejected the VIN and nothing was ever delivered.
+          if (outcome !== 'delivered' && outcome !== 'skipped_duplicate') {
+            // Refund the credit we consumed a few lines above. Scoped to the same
+            // credit.id, guarded against going negative, and safe under concurrency:
+            // another request's increment is independent, so decrementing by one
+            // reverses only our own consumption.
+            await prisma.$executeRawUnsafe(
+              `UPDATE report_credits SET credits_used = credits_used - 1, updated_at = NOW()
+               WHERE id = $1 AND credits_used > 0`,
+              credit.id
+            );
+            console.error('[credit] Generation failed (', outcome, ') — refunded credit', credit.id, 'for', emailLower, '| report:', reportId);
+
+            // The order and report rows are intentionally left in place: reports.status
+            // already records the failure and is the audit trail.
+            return NextResponse.json({
+              error: outcome === 'invalid_vin'
+                ? 'We could not generate a report for this VIN — our data provider does not recognise it. Your credit has not been used, so please double-check the VIN and try again.'
+                : 'We could not generate your report just now. Your credit has not been used — please try again in a few minutes, or contact support.',
+              report_id: reportId,
+              status: outcome,
+            }, { status: 502 });
+          }
+
           console.log('[credit] Report complete:', reportId);
 
           return NextResponse.json({

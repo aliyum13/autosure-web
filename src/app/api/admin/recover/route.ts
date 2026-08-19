@@ -51,8 +51,21 @@ export async function POST() {
   );
 
   try {
-    await generateReportAndEmail(job.report_id, job.vin, job.guest_name, job.guest_email);
-    result = { report_id: job.report_id, vin: job.vin, email: job.guest_email, ok: true };
+    // generateReportAndEmail records failures on the report row instead of
+    // throwing, so `ok` must come from the returned outcome — not merely from
+    // the absence of an exception, which previously reported a silently-failed
+    // recovery as a success in the run log.
+    const outcome = await generateReportAndEmail(job.report_id, job.vin, job.guest_name, job.guest_email);
+    const delivered = outcome === 'delivered' || outcome === 'skipped_duplicate';
+    result = {
+      report_id: job.report_id, vin: job.vin, email: job.guest_email,
+      ok: delivered,
+      ...(delivered ? {} : {
+        error: outcome === 'invalid_vin'
+          ? 'ClearVin rejects this VIN as invalid — marked INVALID_VIN, will not be retried'
+          : 'generation failed — nothing delivered',
+      }),
+    };
   } catch (e) {
     result = { report_id: job.report_id, vin: job.vin, email: job.guest_email, ok: false, error: (e as Error).message };
   }
