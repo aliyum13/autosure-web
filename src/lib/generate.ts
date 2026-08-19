@@ -107,9 +107,9 @@ export async function generateReportAndEmail(
 
   await prisma.$executeRawUnsafe(
     `UPDATE reports SET status='COMPLETED', overall_grade=$1, risk_score=$2,
-       grade_colour=$3, processed_data=$4::jsonb, completed_at=NOW(), updated_at=NOW()
-     WHERE id=$5`,
-    grade, score, colour, JSON.stringify(processedData), reportId
+       grade_colour=$3, processed_data=$4::jsonb, pdf_data=$5, completed_at=NOW(), updated_at=NOW()
+     WHERE id=$6`,
+    grade, score, colour, JSON.stringify(processedData), pdfBuffer ? Buffer.from(pdfBuffer) : null, reportId
   );
   // Set grade_label separately (proven to fail when combined in the write above)
   try {
