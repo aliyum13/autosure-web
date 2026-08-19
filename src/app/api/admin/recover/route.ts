@@ -1,16 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
+import { isAdminSession } from '@/lib/dal';
 
 export const maxDuration = 60;
 
 // One-at-a-time recovery of stuck paid reports.
-// Auth: x-admin-key header. Processes a small batch per call to stay under the
-// function time limit — call repeatedly until "remaining" is 0.
-export async function POST(req: NextRequest) {
-  const key = req.headers.get('x-admin-key');
-  const validKey = process.env.NEXT_PUBLIC_ADMIN_PW || 'carhaki2026';
-  if (key !== validKey) {
+// Auth: admin session cookie (ADMIN_EMAILS allowlist). Processes a small
+// batch per call to stay under the function time limit — call repeatedly
+// until "remaining" is 0.
+export async function POST() {
+  if (!(await isAdminSession())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

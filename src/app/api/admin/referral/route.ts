@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { isAdminSession } from '@/lib/dal';
 
-function isAuthorized(req: NextRequest) {
-  const key = req.headers.get('x-admin-key');
-  const validKey = process.env.NEXT_PUBLIC_ADMIN_PW || 'carhaki2026';
-  return key === validKey;
-}
-
-export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function GET() {
+  if (!(await isAdminSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const codes = await prisma.$queryRawUnsafe(`
       SELECT 
@@ -36,7 +31,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!(await isAdminSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { code, name, email, phone } = await req.json();
     if (!code || !name) return NextResponse.json({ error: 'Code and name required' }, { status: 400 });
@@ -61,7 +56,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!isAuthorized(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!(await isAdminSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const { id } = await req.json();
     await prisma.$executeRawUnsafe(

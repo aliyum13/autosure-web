@@ -20,3 +20,30 @@ export const verifySession = cache(async (): Promise<SessionPayload> => {
   }
   return session;
 });
+
+function getAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+// Admin gate — same OTP/session system as customer accounts, no separate
+// password. Redirects to /login if unauthenticated; redirects home if
+// authenticated but not on the ADMIN_EMAILS allowlist.
+export const verifyAdminSession = cache(async (): Promise<SessionPayload> => {
+  const session = await verifySession();
+  const adminEmails = getAdminEmails();
+  if (!adminEmails.includes(session.email.toLowerCase())) {
+    redirect('/');
+  }
+  return session;
+});
+
+// Non-redirecting variant for API routes, which should return 401/403
+// JSON instead of a redirect.
+export const isAdminSession = cache(async (): Promise<boolean> => {
+  const session = await getSessionPayload();
+  if (!session?.userId) return false;
+  return getAdminEmails().includes(session.email.toLowerCase());
+});
