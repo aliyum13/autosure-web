@@ -39,24 +39,40 @@ function rateClass(errors: number, calls: number): string {
   return 'text-red-700 font-semibold';
 }
 
+interface CronRun {
+  job: string;
+  rows_deleted: number;
+  note: string | null;
+  created_at: string;
+}
+
 export default function ApiStatsPanel() {
   const [stats, setStats] = useState<StatRow[]>([]);
   const [errors, setErrors] = useState<ErrorRow[]>([]);
+  const [cronRuns, setCronRuns] = useState<CronRun[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = () => {
-    setLoading(true);
+  // State is only set from async callbacks here, never synchronously in the
+  // effect body below — `loading` already starts true, so the initial render
+  // shows the spinner without an extra synchronous set.
+  const fetchStats = () =>
     fetch('/api/admin/api-stats')
       .then((r) => r.json())
       .then((data) => {
         setStats(data.stats || []);
         setErrors(data.recentErrors || []);
+        setCronRuns(data.cronRuns || []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
+
+  // Refresh button — unlike the initial load, this does want the spinner back.
+  const load = () => {
+    setLoading(true);
+    fetchStats();
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { fetchStats(); }, []);
 
   // Group by service so each provider reads as its own block.
   const services = Array.from(new Set(stats.map((s) => s.service)));
@@ -115,6 +131,26 @@ export default function ApiStatsPanel() {
           ))}
         </div>
       )}
+
+      <div className="mt-6 pt-4 border-t border-ch-border">
+        <h3 className="text-sm font-semibold text-ch-text mb-2">Log retention (auto-prune, daily)</h3>
+        {cronRuns.length === 0 ? (
+          <p className="text-xs text-ch-text-muted">
+            No prune runs recorded yet. Runs daily at 03:17 UTC and deletes call-log rows older than 90 days.
+          </p>
+        ) : (
+          <div className="max-h-40 overflow-y-auto space-y-1">
+            {cronRuns.map((c, i) => (
+              <div key={i} className={`text-xs rounded p-2 ${c.note?.startsWith('FAILED') ? 'bg-red-50' : 'bg-slate-50'}`}>
+                <span className="font-mono">{c.job}</span>
+                <span className="text-ch-text-secondary"> — {c.rows_deleted} row{c.rows_deleted === 1 ? '' : 's'} deleted</span>
+                {c.note && <span className={c.note.startsWith('FAILED') ? 'text-red-800' : 'text-ch-amber'}> · {c.note}</span>}
+                <span className="text-ch-text-muted"> · {new Date(c.created_at).toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="mt-6 pt-4 border-t border-ch-border">
         <h3 className="text-sm font-semibold text-ch-text mb-2">Recent failures ({errors.length})</h3>
