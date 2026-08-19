@@ -3,11 +3,8 @@ import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
 import { generateReportAndEmail } from '@/lib/generate';
 
-// Comp and bundle-credit paths run report generation inline — needs the full 60s.
+// Bundle-credit path runs report generation inline — needs the full 60s.
 export const maxDuration = 60;
-
-// Internal 100%-off code for customer-service / comp reports. Not shown publicly.
-const COMP_CODE = 'CH-COMP-9X4K';
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,39 +21,6 @@ export async function POST(req: NextRequest) {
     if (!email?.trim() || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email address is required.' }, { status: 400 });
     }
-
-    // ---- Internal comp code: skip payment, generate report for free ----
-    if (ref_code && ref_code.toUpperCase().trim() === COMP_CODE) {
-      const reference = `CH-COMP-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      const id = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
-      await prisma.$executeRawUnsafe(`
-        INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, payment_status,
-                           guest_name, guest_email, guest_phone, paid_at, created_at, updated_at)
-        VALUES ($1, NULL, $2, 0, $3, 'SUCCESS', $4, $5, $6, NOW(), NOW(), NOW())
-      `, id, upperVin, reference, name.trim(), email.trim().toLowerCase(), phone?.trim() || null);
-
-      const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-      const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-      await prisma.$executeRawUnsafe(
-        `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
-         VALUES ($1, $2, NULL, $3, 'PROCESSING', $4, false, NOW(), NOW())`,
-        reportId, id, upperVin, shareToken
-      );
-
-      console.log('[comp] Free report via CH-COMP for VIN:', upperVin, '| email:', email.trim());
-      await generateReportAndEmail(reportId, upperVin, name.trim(), email.trim().toLowerCase());
-      console.log('[comp] Free report complete:', reportId);
-
-      return NextResponse.json({
-        order_id: id,
-        comp: true,
-        report_id: reportId,
-        message: 'Free report generated and sent.',
-        amount_ngn: 0,
-      });
-    }
-    // ---- End comp code ----
 
     // ---- Bundle credit: if this email has an unused credit, use it instead of charging ----
     if (email?.trim()) {
