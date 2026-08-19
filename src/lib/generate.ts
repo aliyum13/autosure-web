@@ -96,7 +96,7 @@ export async function generateReportAndEmail(
     const status = isPermanentlyInvalid ? 'INVALID_VIN' : 'FAILED';
     console.error(`[generate] ClearVin returned nothing for`, vin, `— marking ${status}`);
     await prisma.$executeRawUnsafe(
-      `UPDATE reports SET status=$1, processed_data=$2::jsonb, updated_at=NOW() WHERE id=$3`,
+      `UPDATE reports SET status=$1::report_status, processed_data=$2::jsonb, updated_at=NOW() WHERE id=$3`,
       status,
       JSON.stringify({ data_source: status, vehicle: { vin, make, model, year }, needs_retry: !isPermanentlyInvalid, clearvin_error: clearvinHtmlError }),
       reportId
