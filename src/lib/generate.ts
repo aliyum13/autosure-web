@@ -9,12 +9,27 @@ const withTimeout = <T>(p: Promise<T>, ms: number, label: string): Promise<T> =>
     new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`${label} timeout`)), ms)),
   ]);
 
+/**
+ * Outcome of a generation attempt.
+ *
+ * This function deliberately does NOT throw when ClearVin returns nothing — it
+ * records the failure on the report row and alerts admin. That means callers
+ * cannot infer success from the absence of an exception, which is exactly the
+ * bug this return type fixes: `/api/admin/comp-report` and the credit branch of
+ * `/api/orders/create` were both reporting "generated and sent" for reports
+ * that were marked INVALID_VIN and never delivered.
+ *
+ * `skipped_duplicate` means the idempotency guard fired — a completed report
+ * already exists, so callers should treat it as delivered.
+ */
+export type GenerateOutcome = 'delivered' | 'invalid_vin' | 'failed' | 'skipped_duplicate';
+
 export async function generateReportAndEmail(
   reportId: string,
   vin: string,
   guestName?: string,
   guestEmail?: string
-) {
+): Promise<GenerateOutcome> {
   console.log('[generate] START', { reportId, vin, guestEmail });
 
   // Guard: if this report already completed with real ClearVin data, don't regenerate.
@@ -28,7 +43,7 @@ export async function generateReportAndEmail(
     const row = existing[0];
     if (row && row.status === 'COMPLETED' && (row.source === 'CLEARVIN' || row.source === 'CLEARVIN_PDF')) {
       console.log('[generate] Report already COMPLETED with real ClearVin data — skipping regeneration');
-      return;
+      return 'skipped_duplicate';
     }
   } catch (e) { console.warn('[generate] idempotency check failed, proceeding:', e); }
 
@@ -92,7 +107,15 @@ export async function generateReportAndEmail(
     // testing: one such VIN caused ~100 repeat ClearVin calls (triggering
     // ClearVin's own rate limit) and ~100 duplicate admin alerts before hitting
     // the recovery tool's client-side safety cap. See migrations/004.
-    const isPermanentlyInvalid = /is not valid/i.test(clearvinHtmlError || '');
+    // ClearVin words this rejection differently per endpoint — the report
+    // endpoint returns "Vin ... is not valid" while the preview endpoint
+    // returns "Vin ... is invalid" (both observed in api_call_log for the same
+    // VIN). Matching only one phrasing meant the recovery-loop protection
+    // depended on the two endpoints happening to disagree: if the report
+    // endpoint ever used the preview's wording, the report would be marked
+    // FAILED instead of INVALID_VIN and the admin recovery tool would retry it
+    // forever — the exact loop migration 004 exists to prevent.
+    const isPermanentlyInvalid = /\bis\s+(?:not\s+valid|invalid)\b/i.test(clearvinHtmlError || '');
     const status = isPermanentlyInvalid ? 'INVALID_VIN' : 'FAILED';
     console.error(`[generate] ClearVin returned nothing for`, vin, `— marking ${status}`);
     await prisma.$executeRawUnsafe(
@@ -111,7 +134,7 @@ export async function generateReportAndEmail(
         html: `<p>No HTML and no PDF from ClearVin for VIN <strong>${vin}</strong> (report ${reportId}, customer ${guestEmail}).${isPermanentlyInvalid ? ' ClearVin says this VIN is invalid — no further automatic retries will happen.' : ''}</p>`,
       });
     } catch (e) { console.error('[generate] admin notify failed:', e); }
-    return;
+    return isPermanentlyInvalid ? 'invalid_vin' : 'failed';
   }
 
   const processedData = clearvinHtml
@@ -161,4 +184,10 @@ export async function generateReportAndEmail(
       console.error('[generate] Email failed (report still completed):', e);
     }
   }
+
+  // 'delivered' means the report exists and is viewable at /reports/[id]. A
+  // suppressed or failed email doesn't change that — those paths alert admin
+  // separately and the report is still retrievable, so callers shouldn't
+  // refund a credit or report outright failure for them.
+  return 'delivered';
 }
