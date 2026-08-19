@@ -1,6 +1,32 @@
 import { Resend } from 'resend';
+import { logApiCall } from '@/lib/apiLog';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+type SendPayload = Parameters<typeof resend.emails.send>[0];
+
+/**
+ * Wraps resend.emails.send() with call logging.
+ *
+ * Note: the Resend SDK resolves with { data, error } instead of throwing on an
+ * API-level failure, so a caller that only checks for exceptions treats a
+ * failed send as a success. This checks `error` explicitly so the log reflects
+ * what actually happened.
+ */
+export async function sendTrackedEmail(operation: string, payload: SendPayload) {
+  try {
+    const result = await resend.emails.send(payload);
+    if (result.error) {
+      await logApiCall('resend', operation, false, JSON.stringify(result.error));
+    } else {
+      await logApiCall('resend', operation, true);
+    }
+    return result;
+  } catch (e) {
+    await logApiCall('resend', operation, false, (e as Error).message);
+    throw e;
+  }
+}
 
 export async function sendReportReadyEmail({
   to,
@@ -40,7 +66,7 @@ export async function sendReportReadyEmail({
       <p style="margin:8px 0 0;font-size:13px;color:#16a34a;">Open the attachment to see the complete ClearVin vehicle history</p>
     </div>` : '';
 
-  const result = await resend.emails.send({
+  const result = await sendTrackedEmail('send_report_ready', {
     from: fromAddr,
     to,
     subject: `Your CarHaki Report is Ready — ${carName} (${vin})`,
@@ -116,7 +142,7 @@ export async function sendReportReadyEmail({
 export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
   const fromAddr = process.env.RESEND_FROM_EMAIL || 'CarHaki <onboarding@resend.dev>';
 
-  return resend.emails.send({
+  return sendTrackedEmail('send_otp', {
     from: fromAddr,
     to,
     subject: `${code} is your CarHaki login code`,
@@ -184,9 +210,10 @@ export async function sendAnalysisEmail({
   const firstName = name?.split(' ')[0] || 'there';
   const fromAddr = process.env.RESEND_FROM_EMAIL || 'CarHaki <onboarding@resend.dev>';
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
-
-  return resend.emails.send({
+  // NOTE: this function currently has zero callers — kept, but routed through
+  // the tracked wrapper anyway so the "every Resend send is logged" invariant
+  // holds if it's ever wired up.
+  return sendTrackedEmail('send_analysis', {
     from: fromAddr,
     to,
     subject: `🤖 CarHaki Analysis — ${carName} (${vin})`,

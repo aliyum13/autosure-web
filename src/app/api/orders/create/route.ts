@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
 import { generateReportAndEmail } from '@/lib/generate';
+import { logApiCall } from '@/lib/apiLog';
 
 // Bundle-credit path runs report generation inline — needs the full 60s.
 export const maxDuration = 60;
@@ -120,8 +121,10 @@ export async function POST(req: NextRequest) {
 
     const paystackData = await paystackRes.json();
     if (!paystackData.status || !paystackData.data?.authorization_url) {
+      await logApiCall('paystack', 'initialize', false, paystackData.message || 'no authorization_url returned');
       return NextResponse.json({ error: 'Could not initiate payment.' }, { status: 502 });
     }
+    await logApiCall('paystack', 'initialize', true);
 
     const id = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     await prisma.$executeRawUnsafe(`

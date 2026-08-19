@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 import { clearvinReportHTML, clearvinReportPDF } from '@/lib/clearvin';
-import { sendReportReadyEmail } from '@/lib/email';
+import { sendReportReadyEmail, sendTrackedEmail } from '@/lib/email';
 import { isEmailSuppressed } from '@/lib/suppression';
 
 const withTimeout = <T>(p: Promise<T>, ms: number, label: string): Promise<T> =>
@@ -102,9 +102,7 @@ export async function generateReportAndEmail(
       reportId
     );
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
+      await sendTrackedEmail('send_admin_alert', {
         from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
         to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
         subject: isPermanentlyInvalid
@@ -140,9 +138,7 @@ export async function generateReportAndEmail(
       if (await isEmailSuppressed(guestEmail)) {
         console.error('[generate] EMAIL SUPPRESSED — skipping send, report complete but undelivered:', guestEmail);
         try {
-          const { Resend } = await import('resend');
-          const resend = new Resend(process.env.RESEND_API_KEY);
-          await resend.emails.send({
+          await sendTrackedEmail('send_admin_alert', {
             from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
             to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
