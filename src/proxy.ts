@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { decrypt } from '@/lib/session';
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -14,9 +15,17 @@ export async function proxy(req: NextRequest) {
     });
   }
 
-  // Block legacy auth routes — redirect to home
-  if (['/login', '/register', '/forgot-password', '/reset-password', '/dashboard'].some((p) => pathname.startsWith(p))) {
-    return NextResponse.redirect(new URL('/', req.url));
+  // Optimistic-only check (cookie decrypt, no DB call) — real authorization
+  // happens server-side via verifySession() in the dashboard page itself.
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/login')) {
+    const session = await decrypt(req.cookies.get('session')?.value);
+
+    if (pathname.startsWith('/dashboard') && !session?.userId) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+    if (pathname.startsWith('/login') && session?.userId) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
   }
 
   return response;
