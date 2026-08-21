@@ -46,7 +46,7 @@ const paymentMethods = [
 const faqs = [
   {
     q: 'What if no data is found for my VIN?',
-    a: 'If we cannot retrieve any data for your VIN, we will issue a full refund. Email carhakisupport@gmail.com within 24 hours of purchase.',
+    a: 'If we cannot retrieve any data for your VIN, we will issue a full refund. Email support@carhaki.com within 24 hours of purchase.',
   },
   {
     q: 'How long does a report take?',

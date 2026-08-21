@@ -15,7 +15,7 @@ const footerLinks = {
     { label: 'About CarHaki', href: '/about' },
     { label: '📞 Call / WhatsApp: 0816 869 6869', href: 'https://wa.me/2348168696869' },
     { label: 'Join WhatsApp Community', href: 'https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t' },
-    { label: 'carhakisupport@gmail.com', href: 'mailto:carhakisupport@gmail.com' },
+    { label: 'support@carhaki.com', href: 'mailto:support@carhaki.com' },
   ],
   Legal: [
     { label: 'Terms of Service', href: '/terms' },

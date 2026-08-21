@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     if (await isEmailSuppressed(email)) {
       console.warn('[otp] request blocked — suppressed email:', email);
       return NextResponse.json(
-        { error: 'We were unable to deliver mail to this address previously. Contact carhakisupport@gmail.com for help.' },
+        { error: 'We were unable to deliver mail to this address previously. Contact support@carhaki.com for help.' },
         { status: 403 }
       );
     }
