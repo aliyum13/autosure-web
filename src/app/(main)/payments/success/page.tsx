@@ -73,8 +73,8 @@ function PaymentSuccessContent() {
             <Link href="/">
               <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Try Again</Button>
             </Link>
-            <a href="mailto:carhakisupport@gmail.com">
-              <Button variant="outline" className="w-full border-ch-border">carhakisupport@gmail.com</Button>
+            <a href="mailto:support@carhaki.com">
+              <Button variant="outline" className="w-full border-ch-border">support@carhaki.com</Button>
             </a>
           </div>
         </div>
@@ -128,9 +128,9 @@ function PaymentSuccessContent() {
           <Link href="/">
             <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check Another Car</Button>
           </Link>
-          <a href="mailto:carhakisupport@gmail.com">
+          <a href="mailto:support@carhaki.com">
             <Button variant="outline" className="w-full border-ch-border text-sm">
-              Need help? carhakisupport@gmail.com
+              Need help? support@carhaki.com
             </Button>
           </a>
         </div>

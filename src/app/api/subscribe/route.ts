@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     // Notify admin
     await sendTrackedEmail('send_admin_alert', {
       from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
-      to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
+      to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
       subject: `New Insights subscriber: ${email}`,
       html: `<p>New subscriber: <strong>${email}</strong></p>`,
     });

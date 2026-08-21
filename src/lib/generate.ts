@@ -127,7 +127,7 @@ export async function generateReportAndEmail(
     try {
       await sendTrackedEmail('send_admin_alert', {
         from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
-        to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
+        to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
         subject: isPermanentlyInvalid
           ? `ClearVin rejects VIN ${vin} as invalid — not retryable`
           : `ClearVin returned nothing for ${vin} — needs retry`,
@@ -163,7 +163,7 @@ export async function generateReportAndEmail(
         try {
           await sendTrackedEmail('send_admin_alert', {
             from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
-            to: process.env.ADMIN_EMAIL || 'carhakidev@gmail.com',
+            to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
             html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list (prior hard bounce or complaint).
               Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>

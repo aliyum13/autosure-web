@@ -117,7 +117,7 @@ export async function sendReportReadyEmail({
           ${pdfSection}
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
-            Need help? Email us at <a href="mailto:carhakisupport@gmail.com" style="color:#1a56db;">carhakisupport@gmail.com</a>
+            Need help? Email us at <a href="mailto:support@carhaki.com" style="color:#1a56db;">support@carhaki.com</a>
             or WhatsApp us directly at <a href="https://wa.me/2348168696869" style="color:#1a56db;">0816 869 6869</a>.
           </p>
         </td></tr>
