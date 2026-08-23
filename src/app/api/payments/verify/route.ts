@@ -24,10 +24,20 @@ export async function GET(req: NextRequest) {
     // Webhook already handled it — return existing report
     if (existingOrder.payment_status === 'SUCCESS') {
       const reports = await prisma.$queryRawUnsafe(
-        `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
-      ) as Array<{ id: string }>;
+        `SELECT id, status FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
+      ) as Array<{ id: string; status: string }>;
       console.log('[verify] Already SUCCESS, report:', reports[0]?.id);
-      return NextResponse.json({ status: 'success', report_id: reports[0]?.id ?? null, vin: existingOrder.vin });
+      // report_status lets the success page link straight to the report instead
+      // of telling the customer to wait for an email. This is the branch that
+      // can legitimately return PROCESSING: the webhook may still be generating
+      // while the browser polls, so the page needs to distinguish "ready" from
+      // "still working" rather than linking to a report that 404s.
+      return NextResponse.json({
+        status: 'success',
+        report_id: reports[0]?.id ?? null,
+        report_status: reports[0]?.status ?? null,
+        vin: existingOrder.vin,
+      });
     }
 
     // Webhook missed — verify with Paystack directly
@@ -55,12 +65,17 @@ export async function GET(req: NextRequest) {
     try {
       // Check if report already exists (webhook may have just fired, or won the lock race)
       const existingReports = await prisma.$queryRawUnsafe(
-        `SELECT id FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
-      ) as Array<{ id: string }>;
+        `SELECT id, status FROM reports WHERE order_id = $1 LIMIT 1`, existingOrder.id
+      ) as Array<{ id: string; status: string }>;
 
       if (existingReports[0]) {
         console.log('[verify] Report already exists:', existingReports[0].id);
-        return NextResponse.json({ status: 'success', report_id: existingReports[0].id, vin: existingOrder.vin });
+        return NextResponse.json({
+          status: 'success',
+          report_id: existingReports[0].id,
+          report_status: existingReports[0].status,
+          vin: existingOrder.vin,
+        });
       }
 
       // Webhook missed — create report and generate directly (await, not fire-and-forget)
@@ -73,9 +88,23 @@ export async function GET(req: NextRequest) {
       );
 
       console.log('[verify] Webhook missed — running generate directly for:', reportId);
-      await generateReportAndEmail(reportId, existingOrder.vin, existingOrder.guest_name, existingOrder.guest_email);
+      const outcome = await generateReportAndEmail(reportId, existingOrder.vin, existingOrder.guest_name, existingOrder.guest_email);
 
-      return NextResponse.json({ status: 'success', report_id: reportId, vin: existingOrder.vin });
+      // Derived from the outcome rather than re-querying. Note this deliberately
+      // does NOT change the top-level `status: 'success'` — that reflects the
+      // payment, and changing how a paid-but-ungenerated order is reported to
+      // the customer is a separate policy decision. report_status is additive.
+      const reportStatus =
+        outcome === 'delivered' || outcome === 'skipped_duplicate' ? 'COMPLETED'
+        : outcome === 'invalid_vin' ? 'INVALID_VIN'
+        : 'FAILED';
+
+      return NextResponse.json({
+        status: 'success',
+        report_id: reportId,
+        report_status: reportStatus,
+        vin: existingOrder.vin,
+      });
     } finally {
       await prisma.$executeRawUnsafe(`SELECT pg_advisory_unlock(hashtext($1)::bigint)`, existingOrder.id);
     }
