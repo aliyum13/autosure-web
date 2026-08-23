@@ -101,6 +101,15 @@ export default function PreviewPage() {
       setOrderError('Name and email are required.');
       return;
     }
+    // Required, not optional: if this email ever lands on the suppression list
+    // we can't mail them the report OR a login code, and a WhatsApp number is
+    // then the only way to deliver what they paid for.
+    const { validatePhone } = await import('@/lib/phone');
+    const phoneCheck = validatePhone(form.phone);
+    if (!phoneCheck.valid) {
+      setOrderError(phoneCheck.reason || 'A valid WhatsApp number is required.');
+      return;
+    }
     // Validate VIN check digit before allowing payment
     const { validateVIN } = await import('@/lib/vin');
     const vinCheck = validateVIN(vin);
@@ -364,9 +373,10 @@ export default function PreviewPage() {
                   )}
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-500 uppercase tracking-wide">WHATSAPP PHONE (OPTIONAL)</Label>
+                  <Label className="text-xs text-slate-500 uppercase tracking-wide">WHATSAPP PHONE</Label>
                   <Input value={form.phone} onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))}
-                    placeholder="e.g. 08012345678" className="mt-1" />
+                    placeholder="e.g. 08012345678" required className="mt-1" />
+                  <p className="text-xs text-slate-500 mt-1">So we can send your report on WhatsApp if email fails.</p>
                 </div>
                 <div>
                   <Label className="text-xs text-slate-500 uppercase tracking-wide">DISCOUNT / AFFILIATE CODE (OPTIONAL)</Label>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createOtp, isRateLimited } from '@/lib/otp';
-import { isEmailSuppressed } from '@/lib/suppression';
+import { checkSuppression } from '@/lib/suppression';
+import { logDeliveryBlock } from '@/lib/deliveryBlock';
 import { sendOtpEmail } from '@/lib/email';
 
 const bodySchema = z.object({ email: z.string().trim().toLowerCase().email() });
@@ -16,10 +17,24 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    if (await isEmailSuppressed(email)) {
+    // Resend skips ALL sending to a suppressed recipient, account-wide — so
+    // there is no "send it anyway" option here: the code would be dropped and
+    // the customer would sit waiting for a mail that never comes. Telling them
+    // plainly, and pointing at a channel that actually works, is the only
+    // honest response. This is the one place the generic-response rule below is
+    // deliberately broken; the alternative is a silent dead end.
+    const suppression = await checkSuppression(email);
+    if (suppression.suppressed) {
       console.warn('[otp] request blocked — suppressed email:', email);
+      // Surfaces them in the admin Undelivered Reports panel, so a locked-out
+      // paying customer gets noticed even if they never contact support.
+      await logDeliveryBlock({ email, context: 'otp_login', origin: suppression.origin });
       return NextResponse.json(
-        { error: 'We were unable to deliver mail to this address previously. Contact support@carhaki.com for help.' },
+        {
+          error: 'We can no longer deliver email to this address, so we cannot send you a code. '
+            + 'Message us on WhatsApp at 0816 869 6869 and we will send your report directly.',
+          whatsapp: 'https://wa.me/2348168696869',
+        },
         { status: 403 }
       );
     }

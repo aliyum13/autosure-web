@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import CompReportPanel from './CompReportPanel';
 import ApiStatsPanel from './ApiStatsPanel';
+import UndeliveredPanel from './UndeliveredPanel';
 
 interface ReferralCode {
   id: string;
@@ -154,6 +155,8 @@ export default function AdminPanel() {
             </div>
           )}
         </div>
+
+        <UndeliveredPanel />
 
         <ApiStatsPanel />
 
