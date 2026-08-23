@@ -46,12 +46,21 @@ function PaymentSuccessContent() {
       if (!cancelled && polls < 20) setTimeout(tick, 3000);
     };
 
-    const t = setTimeout(tick, 3000);
-    return () => { cancelled = true; clearTimeout(t); };
+    // First poll fires immediately: an already-COMPLETED report shouldn't sit
+    // behind a spinner for 3s just to confirm what's usually already true.
+    tick();
+    return () => { cancelled = true; };
   }, [reportId, reportState]);
 
   useEffect(() => {
-    if (isComp || isCredit) { setStatus('success'); return; }
+    if (isComp || isCredit) {
+      setStatus('success');
+      // Credit redemptions never hit verify — orders/create generates inline and
+      // redirects with the report id, so pick it up from the query string.
+      const fromParam = searchParams.get('report');
+      if (fromParam) { setReportId(fromParam); setReportState('generating'); }
+      return;
+    }
     if (!reference) { setStatus('failed'); return; }
 
     const verify = async (tries = 0): Promise<void> => {

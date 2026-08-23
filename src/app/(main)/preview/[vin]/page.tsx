@@ -128,7 +128,11 @@ export default function PreviewPage() {
         // Free report — comp code or bundle credit — no payment
         setRedirecting(true);
         if (data.credit_used) {
-          window.location.href = `/payments/success?credit=1&remaining=${data.credits_remaining ?? 0}`;
+          // Pass the report id through so the success page can link straight to
+          // it. Without this the credit path had the same defect as the paid
+          // path: the report exists, we know its id, and the customer is still
+          // told to wait for an email.
+          window.location.href = `/payments/success?credit=1&remaining=${data.credits_remaining ?? 0}${data.report_id ? `&report=${encodeURIComponent(data.report_id)}` : ''}`;
         } else {
           window.location.href = '/payments/success?comp=1';
         }
