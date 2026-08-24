@@ -56,6 +56,17 @@ export default function PreviewPage() {
   const [selectedBundle, setSelectedBundle] = useState('single');
   const [form, setForm] = useState({ name: '', email: '', phone: '', ref_code: '' });
   const [availableCredits, setAvailableCredits] = useState(0);
+  // Referral wallet, for logged-in customers only. /api/referral/me is
+  // session-gated and returns 401 when signed out — silently ignored, since
+  // checkout must keep working for guests.
+  const [earningsKobo, setEarningsKobo] = useState(0);
+
+  useEffect(() => {
+    fetch('/api/referral/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.balance_kobo) setEarningsKobo(d.balance_kobo); })
+      .catch(() => {});
+  }, []);
 
   const checkCredits = async (email: string) => {
     if (!email || !email.includes('@')) { setAvailableCredits(0); return; }
@@ -364,6 +375,13 @@ export default function PreviewPage() {
                   <Input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
                     onBlur={(e) => checkCredits(e.target.value)}
                     placeholder="yourname@example.com" className="mt-1" />
+                  {availableCredits === 0 && earningsKobo >= selected.price * 100 && (
+                    <div className="bg-green-50 border border-green-100 rounded-lg p-3 mt-3">
+                      <p className="text-sm text-green-800 font-medium">
+                        💰 You have ₦{(earningsKobo / 100).toLocaleString()} in referral earnings — this report is covered.
+                      </p>
+                    </div>
+                  )}
                   {availableCredits > 0 && (
                     <div className="mt-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
                       <p className="text-sm text-green-800 font-medium">
@@ -421,7 +439,7 @@ export default function PreviewPage() {
               {orderError && <p className="text-sm text-red-500">{orderError}</p>}
 
               <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-blue hover:bg-ch-blue-dark text-white font-bold text-base rounded-xl">
-                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
+                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
 
               <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
