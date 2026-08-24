@@ -185,14 +185,37 @@ export async function PATCH(req: NextRequest) {
     sendError = 'No completed report is linked to this block — address updated, nothing to send.';
   }
 
-  await prisma.$executeRawUnsafe(
-    `UPDATE email_delivery_block
+  // Resolve every sibling block for this address, not just the one clicked.
+  //
+  // One customer routinely accumulates several rows — each retried login is
+  // another otp_login block — and they all locate their order by matching
+  // orders.guest_email. The moment the correction above lands, those siblings
+  // stop matching and re-render stripped: no VIN, no report link, no action,
+  // "(no name on file)". A row that reads as an unreachable customer, for a
+  // customer who was just reached.
+  //
+  // Scoped to THIS order rather than blindly to the address. A block that
+  // provably belongs to a different order is a different undelivered report,
+  // and that order still carries the dead address — resolving it here would
+  // drop real work out of the queue silently. The COALESCE defaults
+  // order-less rows (every otp_login block) to this order, so they resolve;
+  // only rows pointing somewhere else are left open.
+  const resolved = await prisma.$executeRawUnsafe(
+    `UPDATE email_delivery_block b
      SET resolved_at = NOW(), resolved_by = $1, resolution = 'email_corrected', note = $2
-     WHERE id = $3`,
+     WHERE LOWER(b.email) = $3
+       AND b.resolved_at IS NULL
+       AND COALESCE(
+             b.order_id,
+             (SELECT r.order_id FROM reports r WHERE r.id = b.report_id),
+             $4
+           ) = $4`,
     adminEmail,
     `was ${block.email} → ${email}${sent ? '' : ` (re-send failed: ${sendError})`}`,
-    block.id
+    block.email.toLowerCase(),
+    block.order_id
   );
+  console.log('[undelivered] resolved', resolved, 'block(s) for', block.email, 'by', adminEmail);
 
-  return NextResponse.json({ ok: true, sent, error: sendError });
+  return NextResponse.json({ ok: true, sent, error: sendError, blocks_resolved: resolved });
 }

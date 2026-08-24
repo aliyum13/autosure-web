@@ -100,10 +100,13 @@ export default function UndeliveredPanel() {
       const data = await res.json();
       if (!res.ok) { setRowError({ id: row.id, message: data.error }); return; }
       // The address is updated even when the re-send fails, so say which
-      // happened rather than a blanket "done".
+      // happened rather than a blanket "done". The row count is called out
+      // because a correction clears every row for that customer, and rows
+      // vanishing without explanation looks like a glitch.
+      const extra = data.blocks_resolved > 1 ? ` ${data.blocks_resolved} rows cleared.` : '';
       setBanner(data.sent
-        ? `✓ ${row.email} → ${newEmail} — report re-sent.`
-        : `Address updated to ${newEmail}, but the send failed: ${data.error}`);
+        ? `✓ ${row.email} → ${newEmail} — report re-sent.${extra}`
+        : `Address updated to ${newEmail}, but the send failed: ${data.error}${extra}`);
       setEditing(null);
       setNewEmail('');
       load();
