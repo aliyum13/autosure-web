@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { logApiCall } from '@/lib/apiLog';
+import { prisma } from '@/lib/db';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -186,5 +187,52 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
   </table>
 </body>
 </html>`.trim(),
+  });
+}
+
+/**
+ * Re-sends an already-generated report to an address, without regenerating it.
+ *
+ * Used by the admin "correct delivery email" action: the usual cause of a hard
+ * bounce is a mistyped address, and the report itself is perfectly fine sitting
+ * in the database. Reading vin/pdf_data/vehicle back off the report row means
+ * NO ClearVin call and no credit burned — regenerating for a typo would cost a
+ * report credit for a purely clerical fix.
+ *
+ * make/model/year are optional in sendReportReadyEmail (it falls back to the
+ * VIN), so a report stored via the CLEARVIN html path — which has no vehicle
+ * object — still produces a correct email.
+ */
+export async function resendReportEmail(reportId: string, to: string, name?: string) {
+  const rows = await prisma.$queryRawUnsafe(
+    `SELECT r.vin, r.status, r.pdf_data, r.processed_data->'vehicle' AS vehicle, o.guest_name
+     FROM reports r JOIN orders o ON o.id = r.order_id
+     WHERE r.id = $1 LIMIT 1`,
+    reportId
+  ) as Array<{
+    vin: string;
+    status: string;
+    pdf_data: Buffer | null;
+    vehicle: { make?: string; model?: string; year?: number } | null;
+    guest_name: string | null;
+  }>;
+
+  const row = rows[0];
+  if (!row) throw new Error('Report not found');
+  if (row.status !== 'COMPLETED') throw new Error(`Report is ${row.status}, not COMPLETED — nothing to send`);
+
+  const pdf = row.pdf_data;
+  return sendReportReadyEmail({
+    to,
+    name: name || row.guest_name || to,
+    vin: row.vin,
+    make: row.vehicle?.make,
+    model: row.vehicle?.model,
+    year: row.vehicle?.year,
+    // Buffer is a Uint8Array view, which may sit inside a larger pooled
+    // ArrayBuffer — slicing by byteOffset/byteLength keeps the attachment from
+    // picking up neighbouring bytes.
+    pdfBuffer: pdf ? pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength) as ArrayBuffer : undefined,
+    reportId,
   });
 }

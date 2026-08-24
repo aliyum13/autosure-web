@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/db';
 import { clearvinReportHTML, clearvinReportPDF } from '@/lib/clearvin';
 import { sendReportReadyEmail, sendTrackedEmail } from '@/lib/email';
-import { isEmailSuppressed } from '@/lib/suppression';
+import { checkSuppression } from '@/lib/suppression';
+import { logDeliveryBlock } from '@/lib/deliveryBlock';
 
 const withTimeout = <T>(p: Promise<T>, ms: number, label: string): Promise<T> =>
   Promise.race([
@@ -158,16 +159,27 @@ export async function generateReportAndEmail(
   // Email (non-fatal if it fails)
   if (guestEmail) {
     try {
-      if (await isEmailSuppressed(guestEmail)) {
+      const suppression = await checkSuppression(guestEmail);
+      if (suppression.suppressed) {
         console.error('[generate] EMAIL SUPPRESSED — skipping send, report complete but undelivered:', guestEmail);
+        // Queue it for the admin "Undelivered Reports" panel. The alert email
+        // below is for immediate awareness; this row is the work item that
+        // survives long enough for someone to actually action it.
+        await logDeliveryBlock({
+          email: guestEmail,
+          context: 'report_ready',
+          origin: suppression.origin,
+          reportId,
+        });
         try {
           await sendTrackedEmail('send_admin_alert', {
             from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
             to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
-            html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list (prior hard bounce or complaint).
+            html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list${suppression.origin ? ` (origin: <strong>${suppression.origin}</strong>)` : ''}.
               Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>
-              <p>Follow the "paid but didn't receive report" SOP to deliver manually.</p>`,
+              <p>Open the <a href="https://carhaki.com/admin">admin panel</a> — this customer is now in the
+              "Undelivered Reports" queue with their report link and WhatsApp number.</p>`,
           });
         } catch (e) { console.error('[generate] admin suppression alert failed:', e); }
       } else {

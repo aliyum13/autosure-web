@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
+import { validatePhone } from '@/lib/phone';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
 
@@ -21,6 +22,13 @@ export async function POST(req: NextRequest) {
     }
     if (!email?.trim() || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email address is required.' }, { status: 400 });
+    }
+    // Guards both branches below (bundle credit and Paystack), which each
+    // persist guest_phone. It's the fallback delivery channel for a customer
+    // whose email later lands on Resend's suppression list.
+    const phoneCheck = validatePhone(phone || '');
+    if (!phoneCheck.valid) {
+      return NextResponse.json({ error: phoneCheck.reason || 'A valid WhatsApp number is required.' }, { status: 400 });
     }
 
     // ---- Bundle credit: if this email has an unused credit, use it instead of charging ----
