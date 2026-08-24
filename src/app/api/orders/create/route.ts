@@ -128,6 +128,20 @@ export async function POST(req: NextRequest) {
     // balance just by typing their address at checkout.
     const session = await getSession();
     if (session?.email) {
+      // The entire branch is fault-isolated. A problem with the referral wallet
+      // — an unavailable table, a bad query, anything — must never stop a
+      // customer paying for a report. On failure this falls through to normal
+      // Paystack checkout: worst case someone pays for a report their balance
+      // could have covered, which support can refund. Checkout being down is
+      // not recoverable.
+      //
+      // This also makes the deploy order safe: if migration 012 has not run
+      // yet, this degrades instead of 500-ing every logged-in checkout.
+      let debitedOrderId: string | null = null;
+      let debitedAmount = 0;
+      const buyerEmail = session.email.toLowerCase();
+
+      try {
       const BUNDLE_PRICES: Record<string, number> = { single: 15000, triple: 35000, five: 50000 };
       const wantedBundle = bundle_id && BUNDLE_PRICES[bundle_id] ? bundle_id : 'single';
       const priceKoboWanted = BUNDLE_PRICES[wantedBundle] * 100;
@@ -138,10 +152,11 @@ export async function POST(req: NextRequest) {
       if (balance >= priceKoboWanted) {
         const reference = `CH-EARN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
         const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-        const buyerEmail = session.email.toLowerCase();
 
         const spent = await spendReferralBalance(buyerEmail, priceKoboWanted, orderId);
         if (spent) {
+          debitedOrderId = orderId;
+          debitedAmount = priceKoboWanted;
           // amount_ngn stays 0, matching the comp and bundle-credit paths. It
           // also means creditReferralEarning() skips this order, so earnings
           // cannot mint further earnings.
@@ -185,6 +200,22 @@ export async function POST(req: NextRequest) {
             amount_ngn: 0,
           });
         }
+      }
+      } catch (e) {
+        // If the balance was already debited before the failure, put it back —
+        // otherwise falling through to Paystack would charge the customer AND
+        // keep their earnings.
+        if (debitedOrderId) {
+          try {
+            await refundReferralBalance(buyerEmail, debitedAmount, debitedOrderId, 'redemption aborted mid-flight');
+          } catch (refundErr) {
+            // Now genuinely bad: money debited and not returned. Loud, because
+            // this needs a human to reconcile from the ledger.
+            console.error('[earnings] CRITICAL: debited', debitedAmount, 'kobo from', buyerEmail,
+              'and the refund also failed:', (refundErr as Error).message);
+          }
+        }
+        console.error('[earnings] redemption unavailable, falling back to paid checkout:', (e as Error).message);
       }
     }
     // ---- End referral earnings ----
