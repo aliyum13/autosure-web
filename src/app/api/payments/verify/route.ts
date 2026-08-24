@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
+import { markReferralConverted } from '@/lib/referral';
 
 export const maxDuration = 60;
 
@@ -58,6 +59,12 @@ export async function GET(req: NextRequest) {
       `UPDATE orders SET payment_status = 'SUCCESS', paid_at = NOW(), updated_at = NOW() WHERE paystack_reference = $1`,
       reference
     );
+
+    // Same call as the webhook makes. Hooking only the webhook would silently
+    // miss every conversion where this browser poll won the race — the same
+    // class of undercount this change exists to fix. Idempotent, so both firing
+    // is harmless.
+    await markReferralConverted(existingOrder.id);
 
     // Advisory lock on this order — serializes against the webhook route hitting the
     // same order at nearly the same time (Paystack webhook + this browser poll).
