@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
-import { markReferralConverted } from '@/lib/referral';
+import { markReferralConverted, creditReferralEarning } from '@/lib/referral';
 
 export const maxDuration = 60;
 
@@ -65,6 +65,9 @@ export async function GET(req: NextRequest) {
     // class of undercount this change exists to fix. Idempotent, so both firing
     // is harmless.
     await markReferralConverted(existingOrder.id);
+    // Customer-code referrals credit a spendable wallet balance. Influencer
+    // codes are skipped inside — they keep the existing commission payout path.
+    await creditReferralEarning(existingOrder.id);
 
     // Advisory lock on this order — serializes against the webhook route hitting the
     // same order at nearly the same time (Paystack webhook + this browser poll).

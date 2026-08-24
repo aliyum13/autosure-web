@@ -17,7 +17,11 @@ export async function GET(
         COALESCE(SUM(r.commission_ngn) FILTER (WHERE r.converted_at IS NOT NULL AND r.is_paid = false), 0) as unpaid_commission_ngn
       FROM referral_codes rc
       LEFT JOIN referrals r ON r.referral_code_id = rc.id
-      WHERE rc.code = $1 AND rc.is_active = true
+      -- Influencer codes only. A customer's code must not be publicly
+      -- readable: anyone holding a share link would otherwise see that
+      -- customer's earnings. Their own figures come from /api/referral/me,
+      -- which is session-gated.
+      WHERE rc.code = $1 AND rc.is_active = true AND rc.owner_account_id IS NULL
       GROUP BY rc.code, rc.name, rc.clicks
     `, upperCode) as Array<Record<string, unknown>>;
 

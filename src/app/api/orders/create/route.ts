@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
 import { validatePhone } from '@/lib/phone';
+import { getSession } from '@/lib/dal';
+import { getReferralBalance, spendReferralBalance, refundReferralBalance } from '@/lib/referral';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
 
@@ -113,6 +115,79 @@ export async function POST(req: NextRequest) {
       }
     }
     // ---- End bundle credit ----
+
+    // ---- Referral earnings: pay for this report from the wallet balance ----
+    //
+    // Deliberately AFTER the bundle-credit branch. Credits are use-it-or-lose-it
+    // and tied to a past purchase; an earnings balance is cash-equivalent and
+    // should be the last thing spent.
+    //
+    // Unlike the credit path above, this requires a real session. That path
+    // keys off the email TYPED into the form, which is fine for credits the
+    // same person bought — but here it would let anyone drain a stranger's
+    // balance just by typing their address at checkout.
+    const session = await getSession();
+    if (session?.email) {
+      const BUNDLE_PRICES: Record<string, number> = { single: 15000, triple: 35000, five: 50000 };
+      const wantedBundle = bundle_id && BUNDLE_PRICES[bundle_id] ? bundle_id : 'single';
+      const priceKoboWanted = BUNDLE_PRICES[wantedBundle] * 100;
+      const balance = await getReferralBalance(session.email);
+
+      // All-or-nothing: partial payment would mean charging a reduced amount
+      // through Paystack and reconciling a partial spend when generation fails.
+      if (balance >= priceKoboWanted) {
+        const reference = `CH-EARN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        const buyerEmail = session.email.toLowerCase();
+
+        const spent = await spendReferralBalance(buyerEmail, priceKoboWanted, orderId);
+        if (spent) {
+          // amount_ngn stays 0, matching the comp and bundle-credit paths. It
+          // also means creditReferralEarning() skips this order, so earnings
+          // cannot mint further earnings.
+          await prisma.$executeRawUnsafe(`
+            INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, payment_status,
+                               guest_name, guest_email, guest_phone, bundle_id, bundle_count, paid_at, created_at, updated_at)
+            VALUES ($1, NULL, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'referral_earnings', 1, NOW(), NOW(), NOW())
+          `, orderId, upperVin, reference, name.trim(), buyerEmail, phone?.trim() || null);
+
+          const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          await prisma.$executeRawUnsafe(
+            `INSERT INTO reports (id, order_id, user_id, vin, status, share_token, is_public, created_at, updated_at)
+             VALUES ($1, $2, NULL, $3, 'PROCESSING', $4, false, NOW(), NOW())`,
+            reportId, orderId, upperVin, shareToken
+          );
+
+          console.log('[earnings] Spent', priceKoboWanted, 'kobo for', buyerEmail, '| VIN:', upperVin);
+          const outcome = await generateReportAndEmail(reportId, upperVin, name.trim(), buyerEmail);
+
+          if (outcome !== 'delivered' && outcome !== 'skipped_duplicate') {
+            // Same precedent as the credit branch: never keep the money for a
+            // report that was never produced.
+            await refundReferralBalance(buyerEmail, priceKoboWanted, orderId, `generation ${outcome}`);
+            console.error('[earnings] Generation failed (', outcome, ') — refunded balance for', buyerEmail);
+            return NextResponse.json({
+              error: outcome === 'invalid_vin'
+                ? 'We could not generate a report for this VIN — our data provider does not recognise it. Your balance has not been used, so please double-check the VIN and try again.'
+                : 'We could not generate your report just now. Your balance has not been used — please try again in a few minutes, or contact support.',
+              report_id: reportId,
+              status: outcome,
+            }, { status: 502 });
+          }
+
+          return NextResponse.json({
+            order_id: orderId,
+            earnings_used: true,
+            report_id: reportId,
+            balance_remaining: await getReferralBalance(buyerEmail),
+            message: 'Report generated using your referral earnings.',
+            amount_ngn: 0,
+          });
+        }
+      }
+    }
+    // ---- End referral earnings ----
 
     const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
     if (!PAYSTACK_SECRET) {

@@ -4,6 +4,9 @@ import { verifySession } from '@/lib/dal';
 import { prisma } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import LogoutButton from '@/components/dashboard/LogoutButton';
+import ReferralCard from '@/components/dashboard/ReferralCard';
+import { getOrCreateReferralCode, getReferralBalance, CUSTOMER_REFERRAL_REWARD_KOBO } from '@/lib/referral';
+import { prisma as db } from '@/lib/db';
 
 interface OrderRow {
   order_id: string;
@@ -59,9 +62,39 @@ function StatusBadge({ status }: { status: string | null }) {
   return null;
 }
 
+// Only converted referrals count as successful — a referred checkout that was
+// never paid must not be shown to the customer as a referral they earned from.
+async function getReferralSummary(accountId: string, email: string) {
+  try {
+    const [code, balanceKobo, counts] = await Promise.all([
+      getOrCreateReferralCode(accountId, 'CarHaki customer'),
+      getReferralBalance(email),
+      db.$queryRawUnsafe(
+        `SELECT COUNT(*) FILTER (WHERE r.converted_at IS NOT NULL)::int AS confirmed,
+                COUNT(*) FILTER (WHERE r.converted_at IS NULL)::int     AS pending
+         FROM referrals r
+         JOIN referral_codes rc ON rc.id = r.referral_code_id
+         WHERE rc.owner_account_id = $1`,
+        accountId
+      ) as Promise<Array<{ confirmed: number; pending: number }>>,
+    ]);
+    return {
+      code, balanceKobo,
+      confirmed: Number(counts[0]?.confirmed ?? 0),
+      pending: Number(counts[0]?.pending ?? 0),
+    };
+  } catch (e) {
+    // A referral-card failure must not take down the whole dashboard, which is
+    // where customers go to retrieve reports they have already paid for.
+    console.warn('[dashboard] referral summary unavailable:', (e as Error).message);
+    return null;
+  }
+}
+
 export default async function DashboardPage() {
   const session = await verifySession();
   const { creditsRemaining, orders } = await getDashboardData(session.email);
+  const referral = await getReferralSummary(session.userId, session.email);
 
   return (
     <div className="min-h-screen bg-ch-bg px-4 py-10">
@@ -84,6 +117,18 @@ export default async function DashboardPage() {
             <Button variant="outline" className="border-ch-border">Buy more</Button>
           </Link>
         </div>
+
+        {referral && (
+          <ReferralCard
+            code={referral.code}
+            shareUrl={`https://carhaki.com/?ref=${referral.code}`}
+            balanceKobo={referral.balanceKobo}
+            rewardKobo={CUSTOMER_REFERRAL_REWARD_KOBO}
+            confirmedReferrals={referral.confirmed}
+            pendingReferrals={referral.pending}
+            reportPriceKobo={15000 * 100}
+          />
+        )}
 
         {/* Order history */}
         <h2 className="text-lg font-bold text-ch-text mb-4">Your Reports</h2>

@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
-import { markReferralConverted } from '@/lib/referral';
+import { markReferralConverted, creditReferralEarning } from '@/lib/referral';
 
 export const maxDuration = 60;
 
@@ -49,6 +49,9 @@ export async function POST(req: NextRequest) {
       // earned. Placed immediately after the SUCCESS transition rather than in
       // the advisory-locked block below, which has early-return paths.
       await markReferralConverted(order.id);
+      // Customer-code referrals credit a spendable wallet balance. Influencer
+      // codes are skipped inside — they keep the existing commission payout path.
+      await creditReferralEarning(order.id);
 
       console.log('[webhook] Order:', order.id, '| VIN:', order.vin, '| email:', order.guest_email, '| bundle:', order.bundle_id, 'x', order.bundle_count);
 
