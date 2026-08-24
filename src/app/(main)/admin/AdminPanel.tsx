@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Loader2, Trash2, Copy } from 'lucide-react';
+import { Plus, Loader2, Trash2, Copy, BadgeCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +19,7 @@ interface ReferralCode {
   is_active: boolean;
   clicks: number;
   total_sales: number;
+  pending_checkouts: number;
   total_commission: number;
   unpaid_commission: number;
 }
@@ -95,6 +96,40 @@ export default function AdminPanel() {
       setError('Failed to create code');
     } finally {
       setCreating(false);
+    }
+  };
+
+  const [settling, setSettling] = useState<string | null>(null);
+  const [settleMsg, setSettleMsg] = useState<string | null>(null);
+
+  // Settles every confirmed, unpaid referral for a code and writes an audit
+  // row. Confirms first: this is the record that money changed hands, and it
+  // cannot be undone from the UI.
+  const settlePayout = async (rc: ReferralCode) => {
+    const naira = (rc.unpaid_commission / 100).toLocaleString();
+    if (!window.confirm(
+      `Mark ₦${naira} as paid to ${rc.name} (${rc.code})?
+
+` +
+      `This records that you have already sent the money. It cannot be undone here.`
+    )) return;
+
+    setSettling(rc.id);
+    setSettleMsg(null);
+    try {
+      const res = await fetch('/api/admin/referral', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: rc.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setSettleMsg(data.error); return; }
+      setSettleMsg(`✓ Settled ₦${(data.amount_kobo / 100).toLocaleString()} to ${rc.code} across ${data.referral_count} referral(s).`);
+      loadCodes();
+    } catch {
+      setSettleMsg('Failed to settle payout');
+    } finally {
+      setSettling(null);
     }
   };
 
@@ -200,6 +235,11 @@ export default function AdminPanel() {
         <div className="bg-white border border-ch-border rounded-xl overflow-hidden">
           <div className="px-5 py-4 border-b border-ch-border">
             <h2 className="font-semibold text-ch-text">Active Referral Codes ({codes.length})</h2>
+            <p className="text-xs text-ch-text-muted mt-1">
+              Earnings count only <strong>confirmed sales</strong> — a referred checkout that was actually paid.
+              Started-but-unpaid checkouts are shown separately and are never owed.
+            </p>
+            {settleMsg && <p className="text-xs text-green-700 mt-2">{settleMsg}</p>}
           </div>
           {codes.length === 0 ? (
             <div className="py-12 text-center text-ch-text-muted">No referral codes yet</div>
@@ -219,9 +259,14 @@ export default function AdminPanel() {
                       )}
                       <div className="flex items-center gap-4 mt-2">
                         <span className="text-xs text-ch-text-muted">{rc.clicks} clicks</span>
-                        <span className="text-xs text-ch-green font-medium">{Number(rc.total_sales)} sales</span>
+                        <span className="text-xs text-ch-green font-medium">{Number(rc.total_sales)} confirmed sales</span>
+                        {Number(rc.pending_checkouts) > 0 && (
+                          <span className="text-xs text-ch-text-muted" title="Checkouts started but never paid — not owed">
+                            {Number(rc.pending_checkouts)} unpaid checkouts
+                          </span>
+                        )}
                         <span className="text-xs text-ch-amber font-medium">
-                          ₦{(Number(rc.unpaid_commission) / 100).toLocaleString()} unpaid
+                          ₦{(Number(rc.unpaid_commission) / 100).toLocaleString()} owed
                         </span>
                         <span className="text-xs text-ch-text-muted">
                           ₦{(Number(rc.total_commission) / 100).toLocaleString()} total earned
@@ -234,6 +279,14 @@ export default function AdminPanel() {
                         <Copy className="w-3 h-3" />
                         {copied === rc.code ? 'Copied!' : 'Copy Link'}
                       </Button>
+                      {Number(rc.unpaid_commission) > 0 && (
+                        <Button size="sm" variant="outline" disabled={settling === rc.id}
+                          onClick={() => settlePayout(rc)}
+                          className="border-ch-border text-xs gap-1 text-green-700">
+                          {settling === rc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <BadgeCheck className="w-3 h-3" />}
+                          Mark paid
+                        </Button>
+                      )}
                       <Button size="sm" variant="outline" onClick={() => deactivate(rc.id)}
                         className="border-ch-border text-ch-red hover:text-ch-red text-xs">
                         <Trash2 className="w-3 h-3" />

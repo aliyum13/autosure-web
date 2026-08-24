@@ -12,9 +12,9 @@ export async function GET(
     const rows = await prisma.$queryRawUnsafe(`
       SELECT 
         rc.code, rc.name, rc.clicks,
-        COUNT(r.id) as total_sales,
-        COALESCE(SUM(r.commission_ngn), 0) as total_commission_ngn,
-        COALESCE(SUM(CASE WHEN r.is_paid = false THEN r.commission_ngn ELSE 0 END), 0) as unpaid_commission_ngn
+        COUNT(r.id) FILTER (WHERE r.converted_at IS NOT NULL) as total_sales,
+        COALESCE(SUM(r.commission_ngn) FILTER (WHERE r.converted_at IS NOT NULL), 0) as total_commission_ngn,
+        COALESCE(SUM(r.commission_ngn) FILTER (WHERE r.converted_at IS NOT NULL AND r.is_paid = false), 0) as unpaid_commission_ngn
       FROM referral_codes rc
       LEFT JOIN referrals r ON r.referral_code_id = rc.id
       WHERE rc.code = $1 AND rc.is_active = true

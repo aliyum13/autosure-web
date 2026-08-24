@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { prisma } from '@/lib/db';
 import { generateReportAndEmail } from '@/lib/generate';
 import { logApiCall } from '@/lib/apiLog';
+import { markReferralConverted } from '@/lib/referral';
 
 export const maxDuration = 60;
 
@@ -43,6 +44,11 @@ export async function POST(req: NextRequest) {
         `UPDATE orders SET payment_status = 'SUCCESS', paid_at = NOW(), updated_at = NOW() WHERE paystack_reference = $1`,
         reference
       );
+
+      // Money actually moved — only now does a referral on this order count as
+      // earned. Placed immediately after the SUCCESS transition rather than in
+      // the advisory-locked block below, which has early-return paths.
+      await markReferralConverted(order.id);
 
       console.log('[webhook] Order:', order.id, '| VIN:', order.vin, '| email:', order.guest_email, '| bundle:', order.bundle_id, 'x', order.bundle_count);
 
