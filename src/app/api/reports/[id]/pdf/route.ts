@@ -6,11 +6,26 @@ export const maxDuration = 60;
 
 // Public PDF download by report ID — works for guest customers (no login).
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
+
+    // Content-Disposition decides whether a browser renders the PDF or saves
+    // it, and it overrides the page's <object> embed entirely — an `attachment`
+    // response cannot display inline no matter how it is embedded.
+    //
+    // This route hardcoded `attachment` from its very first commit, so the
+    // report page's embed has never actually rendered. Browsers either
+    // downloaded the file or painted a blank box, and that blank box was
+    // misdiagnosed as an iOS Safari quirk and worked around with an
+    // always-visible "Open Report PDF" button.
+    //
+    // Inline is now the default, for the embed. Download buttons opt in with
+    // ?download=1.
+    const asAttachment = req.nextUrl.searchParams.get('download') === '1';
+    const disposition = asAttachment ? 'attachment' : 'inline';
 
     const reports = await prisma.$queryRawUnsafe(
       `SELECT vin, processed_data, pdf_data, clearvin_report_id
@@ -32,7 +47,7 @@ export async function GET(
         status: 200,
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="CarHaki-Report-${report.vin}.pdf"`,
+          'Content-Disposition': `${disposition}; filename="CarHaki-Report-${report.vin}.pdf"`,
         },
       });
     }
@@ -78,7 +93,7 @@ export async function GET(
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="CarHaki-Report-${report.vin}.pdf"`,
+        'Content-Disposition': `${disposition}; filename="CarHaki-Report-${report.vin}.pdf"`,
       },
     });
   } catch (error) {
