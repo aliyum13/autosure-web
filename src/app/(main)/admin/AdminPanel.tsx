@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import CompReportPanel from './CompReportPanel';
 import ApiStatsPanel from './ApiStatsPanel';
 import UndeliveredPanel from './UndeliveredPanel';
+import ClearVinCreditsPanel from './ClearVinCreditsPanel';
 
 interface ReferralCode {
   id: string;
@@ -162,6 +163,10 @@ export default function AdminPanel() {
           <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">Admin</p>
           <h1 className="text-2xl font-bold text-ch-text">Referral Management</h1>
         </div>
+
+        {/* Credit warning sits above everything — a low-balance alert below the
+            fold is worthless, and running out silently stops all generation. */}
+        <ClearVinCreditsPanel />
 
         {/* Stuck report recovery */}
         <div className="bg-white border border-amber-200 rounded-xl p-6">
