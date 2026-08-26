@@ -29,6 +29,23 @@ export async function sendTrackedEmail(operation: string, payload: SendPayload) 
   }
 }
 
+// The report-ready email carries a sign-in prompt, and it is the only channel
+// that reaches every guest customer: at the time of writing 450 of 523 orders
+// (86%) came from people with no account. The dashboard already matches orders
+// on guest_email, so a guest who signs in with the address they bought under
+// immediately sees every report they have purchased — they simply have no way
+// of knowing that.
+//
+// The prompt emphasises "this email address" deliberately: the mechanism
+// depends on using the PURCHASE address, and signing in with a different one
+// shows an empty dashboard and reads as broken.
+//
+// The "no login needed" line further up is left alone on purpose. It answers
+// "how do I open this report"; the prompt answers "where are all my reports".
+//
+// NOTE: keep rationale like this OUT of the HTML template. Anything inside the
+// template literal — HTML comments included — is shipped in the email body and
+// visible to any recipient who views source. These are internal figures.
 export async function sendReportReadyEmail({
   to,
   name,
@@ -116,6 +133,17 @@ export async function sendReportReadyEmail({
           </p>
 
           ${pdfSection}
+
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 24px;">
+            <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1e293b;">
+              Want all your reports in one place?
+            </p>
+            <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;">
+              Sign in at <a href="https://carhaki.com/login" style="color:#1a56db;">carhaki.com/login</a>
+              using <strong>this email address</strong> — no password needed, we&rsquo;ll send you a code.
+              Every report you&rsquo;ve bought, including this one, will be there.
+            </p>
+          </div>
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
             Need help? Email us at <a href="mailto:support@carhaki.com" style="color:#1a56db;">support@carhaki.com</a>
