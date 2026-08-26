@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db';
-import { clearvinReportHTML, clearvinReportPDF } from '@/lib/clearvin';
+import { clearvinReportHTML, clearvinReportPDF, clearvinReportPDFById, reportIdReuseEnabled } from '@/lib/clearvin';
 import { sendReportReadyEmail, sendTrackedEmail } from '@/lib/email';
 import { checkSuppression } from '@/lib/suppression';
 import { logDeliveryBlock } from '@/lib/deliveryBlock';
@@ -75,21 +75,49 @@ export async function generateReportAndEmail(
   // retrying risks generating (and paying for) a second report for the same VIN.
   let clearvinHtml: string | null = null;
   let clearvinHtmlError: string | null = null;
+  let clearvinReportId: string | null = null;
   try {
-    clearvinHtml = await withTimeout(clearvinReportHTML(vin), 12000, 'ClearVin HTML');
-    console.log('[generate] ClearVin HTML OK');
+    const htmlResult = await withTimeout(clearvinReportHTML(vin), 12000, 'ClearVin HTML');
+    clearvinHtml = htmlResult.html;
+    clearvinReportId = htmlResult.reportId;
+    console.log('[generate] ClearVin HTML OK | reportId:', clearvinReportId ?? '(none)');
   } catch (e) {
     clearvinHtmlError = (e as Error).message;
     console.warn('[generate] ClearVin HTML failed:', clearvinHtmlError);
   }
 
   // ClearVin PDF (the real deliverable) — tight 15s timeout.
+  //
+  // THIS IS THE DUPLICATE-CHARGE FIX. ?vin= generates and CHARGES a new report
+  // every call, so fetching HTML and PDF separately by VIN bought the same
+  // report twice — 204 of 525 charges (39%) over Jul-Aug. ?reportId= re-fetches
+  // the report the HTML call already paid for, for free.
+  //
+  // The by-VIN path is kept as a fallback for two cases that must still work:
+  // the HTML call failed outright (no id to reuse), or it succeeded but no id
+  // could be extracted. Both cost what they cost today — never worse — and the
+  // second is logged loudly by extractReportId's caller.
   let pdfBuffer: ArrayBuffer | null = null;
+  const canReuse = clearvinReportId && reportIdReuseEnabled();
   try {
-    pdfBuffer = await withTimeout(clearvinReportPDF(vin), 15000, 'ClearVin PDF');
-    console.log('[generate] PDF fetched:', !!pdfBuffer, pdfBuffer?.byteLength);
+    pdfBuffer = canReuse
+      ? await withTimeout(clearvinReportPDFById(clearvinReportId!), 15000, 'ClearVin PDF by id')
+      : await withTimeout(clearvinReportPDF(vin), 15000, 'ClearVin PDF');
+    console.log('[generate] PDF fetched:', !!pdfBuffer, pdfBuffer?.byteLength, canReuse ? '(free re-fetch)' : '(charged by VIN)');
   } catch (e) {
     console.warn('[generate] PDF failed:', (e as Error).message);
+  }
+
+  // A failed free re-fetch must not cost the customer their PDF. Falling back
+  // to ?vin= costs one charge — the same as before this change — and only when
+  // the free path actually failed, which the api_call_log will show.
+  if (!pdfBuffer && canReuse) {
+    console.warn('[generate] free PDF re-fetch failed — falling back to charged ?vin= call');
+    try {
+      pdfBuffer = await withTimeout(clearvinReportPDF(vin), 15000, 'ClearVin PDF fallback');
+    } catch (e) {
+      console.warn('[generate] PDF fallback failed too:', (e as Error).message);
+    }
   }
 
   // Grade
@@ -148,6 +176,16 @@ export async function generateReportAndEmail(
      WHERE id=$6`,
     grade, score, colour, JSON.stringify(processedData), pdfBuffer ? Buffer.from(pdfBuffer) : null, reportId
   );
+  // Stored separately for the same reason as grade_label — and non-fatal: a
+  // missing id costs a future charged re-fetch, never the report itself.
+  if (clearvinReportId) {
+    try {
+      await prisma.$executeRawUnsafe(
+        `UPDATE reports SET clearvin_report_id = $1 WHERE id = $2`, clearvinReportId, reportId
+      );
+    } catch (e) { console.warn('[generate] clearvin_report_id set failed (non-fatal):', (e as Error).message); }
+  }
+
   // Set grade_label separately (proven to fail when combined in the write above)
   try {
     await prisma.$executeRawUnsafe(

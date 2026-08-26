@@ -52,8 +52,97 @@ export async function clearvinPreview(vin: string) {
   return data.result;
 }
 
-// Fetch just the HTML report (fast)
-export async function clearvinReportHTML(vin: string): Promise<string> {
+// ClearVin's report id as embedded in the HTML response: 8 hex chars. This is
+// the String_ID column in their activity export, NOT the numeric Report_ID.
+const REPORT_ID_RE = /^[0-9A-F]{8}$/i;
+
+/** Walks a parsed object for a `reportId` that passes REPORT_ID_RE. */
+function deepFindReportId(node: unknown, depth = 0): string | null {
+  if (node == null || depth > 8) return null;
+  if (Array.isArray(node)) {
+    for (const v of node) {
+      const found = deepFindReportId(v, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (typeof node === 'object') {
+    for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
+      if (k === 'reportId' && typeof v === 'string' && REPORT_ID_RE.test(v.trim())) {
+        return v.trim().toUpperCase();
+      }
+      const found = deepFindReportId(v, depth + 1);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+/**
+ * Pulls ClearVin's reportId out of an HTML report response.
+ *
+ * Capturing this is the whole point of the fix: with it, the PDF can be
+ * re-fetched via ?reportId= for free instead of ?vin=, which mints and charges
+ * a second full report. 39% of charges over Jul-Aug were exactly that.
+ *
+ * Deliberately layered rather than one regex. A previous attempt in this file
+ * matched `data-report-id="..."`, was typed `string | null`, was never wired to
+ * anything, and got deleted as dead code — it had never been validated against
+ * a real response. Each layer below is independent, so a change to ClearVin's
+ * markup degrades one layer rather than the whole thing.
+ *
+ * Returns null rather than throwing on ANY failure. A missed optimisation is
+ * a charged PDF; a thrown error is a customer with no report.
+ */
+export function extractReportId(html: string): string | null {
+  if (!html) return null;
+
+  try {
+    // 1. JSON embedded in a script tag (__NEXT_DATA__ and friends).
+    const scripts = html.matchAll(
+      /<script[^>]*type=["']application\/json["'][^>]*>([\s\S]*?)<\/script>/gi
+    );
+    for (const m of scripts) {
+      try {
+        const found = deepFindReportId(JSON.parse(m[1]));
+        if (found) return found;
+      } catch { /* next script */ }
+    }
+
+    // 2. Percent-encoded JSON, typically in an attribute value.
+    for (const m of html.matchAll(/%7B[^"'\s<>]*%7D/gi)) {
+      try {
+        const found = deepFindReportId(JSON.parse(decodeURIComponent(m[0])));
+        if (found) return found;
+      } catch { /* next blob */ }
+    }
+
+    // 3. HTML-entity-encoded JSON in an attribute (Inertia-style data-page).
+    for (const m of html.matchAll(/=["'](\{&quot;[\s\S]*?\})["']/gi)) {
+      try {
+        const decoded = m[1]
+          .replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'");
+        const found = deepFindReportId(JSON.parse(decoded));
+        if (found) return found;
+      } catch { /* next attribute */ }
+    }
+
+    // 4. Last resort: the key/value pair anywhere in the decoded document.
+    let flat = html;
+    try { flat = decodeURIComponent(html); } catch { /* keep raw */ }
+    const direct = flat.match(/["']?reportId["']?\s*[:=]\s*["']?([0-9A-F]{8})\b/i);
+    if (direct && REPORT_ID_RE.test(direct[1])) return direct[1].toUpperCase();
+  } catch (e) {
+    console.warn('[clearvin] reportId extraction threw (non-fatal):', (e as Error).message);
+  }
+
+  return null;
+}
+
+// Fetch just the HTML report (fast). Returns the reportId alongside it so the
+// PDF can be re-fetched free — see extractReportId above.
+export async function clearvinReportHTML(vin: string): Promise<{ html: string; reportId: string | null }> {
   const token = await clearvinGetToken();
   console.log('[clearvin] Fetching HTML for VIN:', vin);
 
@@ -99,9 +188,55 @@ export async function clearvinReportHTML(vin: string): Promise<string> {
     throw new Error('ClearVin returned an empty report');
   }
 
-  console.log('[clearvin] HTML OK — raw:', raw.length, '| text:', textContent.length);
+  // Extracted from the RAW response, not the unwrapped html: if a JSON wrapper
+  // came back, the id may live in the envelope rather than the markup.
+  const reportId = extractReportId(raw) ?? extractReportId(html);
+  if (reportId) {
+    console.log('[clearvin] HTML OK — raw:', raw.length, '| text:', textContent.length, '| reportId:', reportId);
+  } else {
+    // Loud, because it means the PDF below falls back to a CHARGED ?vin= call.
+    console.warn('[clearvin] HTML OK but NO reportId extracted — PDF will be charged. raw:', raw.length);
+  }
   await logApiCall('clearvin', 'report_html', true);
-  return html;
+  return { html, reportId };
+}
+
+/**
+ * Re-fetches an already-purchased report's PDF by its ClearVin report id.
+ *
+ * Per ClearVin's API docs this is FREE, where ?vin= generates and charges a new
+ * report. That distinction is the entire fix.
+ *
+ * Caveat worth keeping in mind: a 200 here proves the right bytes came back, it
+ * does NOT prove the call went unbilled. Only ClearVin's next activity export
+ * settles that — hence the CLEARVIN_REUSE_REPORT_ID kill switch below.
+ */
+export async function clearvinReportPDFById(reportId: string): Promise<ArrayBuffer | null> {
+  const token = await clearvinGetToken();
+  console.log('[clearvin] Fetching PDF by reportId (free path):', reportId);
+  const res = await fetch(`${CLEARVIN_BASE}/report?reportId=${encodeURIComponent(reportId)}&format=pdf`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    console.warn('[clearvin] PDF-by-reportId failed:', res.status);
+    await logApiCall('clearvin', 'report_pdf_by_id', false, `PDF by reportId failed: ${res.status}`);
+    return null;
+  }
+  const pdf = await res.arrayBuffer();
+  console.log('[clearvin] PDF (by reportId) size:', pdf?.byteLength);
+  await logApiCall('clearvin', 'report_pdf_by_id', true);
+  return pdf;
+}
+
+/**
+ * Kill switch for the free re-fetch path.
+ *
+ * Billing cannot be confirmed from our side until the next activity export. If
+ * that export shows ?reportId= being charged after all, setting this to 'false'
+ * reverts to the old charged-by-VIN behaviour instantly, with no deploy.
+ */
+export function reportIdReuseEnabled(): boolean {
+  return process.env.CLEARVIN_REUSE_REPORT_ID !== 'false';
 }
 
 // Fetch just the PDF (slower, separate call)
