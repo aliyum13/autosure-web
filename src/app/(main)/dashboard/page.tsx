@@ -21,7 +21,7 @@ interface OrderRow {
   has_pdf: boolean;
 }
 
-async function getDashboardData(email: string) {
+async function getDashboardData(email: string, accountId: string) {
   const [creditRows, orderRows] = await Promise.all([
     prisma.$queryRawUnsafe(
       `SELECT COALESCE(SUM(credits_total - credits_used), 0) AS available
@@ -34,9 +34,12 @@ async function getDashboardData(email: string) {
               r.id AS report_id, r.status AS report_status, (r.pdf_data IS NOT NULL) AS has_pdf
        FROM orders o
        LEFT JOIN reports r ON r.order_id = o.id
-       WHERE LOWER(o.guest_email) = LOWER($1)
+       -- Both paths deliberately. user_id is the reliable link going forward;
+       -- the email match still covers anything migration 015 could not attach,
+       -- such as an order placed under an address the customer later changed.
+       WHERE o.user_id = $2 OR LOWER(o.guest_email) = LOWER($1)
        ORDER BY o.created_at DESC`,
-      email
+      email, accountId
     ) as Promise<OrderRow[]>,
   ]);
 
@@ -93,7 +96,7 @@ async function getReferralSummary(accountId: string, email: string) {
 
 export default async function DashboardPage() {
   const session = await verifySession();
-  const { creditsRemaining, orders } = await getDashboardData(session.email);
+  const { creditsRemaining, orders } = await getDashboardData(session.email, session.userId);
   const referral = await getReferralSummary(session.userId, session.email);
 
   return (

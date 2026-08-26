@@ -39,6 +39,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: phoneCheck.reason || 'A valid WhatsApp number is required.' }, { status: 400 });
     }
 
+    // Resolved once, up front: all three purchase paths below attribute the
+    // order to the account. orders.user_id was NULL everywhere, so a customer's
+    // orders were tied to their account only by matching guest_email — and a
+    // mistyped address silently orphaned the order from their dashboard and
+    // their credits.
+    const session = await getSession();
+    const accountId = session?.userId ?? null;
+
     // ---- Bundle credit: if this email has an unused credit, use it instead of charging ----
     if (email?.trim()) {
       const emailLower = email.trim().toLowerCase();
@@ -65,8 +73,8 @@ export async function POST(req: NextRequest) {
           await prisma.$executeRawUnsafe(`
             INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, payment_status,
                                guest_name, guest_email, guest_phone, bundle_id, bundle_count, paid_at, created_at, updated_at)
-            VALUES ($1, NULL, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'credit', 1, NOW(), NOW(), NOW())
-          `, orderId, upperVin, reference, name.trim(), emailLower, phone?.trim() || null);
+            VALUES ($1, $7, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'credit', 1, NOW(), NOW(), NOW())
+          `, orderId, upperVin, reference, name.trim(), emailLower, phone?.trim() || null, accountId);
 
           const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
           const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -132,7 +140,6 @@ export async function POST(req: NextRequest) {
     // keys off the email TYPED into the form, which is fine for credits the
     // same person bought — but here it would let anyone drain a stranger's
     // balance just by typing their address at checkout.
-    const session = await getSession();
     if (session?.email) {
       // The entire branch is fault-isolated. A problem with the referral wallet
       // — an unavailable table, a bad query, anything — must never stop a
@@ -169,8 +176,8 @@ export async function POST(req: NextRequest) {
           await prisma.$executeRawUnsafe(`
             INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, payment_status,
                                guest_name, guest_email, guest_phone, bundle_id, bundle_count, paid_at, created_at, updated_at)
-            VALUES ($1, NULL, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'referral_earnings', 1, NOW(), NOW(), NOW())
-          `, orderId, upperVin, reference, name.trim(), buyerEmail, phone?.trim() || null);
+            VALUES ($1, $7, $2, 0, $3, 'SUCCESS', $4, $5, $6, 'referral_earnings', 1, NOW(), NOW(), NOW())
+          `, orderId, upperVin, reference, name.trim(), buyerEmail, phone?.trim() || null, accountId);
 
           const reportId = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
           const shareToken = `share_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -287,9 +294,9 @@ export async function POST(req: NextRequest) {
     await prisma.$executeRawUnsafe(`
       INSERT INTO orders (id, user_id, vin, amount_ngn, paystack_reference, paystack_access_code, 
                          payment_status, guest_name, guest_email, guest_phone, bundle_id, bundle_count, created_at, updated_at)
-      VALUES ($1, NULL, $2, $3, $4, $5, 'PENDING', $6, $7, $8, $9, $10, NOW(), NOW())
+      VALUES ($1, $11, $2, $3, $4, $5, 'PENDING', $6, $7, $8, $9, $10, NOW(), NOW())
     `, id, upperVin, priceKobo, reference, paystackData.data.access_code || null,
-       name.trim(), email.trim().toLowerCase(), phone?.trim() || null, bundleKey, bundle.count);
+       name.trim(), email.trim().toLowerCase(), phone?.trim() || null, bundleKey, bundle.count, accountId);
 
     // Record referral if code provided
     if (ref_code) {
