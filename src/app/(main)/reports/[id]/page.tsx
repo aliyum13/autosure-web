@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download, ExternalLink, FileText } from 'lucide-react';
+import { Loader2, Copy, Share2, Printer, ArrowLeft, X, ChevronLeft, ChevronRight, Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Cookies from 'js-cookie';
 
@@ -29,26 +29,32 @@ interface Report {
 
 // Renders the stored PDF (reports.pdf_data, served by /api/reports/[id]/pdf).
 //
-// <object> natively falls back to its children when the browser can't display
-// the embedded type, which covers mobile browsers without user-agent sniffing.
-// But the "Open PDF" button below is rendered ALWAYS, not only in that
-// fallback: iOS Safari sometimes paints <object> as a blank box *without*
-// triggering fallback, and the whole point of this view is to stop customers
-// seeing a blank screen. A guaranteed working action beats a clever embed.
+// The embed URL is deliberately BARE. That route now returns
+// `Content-Disposition: inline` by default and `attachment` only for
+// ?download=1, so the <object> can actually render.
+//
+// Historical note worth keeping: the route hardcoded `attachment` from its
+// first commit, which made inline rendering impossible regardless of markup.
+// The resulting blank box was misread as an iOS Safari quirk, and the
+// always-visible "Open Report PDF" button below was built to work around it.
+// The button is retained for now — it is still genuinely useful on browsers
+// with no PDF viewer — but its original justification was wrong, and it is a
+// candidate for removal once inline rendering is confirmed on a real device.
 function ReportPdfView({ id, vin }: { id: string; vin: string }) {
-  const pdfUrl = `/api/reports/${id}/pdf`;
+  const pdfUrl = `/api/reports/${id}/pdf`;          // inline — for the embed
+  const pdfDownloadUrl = `${pdfUrl}?download=1`;    // attachment — for buttons
 
   return (
     <div className="flex-1 flex flex-col">
       <div className="max-w-4xl w-full mx-auto px-4 pt-4 print:hidden">
-        <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="block">
+        <a href={pdfDownloadUrl} target="_blank" rel="noopener noreferrer" className="block">
           <Button className="w-full sm:w-auto bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
-            <ExternalLink className="w-4 h-4" />
-            Open Report PDF
+            <Download className="w-4 h-4" />
+            Download PDF
           </Button>
         </a>
         <p className="text-xs text-ch-text-muted mt-2">
-          Trouble viewing the report below? Tap &ldquo;Open Report PDF&rdquo; to view or download it directly.
+          Trouble viewing the report below? Tap &ldquo;Download PDF&rdquo; to save it to your device.
         </p>
       </div>
 
@@ -58,12 +64,12 @@ function ReportPdfView({ id, vin }: { id: string; vin: string }) {
           <FileText className="w-12 h-12 text-ch-text-muted mx-auto mb-3" />
           <h2 className="font-semibold text-ch-text mb-1">Your report is ready</h2>
           <p className="text-sm text-ch-text-secondary mb-5">
-            {vin} — your browser can&apos;t show the PDF inline, but you can open it here.
+            {vin} — your browser can&apos;t show the PDF inline, so download it instead.
           </p>
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+          <a href={pdfDownloadUrl} target="_blank" rel="noopener noreferrer">
             <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
               <Download className="w-4 h-4" />
-              Open Report PDF
+              Download PDF
             </Button>
           </a>
         </div>
@@ -263,7 +269,7 @@ export default function ReportPage() {
 
             {/* Action buttons — icon-only on mobile, icon+label on desktop */}
             <div className="flex items-center gap-1.5 shrink-0">
-              <a href={`/api/reports/${id}/pdf`} target="_blank" rel="noopener noreferrer">
+              <a href={`/api/reports/${id}/pdf?download=1`} target="_blank" rel="noopener noreferrer">
                 <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-1.5 px-2 sm:px-3">
                   <Download className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline text-xs">Download PDF</span>
