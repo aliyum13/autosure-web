@@ -1,4 +1,9 @@
 import { logApiCall } from '@/lib/apiLog';
+// Extraction lives in its own dependency-free module so it can be validated
+// against real stored HTML without a live API call — see scripts/.
+import { extractReportId } from '@/lib/reportId';
+
+export { extractReportId };
 
 const CLEARVIN_BASE = 'https://www.clearvin.com/rest/vendor';
 
@@ -50,94 +55,6 @@ export async function clearvinPreview(vin: string) {
   }
   await logApiCall('clearvin', 'preview', true);
   return data.result;
-}
-
-// ClearVin's report id as embedded in the HTML response: 8 hex chars. This is
-// the String_ID column in their activity export, NOT the numeric Report_ID.
-const REPORT_ID_RE = /^[0-9A-F]{8}$/i;
-
-/** Walks a parsed object for a `reportId` that passes REPORT_ID_RE. */
-function deepFindReportId(node: unknown, depth = 0): string | null {
-  if (node == null || depth > 8) return null;
-  if (Array.isArray(node)) {
-    for (const v of node) {
-      const found = deepFindReportId(v, depth + 1);
-      if (found) return found;
-    }
-    return null;
-  }
-  if (typeof node === 'object') {
-    for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
-      if (k === 'reportId' && typeof v === 'string' && REPORT_ID_RE.test(v.trim())) {
-        return v.trim().toUpperCase();
-      }
-      const found = deepFindReportId(v, depth + 1);
-      if (found) return found;
-    }
-  }
-  return null;
-}
-
-/**
- * Pulls ClearVin's reportId out of an HTML report response.
- *
- * Capturing this is the whole point of the fix: with it, the PDF can be
- * re-fetched via ?reportId= for free instead of ?vin=, which mints and charges
- * a second full report. 39% of charges over Jul-Aug were exactly that.
- *
- * Deliberately layered rather than one regex. A previous attempt in this file
- * matched `data-report-id="..."`, was typed `string | null`, was never wired to
- * anything, and got deleted as dead code — it had never been validated against
- * a real response. Each layer below is independent, so a change to ClearVin's
- * markup degrades one layer rather than the whole thing.
- *
- * Returns null rather than throwing on ANY failure. A missed optimisation is
- * a charged PDF; a thrown error is a customer with no report.
- */
-export function extractReportId(html: string): string | null {
-  if (!html) return null;
-
-  try {
-    // 1. JSON embedded in a script tag (__NEXT_DATA__ and friends).
-    const scripts = html.matchAll(
-      /<script[^>]*type=["']application\/json["'][^>]*>([\s\S]*?)<\/script>/gi
-    );
-    for (const m of scripts) {
-      try {
-        const found = deepFindReportId(JSON.parse(m[1]));
-        if (found) return found;
-      } catch { /* next script */ }
-    }
-
-    // 2. Percent-encoded JSON, typically in an attribute value.
-    for (const m of html.matchAll(/%7B[^"'\s<>]*%7D/gi)) {
-      try {
-        const found = deepFindReportId(JSON.parse(decodeURIComponent(m[0])));
-        if (found) return found;
-      } catch { /* next blob */ }
-    }
-
-    // 3. HTML-entity-encoded JSON in an attribute (Inertia-style data-page).
-    for (const m of html.matchAll(/=["'](\{&quot;[\s\S]*?\})["']/gi)) {
-      try {
-        const decoded = m[1]
-          .replace(/&quot;/g, '"').replace(/&amp;/g, '&')
-          .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'");
-        const found = deepFindReportId(JSON.parse(decoded));
-        if (found) return found;
-      } catch { /* next attribute */ }
-    }
-
-    // 4. Last resort: the key/value pair anywhere in the decoded document.
-    let flat = html;
-    try { flat = decodeURIComponent(html); } catch { /* keep raw */ }
-    const direct = flat.match(/["']?reportId["']?\s*[:=]\s*["']?([0-9A-F]{8})\b/i);
-    if (direct && REPORT_ID_RE.test(direct[1])) return direct[1].toUpperCase();
-  } catch (e) {
-    console.warn('[clearvin] reportId extraction threw (non-fatal):', (e as Error).message);
-  }
-
-  return null;
 }
 
 // Fetch just the HTML report (fast). Returns the reportId alongside it so the
