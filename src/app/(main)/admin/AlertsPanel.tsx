@@ -30,14 +30,22 @@ const ago = (iso: string) => {
 export default function AlertsPanel() {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
+  // Distinguished from "loaded and healthy". Without this the panel renders
+  // "all probes healthy" whenever the health API itself is unreachable — a
+  // monitor that reports success when it cannot see anything is worse than no
+  // monitor, because it is actively reassuring.
+  const [loadFailed, setLoadFailed] = useState(false);
 
   // State set only from async callbacks; `loading` starts true. Same shape as
   // ApiStatsPanel.
   const fetchAlerts = () =>
     fetch('/api/admin/alerts')
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d && !d.error) setData(d); })
-      .catch(() => {})
+      .then((d) => {
+        if (d && !d.error) { setData(d); setLoadFailed(false); }
+        else setLoadFailed(true);
+      })
+      .catch(() => setLoadFailed(true))
       .finally(() => setLoading(false));
 
   useEffect(() => { fetchAlerts(); }, []);
@@ -46,6 +54,21 @@ export default function AlertsPanel() {
     return (
       <div className="bg-white border border-ch-border rounded-xl p-6">
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
+      </div>
+    );
+  }
+
+  if (loadFailed) {
+    return (
+      <div className="border rounded-xl p-6 bg-amber-50 border-amber-200">
+        <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-amber-600" /> System Health
+        </h2>
+        <p className="text-sm text-amber-800">
+          Could not load health status. <strong>This is not the same as healthy</strong> — the
+          monitoring data is unreachable, so there may be active alerts you cannot see here.
+          Check the runtime logs directly.
+        </p>
       </div>
     );
   }
