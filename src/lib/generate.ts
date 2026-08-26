@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db';
 import { clearvinReportHTML, clearvinReportPDF, clearvinReportPDFById, reportIdReuseEnabled } from '@/lib/clearvin';
+import { isVinRejection } from '@/lib/vin';
 import { sendReportReadyEmail, sendTrackedEmail } from '@/lib/email';
 import { checkSuppression } from '@/lib/suppression';
 import { logDeliveryBlock } from '@/lib/deliveryBlock';
@@ -144,7 +145,7 @@ export async function generateReportAndEmail(
     // endpoint ever used the preview's wording, the report would be marked
     // FAILED instead of INVALID_VIN and the admin recovery tool would retry it
     // forever — the exact loop migration 004 exists to prevent.
-    const isPermanentlyInvalid = /\bis\s+(?:not\s+valid|invalid)\b/i.test(clearvinHtmlError || '');
+    const isPermanentlyInvalid = isVinRejection(clearvinHtmlError);
     const status = isPermanentlyInvalid ? 'INVALID_VIN' : 'FAILED';
     console.error(`[generate] ClearVin returned nothing for`, vin, `— marking ${status}`);
     await prisma.$executeRawUnsafe(

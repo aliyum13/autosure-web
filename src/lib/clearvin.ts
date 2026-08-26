@@ -1,4 +1,5 @@
 import { logApiCall } from '@/lib/apiLog';
+import { isVinRejection } from '@/lib/vin';
 // Extraction lives in its own dependency-free module so it can be validated
 // against real stored HTML without a live API call — see scripts/.
 import { extractReportId } from '@/lib/reportId';
@@ -50,8 +51,24 @@ export async function clearvinPreview(vin: string) {
   });
   const data = await res.json();
   if (data.status !== 'ok') {
-    await logApiCall('clearvin', 'preview', false, data.message || 'ClearVin preview failed');
-    throw new Error(data.message || 'ClearVin preview failed');
+    const message = data.message || 'ClearVin preview failed';
+
+    // A rejected VIN is NOT a dependency failure. ClearVin answered correctly;
+    // the answer was "no such vehicle". Logging it as a failure made the
+    // healthcheck's dependency rule fire on an ordinary afternoon of customers
+    // mistyping VINs — and an alert that cries wolf is one that gets muted.
+    //
+    // Recorded as its own operation with success = true: the call worked, and
+    // the message preserves what ClearVin actually said. Genuine transport,
+    // auth and 5xx failures still land on 'preview' as failures.
+    if (isVinRejection(message)) {
+      await logApiCall('clearvin', 'preview_vin_rejected', true, message);
+    } else {
+      await logApiCall('clearvin', 'preview', false, message);
+    }
+
+    // Throws either way — the caller's NHTSA fallback is unchanged.
+    throw new Error(message);
   }
   await logApiCall('clearvin', 'preview', true);
   return data.result;
