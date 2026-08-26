@@ -10,6 +10,7 @@ import CompReportPanel from './CompReportPanel';
 import ApiStatsPanel from './ApiStatsPanel';
 import UndeliveredPanel from './UndeliveredPanel';
 import ClearVinCreditsPanel from './ClearVinCreditsPanel';
+import AlertsPanel from './AlertsPanel';
 
 interface ReferralCode {
   id: string;
@@ -163,6 +164,10 @@ export default function AdminPanel() {
           <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">Admin</p>
           <h1 className="text-2xl font-bold text-ch-text">Referral Management</h1>
         </div>
+
+        {/* Health first: if something is broken, nothing else on this page
+            matters until it isn't. */}
+        <AlertsPanel />
 
         {/* Credit warning sits above everything — a low-balance alert below the
             fold is worthless, and running out silently stops all generation. */}
