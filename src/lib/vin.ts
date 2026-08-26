@@ -53,3 +53,17 @@ export function validateVIN(vin: string): { valid: boolean; reason?: string; che
 export function isValidVIN(vin: string): boolean {
   return validateVIN(vin).valid;
 }
+
+/**
+ * True when a ClearVin error means "this VIN is not in our data", as opposed to
+ * "ClearVin is having a problem".
+ *
+ * The two endpoints word it differently — the report endpoint returns
+ * "Vin ... is not valid" while the preview endpoint returns "Vin ... is
+ * invalid", both observed in api_call_log for the same VIN — so the pattern
+ * accepts either. Extracted here so the report path and the preview path cannot
+ * drift apart in what they consider a rejection.
+ */
+export function isVinRejection(message: string | null | undefined): boolean {
+  return /\bis\s+(?:not\s+valid|invalid)\b/i.test(message || '');
+}

@@ -111,6 +111,11 @@ export async function GET(req: NextRequest) {
               COUNT(*) FILTER (WHERE NOT success)::int AS failures
        FROM api_call_log
        WHERE created_at > NOW() - INTERVAL '15 minutes'
+         -- Excluded from BOTH sides of the ratio, not just the numerator.
+         -- A rejected VIN says nothing about ClearVin's health, so counting it
+         -- as an attempt would inflate the denominator and mask a real outage
+         -- during busy periods.
+         AND operation <> 'preview_vin_rejected'
        GROUP BY service
        HAVING COUNT(*) >= 3 AND COUNT(*) FILTER (WHERE NOT success) * 2 > COUNT(*)`
     ) as Array<{ service: string; attempts: number; failures: number }>;
