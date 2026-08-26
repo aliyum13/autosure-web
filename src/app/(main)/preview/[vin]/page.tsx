@@ -38,6 +38,7 @@ type VehiclePreview = {
   insurance_records?: number;
   lien_records?: number;
   source?: string;
+  fallback_reason?: 'vin_rejected' | 'no_records' | 'error';
 };
 
 const BUNDLES = [
@@ -60,6 +61,17 @@ export default function PreviewPage() {
   // session-gated and returns 401 when signed out — silently ignored, since
   // checkout must keep working for guests.
   const [earningsKobo, setEarningsKobo] = useState(0);
+
+  // The ISO 3779 check digit was already being computed by validateVIN and
+  // thrown away — nothing in the app read it. It is the one signal available
+  // for free, before any network call, that distinguishes a mistyped VIN from
+  // a real vehicle our provider simply does not hold.
+  const [checkDigitOk, setCheckDigitOk] = useState<boolean | null>(null);
+  useEffect(() => {
+    import('@/lib/vin')
+      .then(({ validateVIN }) => setCheckDigitOk(validateVIN(vin).checkDigitValid ?? null))
+      .catch(() => {});
+  }, [vin]);
 
   useEffect(() => {
     fetch('/api/referral/me')
@@ -225,7 +237,46 @@ export default function PreviewPage() {
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
 
         {/* Header card */}
-        {preview.source === 'nhtsa' && (
+        {/* Three states, not one. The old notice fired identically whether the
+            customer had mistyped a character or was looking up a genuine import
+            our provider has no records for — so the only recoverable case was
+            buried in wording about neither. */}
+        {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk === false && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+            <span className="text-lg shrink-0">🛑</span>
+            <div>
+              <p className="text-sm font-semibold text-red-800 mb-1">
+                This VIN looks mistyped — a report probably can&apos;t be generated
+              </p>
+              <p className="text-xs text-red-700 leading-relaxed">
+                Our data provider rejected <span className="font-mono font-semibold">{vin}</span> as invalid, and its
+                built-in checksum doesn&apos;t match either. Together that almost always means a character was typed
+                wrong. Compare it against your vehicle&apos;s VIN plate — <strong>0 and O, 1 and I, 5 and S, 8 and B</strong>{' '}
+                are the usual culprits. If you buy now and no report can be produced, you&apos;ll need to contact us
+                for a refund.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk !== false && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+            <span className="text-lg shrink-0">⚠️</span>
+            <div>
+              <p className="text-sm font-semibold text-amber-800 mb-1">
+                Our provider has no record of this vehicle
+              </p>
+              <p className="text-xs text-amber-700 leading-relaxed">
+                The VIN itself looks structurally valid, but our data provider doesn&apos;t recognise it. That usually
+                means the vehicle was never registered in the United States — imports from Japan and Europe often
+                aren&apos;t covered. The details above come from a basic VIN decode only, and a full history report
+                likely cannot be generated for this vehicle.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {preview.source === 'nhtsa' && preview.fallback_reason !== 'vin_rejected' && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
             <span className="text-lg shrink-0">⚠️</span>
             <div>
