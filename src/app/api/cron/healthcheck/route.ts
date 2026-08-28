@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { raiseAlert, resolveAlert } from '@/lib/alerts';
+import { API_SERVICES } from '@/lib/apiLog';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -115,16 +116,29 @@ export async function GET(req: NextRequest) {
          -- A rejected VIN says nothing about ClearVin's health, so counting it
          -- as an attempt would inflate the denominator and mask a real outage
          -- during busy periods.
-         AND operation <> 'preview_vin_rejected'
+         AND operation NOT IN ('preview_vin_rejected', 'initialize_rejected')
        GROUP BY service
        HAVING COUNT(*) >= 3 AND COUNT(*) FILTER (WHERE NOT success) * 2 > COUNT(*)`
     ) as Array<{ service: string; attempts: number; failures: number }>;
 
-    for (const d of deps) {
+    // Push a result for EVERY service, not only the failing ones.
+    //
+    // This was the bug that left dependency_clearvin open for eight hours while
+    // every run logged "all 4 probes healthy": the query above returns only
+    // services currently over the threshold, so a recovered service had no
+    // entry in `results` at all — and the resolve loop below iterates
+    // `results`. With nothing to iterate, resolveAlert() was never called and
+    // the alert could never close. An alert that cannot clear is worse than no
+    // alert, because the panel stops meaning anything.
+    const failing = new Map(deps.map((d) => [d.service, d]));
+    for (const service of API_SERVICES) {
+      const d = failing.get(service);
       results.push({
-        probe: `dependency_${d.service}`,
-        ok: false,
-        detail: `${d.failures}/${d.attempts} calls failed in the last 15 minutes`,
+        probe: `dependency_${service}`,
+        ok: !d,
+        detail: d
+          ? `${d.failures}/${d.attempts} calls failed in the last 15 minutes`
+          : 'no elevated failure rate in the last 15 minutes',
       });
     }
 
@@ -144,15 +158,15 @@ export async function GET(req: NextRequest) {
     // Every run is recorded, not just failures. A cron that silently stops is
     // indistinguishable from everything being fine — which is the failure mode
     // most likely to recur unnoticed — so the admin panel checks this heartbeat.
-    const failing = results.filter((r) => !r.ok).length;
+    const failingCount = results.filter((r) => !r.ok).length;
     await prisma.$executeRawUnsafe(
       `INSERT INTO cron_run_log (id, job, rows_deleted, note, created_at)
        VALUES ($1, 'healthcheck', 0, $2, NOW())`,
       `cron_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      failing === 0 ? `all ${results.length} probes healthy` : `${failing} of ${results.length} FAILING`
+      failingCount === 0 ? `all ${results.length} probes healthy` : `${failingCount} of ${results.length} FAILING`
     );
 
-    return NextResponse.json({ ok: failing === 0, raised, resolved, results });
+    return NextResponse.json({ ok: failingCount === 0, raised, resolved, results });
   } catch (e) {
     console.error('[cron] healthcheck failed:', e);
     // The monitor failing is itself worth an alert — otherwise the thing
