@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearvinPreview } from '@/lib/clearvin';
+import { isVinRejection } from '@/lib/vin';
 
 export async function GET(
   _req: NextRequest,
@@ -63,6 +64,21 @@ export async function GET(
   } catch (clearvinError) {
     console.warn('ClearVin preview failed, falling back to NHTSA:', clearvinError);
 
+    // WHY the fallback happened, not just that it did.
+    //
+    // These were indistinguishable to the UI, so a mistyped VIN and a genuine
+    // vehicle outside US records produced the same generic notice. Only the
+    // first is something the customer can fix, and it is the one that ends in
+    // a paid report ClearVin refuses to generate and a manual refund.
+    //
+    //   vin_rejected — ClearVin explicitly said the VIN is invalid
+    //   no_records   — ClearVin answered, but holds nothing for this vehicle
+    //   error        — transport, auth, timeout: says nothing about the VIN
+    const message = (clearvinError as Error)?.message || '';
+    const fallbackReason = isVinRejection(message)
+      ? 'vin_rejected'
+      : /no\s+records|not\s+found/i.test(message) ? 'no_records' : 'error';
+
     // Fallback to NHTSA
     try {
       const res = await fetch(
@@ -91,6 +107,7 @@ export async function GET(
         images_count: 0,
         msrp: null,
         source: 'nhtsa',
+        fallback_reason: fallbackReason,
       });
     } catch {
       return NextResponse.json({ error: 'Could not retrieve vehicle data.' }, { status: 500 });

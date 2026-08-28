@@ -11,6 +11,7 @@ import ApiStatsPanel from './ApiStatsPanel';
 import UndeliveredPanel from './UndeliveredPanel';
 import ClearVinCreditsPanel from './ClearVinCreditsPanel';
 import AlertsPanel from './AlertsPanel';
+import RefundsPanel from './RefundsPanel';
 
 interface ReferralCode {
   id: string;
@@ -168,6 +169,9 @@ export default function AdminPanel() {
         {/* Health first: if something is broken, nothing else on this page
             matters until it isn't. */}
         <AlertsPanel />
+
+        {/* Money owed to customers ranks above operational warnings. */}
+        <RefundsPanel />
 
         {/* Credit warning sits above everything — a low-balance alert below the
             fold is worthless, and running out silently stops all generation. */}
