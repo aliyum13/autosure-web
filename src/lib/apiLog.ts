@@ -1,6 +1,10 @@
 import { prisma } from '@/lib/db';
 
-export type ApiService = 'clearvin' | 'paystack' | 'resend';
+// Runtime list, not just a type: the healthcheck must ENUMERATE services to
+// decide which are healthy. Deriving the type from the array keeps the two from
+// drifting when a service is added.
+export const API_SERVICES = ['clearvin', 'paystack', 'resend'] as const;
+export type ApiService = typeof API_SERVICES[number];
 
 const MAX_ERROR_LENGTH = 500;
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { validateVIN } from '@/lib/vin';
 import { validatePhone } from '@/lib/phone';
+import { isValidEmail } from '@/lib/emailValidation';
 import { getSession } from '@/lib/dal';
 import { getReferralBalance, spendReferralBalance, refundReferralBalance } from '@/lib/referral';
 import { generateReportAndEmail } from '@/lib/generate';
@@ -22,8 +23,13 @@ export async function POST(req: NextRequest) {
     if (!name?.trim()) {
       return NextResponse.json({ error: 'Full name is required.' }, { status: 400 });
     }
-    if (!email?.trim() || !email.includes('@')) {
-      return NextResponse.json({ error: 'Valid email address is required.' }, { status: 400 });
+    // includes('@') accepted "a@", "@" and "x@y". Those reached Paystack, which
+    // rejected them with "Invalid Email Address Passed" — logged as a Paystack
+    // FAILURE, so a bot hammering checkout with a malformed address tripped the
+    // dependency alert without ever touching a real customer. Rejecting here
+    // means no outbound call, no log entry, and no alert.
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
     }
     // Guards both branches below (bundle credit and Paystack), which each
     // persist guest_phone. It's the fallback delivery channel for a customer
@@ -263,7 +269,16 @@ export async function POST(req: NextRequest) {
 
     const paystackData = await paystackRes.json();
     if (!paystackData.status || !paystackData.data?.authorization_url) {
-      await logApiCall('paystack', 'initialize', false, paystackData.message || 'no authorization_url returned');
+      // Same distinction as preview_vin_rejected: Paystack phrases client-input
+      // errors as "Invalid <thing> Passed". That is Paystack working correctly
+      // and rejecting something we sent, not Paystack being unhealthy, so it
+      // must not count toward the dependency failure rate.
+      const psMessage = paystackData.message || 'no authorization_url returned';
+      if (/^invalid .+ passed$/i.test(psMessage)) {
+        await logApiCall('paystack', 'initialize_rejected', true, psMessage);
+      } else {
+        await logApiCall('paystack', 'initialize', false, psMessage);
+      }
       return NextResponse.json({ error: 'Could not initiate payment.' }, { status: 502 });
     }
     await logApiCall('paystack', 'initialize', true);
