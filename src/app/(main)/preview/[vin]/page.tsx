@@ -73,13 +73,6 @@ export default function PreviewPage() {
       .catch(() => {});
   }, [vin]);
 
-  useEffect(() => {
-    fetch('/api/referral/me')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.balance_kobo) setEarningsKobo(d.balance_kobo); })
-      .catch(() => {});
-  }, []);
-
   const checkCredits = async (email: string) => {
     if (!email || !email.includes('@')) { setAvailableCredits(0); return; }
     try {
@@ -88,6 +81,38 @@ export default function PreviewPage() {
       setAvailableCredits(data.credits || 0);
     } catch { setAvailableCredits(0); }
   };
+
+  // Who is buying, if anyone is signed in. Drives prefill AND the warning
+  // below: orders are attributed to the account, so sending the report to a
+  // different address deliberately detaches it from their dashboard.
+  const [accountEmail, setAccountEmail] = useState<string | null>(null);
+  const [editingEmail, setEditingEmail] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/referral/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.balance_kobo) setEarningsKobo(d.balance_kobo); })
+      .catch(() => {});
+
+    // 401 when signed out, ignored — guest checkout must keep working exactly
+    // as before, with an empty form.
+    fetch('/api/account/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d?.signedIn || !d.email) return;
+        setAccountEmail(d.email);
+        setForm((p) => ({
+          ...p,
+          // Never clobber anything already typed.
+          name: p.name || d.name || '',
+          email: p.email || d.email,
+          phone: p.phone || d.phone || '',
+        }));
+        checkCredits(d.email);
+      })
+      .catch(() => {});
+  }, []);
+
   const [refValid, setRefValid] = useState<boolean | null>(null);
   const [ordering, setOrdering] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
@@ -425,7 +450,21 @@ export default function PreviewPage() {
                   <Label className="text-xs text-slate-500 uppercase tracking-wide">EMAIL ADDRESS <span className="text-red-500">* REQUIRED</span></Label>
                   <Input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
                     onBlur={(e) => checkCredits(e.target.value)}
-                    placeholder="yourname@example.com" className="mt-1" />
+                    placeholder="yourname@example.com" className="mt-1"
+                    disabled={!!accountEmail && !editingEmail} />
+                  {accountEmail && !editingEmail && (
+                    <p className="text-xs text-slate-500 mt-1">
+                      Buying as <span className="font-medium text-slate-700">{accountEmail}</span> ·{' '}
+                      <button type="button" onClick={() => setEditingEmail(true)}
+                        className="text-ch-blue underline underline-offset-2">use a different email</button>
+                    </p>
+                  )}
+                  {accountEmail && editingEmail && form.email.trim().toLowerCase() !== accountEmail.toLowerCase() && (
+                    <p className="text-xs text-amber-700 mt-1">
+                      ⚠ This report will be sent to that address and <strong>won&apos;t appear in your dashboard</strong>,
+                      and your credits and earnings won&apos;t apply to it.
+                    </p>
+                  )}
                   {availableCredits === 0 && earningsKobo >= selected.price * 100 && (
                     <div className="bg-green-50 border border-green-100 rounded-lg p-3 mt-3">
                       <p className="text-sm text-green-800 font-medium">
