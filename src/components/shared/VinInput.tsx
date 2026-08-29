@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,6 +30,15 @@ export default function VinInput({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  // The green tick has to mean "this will be accepted", not "this is 17
+  // characters long". Counting alone, a VIN containing O or I looked accepted
+  // right up to the moment submit rejected it — the field actively reassured
+  // the customer about the exact typo it was going to refuse.
+  //
+  // Same soft-signal rule as submit: .valid ignores checkDigitValid, so a real
+  // VIN from a plant that does not conform still shows as fine here.
+  const looksValid = useMemo(() => vin.length === 17 && validateVIN(vin).valid, [vin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,15 +91,15 @@ export default function VinInput({
                 'font-mono w-full border-ch-border focus-visible:ring-ch-blue pr-14',
                 size === 'large' ? 'h-12 text-base' : 'h-10',
                 error && 'border-ch-red focus-visible:ring-ch-red',
-                vin.length === 17 && !error && 'border-green-500 focus-visible:ring-green-500'
+                looksValid && !error && 'border-green-500 focus-visible:ring-green-500'
               )}
             />
             {vin.length > 0 && (
               <span className={cn(
                 'absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold pointer-events-none',
-                vin.length === 17 ? 'text-green-500' : 'text-ch-text-muted'
+                looksValid ? 'text-green-500' : 'text-ch-text-muted'
               )}>
-                {vin.length === 17 ? '✓ 17' : `${vin.length}/17`}
+                {looksValid ? '✓ 17' : `${vin.length}/17`}
               </span>
             )}
           </div>
