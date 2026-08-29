@@ -6,12 +6,17 @@ import { Search, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { validateVIN } from '@/lib/vin';
 
 interface VinInputProps {
   placeholder?: string;
   buttonText?: string;
   className?: string;
   size?: 'default' | 'large';
+  // Sample VINs help a first-time visitor on the homepage try the product.
+  // On the dashboard they are noise to someone who already has their own VIN,
+  // and one misclick runs a check on a demo car instead of theirs.
+  showSamples?: boolean;
 }
 
 export default function VinInput({
@@ -19,6 +24,7 @@ export default function VinInput({
   buttonText = 'Check History',
   className,
   size = 'default',
+  showSamples = true,
 }: VinInputProps) {
   const [vin, setVin] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,12 +39,19 @@ export default function VinInput({
       setError('Please enter a VIN.');
       return;
     }
-    if (cleaned.length !== 17) {
-      setError('VIN must be exactly 17 characters.');
-      return;
-    }
-    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(cleaned)) {
-      setError('Invalid VIN format. VINs only contain letters A-H, J-N, P-Z and numbers.');
+
+    // Shared with the server rather than re-implemented here. The old inline
+    // regex collapsed every bad character into "invalid format"; validateVIN
+    // names the I/O/Q case specifically, which is the 0/O and 1/I confusion
+    // that otherwise ends in a paid report ClearVin refuses to generate.
+    //
+    // checkDigitValid is deliberately IGNORED. It is soft by design — real VINs
+    // from certain plants fail it yet exist in NMVTIS — so blocking on it here
+    // would reject genuine sales. The preview page uses it only where an actual
+    // ClearVin rejection corroborates it.
+    const check = validateVIN(cleaned);
+    if (!check.valid) {
+      setError(check.reason || 'Please enter a valid VIN.');
       return;
     }
 
@@ -103,6 +116,7 @@ export default function VinInput({
         <p className="text-ch-red text-sm mt-2">{error}</p>
       )}
 
+      {showSamples && (
       <div className="flex items-center gap-2 mt-3 flex-wrap">
         <span className="text-xs text-ch-text-muted">Sample VINs:</span>
         {sampleVins.map((v) => (
@@ -116,6 +130,7 @@ export default function VinInput({
           </button>
         ))}
       </div>
+      )}
     </div>
   );
 }
