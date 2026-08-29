@@ -33,10 +33,10 @@ export default function SearchPage() {
       {/* Hero */}
       <div className="relative bg-white border-b border-ch-border py-16 px-4 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-20 right-0 w-80 h-80 bg-blue-50 rounded-full blur-3xl opacity-60" />
+          <div className="absolute -top-20 right-0 w-80 h-80 bg-ch-primary-light rounded-full blur-3xl opacity-60" />
         </div>
         <div className="relative max-w-2xl mx-auto text-center">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-blue bg-ch-blue-light px-3 py-1 rounded-full mb-4 animate-fade-up">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-primary bg-ch-primary-light px-3 py-1 rounded-full mb-4 animate-fade-up">
             USA Vehicle Records
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3 animate-fade-up-delay-1">
@@ -52,12 +52,12 @@ export default function SearchPage() {
               onChange={(e) => { setVin(e.target.value.toUpperCase()); setError(''); }}
               placeholder="Enter VIN — e.g. 1HGCM82633A004352"
               maxLength={17}
-              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-blue text-base shadow-soft"
+              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-primary text-base shadow-soft"
             />
             <Button
               type="submit"
               disabled={loading}
-              className="h-12 px-6 bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift"
+              className="h-12 px-6 bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift"
             >
               {loading
                 ? <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -75,7 +75,7 @@ export default function SearchPage() {
                 key={v}
                 type="button"
                 onClick={() => setVin(v)}
-                className="text-xs font-mono bg-slate-100 hover:bg-ch-blue-light text-ch-text-secondary hover:text-ch-blue px-2 py-1 rounded transition-colors"
+                className="text-xs font-mono bg-slate-100 hover:bg-ch-primary-light text-ch-text-secondary hover:text-ch-primary px-2 py-1 rounded transition-colors"
               >
                 {v}
               </button>

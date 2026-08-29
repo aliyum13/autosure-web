@@ -1,12 +1,18 @@
+// TODO(checkam-content): these are CarHaki's testimonials with the brand name
+// swapped, so two of them now put words about CheckAm into the mouths of named
+// people who never said them — on a page that takes payment. CheckAm has no
+// customers yet, so there is nothing truthful to put here. Decide before launch:
+// pull the section until there are real quotes, or replace it with something
+// that is not attributed social proof (how the data is sourced, the guarantee).
 const testimonials = [
   {
-    quote: "The Tokunbo I was about to buy had a salvage title and had been in two accidents in Texas. CarHaki saved me over ₦2 million. Every Nigerian buying from Benin should use this first.",
+    quote: "The Tokunbo I was about to buy had a salvage title and had been in two accidents in Texas. CheckAm saved me over ₦2 million. Every Nigerian buying from Benin should use this first.",
     name: 'Adebayo Okafor',
     role: 'Lagos, Nigeria',
     initials: 'AO',
   },
   {
-    quote: "I now run a CarHaki check on every car I source from Cotonou. It's made my dealership more professional and my customers trust me. Zero complaints since I started.",
+    quote: "I now run a CheckAm check on every car I source from Cotonou. It's made my dealership more professional and my customers trust me. Zero complaints since I started.",
     name: 'Chukwuemeka Uba',
     role: 'Dealer, Abuja',
     initials: 'CU',
@@ -24,7 +30,7 @@ export default function Testimonials() {
     <section className="bg-slate-50 py-16 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-3">
             Trusted in Nigeria
           </p>
           <h2 className="text-3xl font-bold text-ch-text mb-4">What Our Users Say</h2>
@@ -49,8 +55,8 @@ export default function Testimonials() {
               </div>
               <p className="text-sm text-ch-text-secondary leading-relaxed mb-4">&ldquo;{t.quote}&rdquo;</p>
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-ch-blue-light rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-ch-blue">{t.initials}</span>
+                <div className="w-8 h-8 bg-ch-primary-light rounded-full flex items-center justify-center">
+                  <span className="text-xs font-bold text-ch-primary">{t.initials}</span>
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-ch-text">{t.name}</div>

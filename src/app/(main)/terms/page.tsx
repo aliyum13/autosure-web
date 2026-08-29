@@ -9,11 +9,11 @@ export default function TermsPage() {
           {[
             {
               title: '1. Acceptance of Terms',
-              content: 'By accessing or using CarHaki ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, you may not use the Service.',
+              content: 'By accessing or using CheckAm ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, you may not use the Service.',
             },
             {
               title: '2. Services Provided',
-              content: 'CarHaki provides US Vehicle History Reports for vehicles imported to Nigeria from the United States. Reports are sourced from NMVTIS, NHTSA, US state DMV records, and US insurance databases.',
+              content: 'CheckAm provides US Vehicle History Reports for vehicles imported to Nigeria from the United States. Reports are sourced from NMVTIS, NHTSA, US state DMV records, and US insurance databases.',
             },
             {
               title: '3. Payment & Refunds',
@@ -21,7 +21,7 @@ export default function TermsPage() {
             },
             {
               title: '4. Data Accuracy',
-              content: 'CarHaki provides data in good faith from official US government sources. However, we cannot guarantee that all incidents are recorded in these databases. A clean report does not guarantee a clean vehicle. Always conduct a physical inspection.',
+              content: 'CheckAm provides data in good faith from official US government sources. However, we cannot guarantee that all incidents are recorded in these databases. A clean report does not guarantee a clean vehicle. Always conduct a physical inspection.',
             },
             {
               title: '5. User Accounts',
@@ -29,19 +29,19 @@ export default function TermsPage() {
             },
             {
               title: '6. Prohibited Use',
-              content: 'You may not use CarHaki to: resell, sublicense, redistribute, or share report data with third parties, attempt to circumvent our payment system, use automated tools to scrape our data, modify or alter report content, or use the service for any unlawful purpose.',
+              content: 'You may not use CheckAm to: resell, sublicense, redistribute, or share report data with third parties, attempt to circumvent our payment system, use automated tools to scrape our data, modify or alter report content, or use the service for any unlawful purpose.',
             },
             {
               title: '7. Permitted Use & Data Source',
-              content: 'Vehicle history reports are generated using data licensed from ClearVin and are provided strictly for your personal, internal use in evaluating a specific vehicle purchase. Reports may not be resold, redistributed, published, or used for any commercial purpose. All vehicle history data, branding, and report formatting are the property of ClearVin LLC and are protected by applicable intellectual property and copyright laws. CarHaki displays this data unmodified as licensed from ClearVin.',
+              content: 'Vehicle history reports are generated using data licensed from ClearVin and are provided strictly for your personal, internal use in evaluating a specific vehicle purchase. Reports may not be resold, redistributed, published, or used for any commercial purpose. All vehicle history data, branding, and report formatting are the property of ClearVin LLC and are protected by applicable intellectual property and copyright laws. CheckAm displays this data unmodified as licensed from ClearVin.',
             },
             {
               title: '8. Liability Waiver',
-              content: 'By purchasing and using a CarHaki report, you acknowledge and agree that CarHaki and its data providers (including ClearVin) are not liable for any loss, damage, or claim arising from your reliance on report data, including but not limited to incomplete records, data not yet reported to NMVTIS, or purchasing decisions made using the report. You agree to conduct an independent vehicle inspection before completing any purchase.',
+              content: 'By purchasing and using a CheckAm report, you acknowledge and agree that CheckAm and its data providers (including ClearVin) are not liable for any loss, damage, or claim arising from your reliance on report data, including but not limited to incomplete records, data not yet reported to NMVTIS, or purchasing decisions made using the report. You agree to conduct an independent vehicle inspection before completing any purchase.',
             },
             {
               title: '9. Limitation of Liability',
-              content: 'CarHaki is not liable for any purchasing decisions made based on our reports. We provide information as a tool to assist buyers — the final decision remains with the buyer.',
+              content: 'CheckAm is not liable for any purchasing decisions made based on our reports. We provide information as a tool to assist buyers — the final decision remains with the buyer.',
             },
             {
               title: '10. Governing Law',
@@ -49,7 +49,10 @@ export default function TermsPage() {
             },
             {
               title: '11. Contact',
-              content: 'For questions about these terms: support@carhaki.com | Suite 211, Fabdal Plaza, Wuse Zone 4, Abuja, Nigeria.',
+              // TODO(checkam-legal): address removed — it was CarHaki's, carried
+              // over by the rename. Restore with CheckAm's own registered address
+              // once the entity is formalised. See the same TODO in privacy.
+              content: 'For questions about these terms: checkamafrica@gmail.com',
             },
           ].map((section) => (
             <div key={section.title}>

@@ -156,7 +156,7 @@ export default function ClearVinCreditsPanel() {
         </>
       )}
 
-      {driftMsg && <p className="text-xs text-ch-blue mt-3 bg-white/70 rounded-lg px-3 py-2">{driftMsg}</p>}
+      {driftMsg && <p className="text-xs text-ch-primary mt-3 bg-white/70 rounded-lg px-3 py-2">{driftMsg}</p>}
 
       <div className="mt-4">
         <Button size="sm" variant="outline" onClick={() => setOpen(!open)} className="border-ch-border text-xs gap-1">
@@ -182,7 +182,7 @@ export default function ClearVinCreditsPanel() {
               placeholder="Daria, WhatsApp" className="mt-1" />
           </div>
           <div className="sm:col-span-3 flex items-center gap-3">
-            <Button type="submit" disabled={saving} className="bg-ch-blue hover:bg-ch-blue-dark text-white text-xs gap-1">
+            <Button type="submit" disabled={saving} className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs gap-1">
               {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Record
             </Button>
             <span className="text-xs text-ch-text-muted">

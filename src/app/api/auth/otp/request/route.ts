@@ -31,9 +31,13 @@ export async function POST(req: NextRequest) {
       await logDeliveryBlock({ email, context: 'otp_login', origin: suppression.origin });
       return NextResponse.json(
         {
+          // TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet.
+          // This branch fires exactly when email to the customer is already
+          // failing, so directing them to another inbox is a weak fallback.
+          // It is the only channel CheckAm has today — give this one a real
+          // WhatsApp number first when one exists.
           error: 'We can no longer deliver email to this address, so we cannot send you a code. '
-            + 'Message us on WhatsApp at 0816 869 6869 and we will send your report directly.',
-          whatsapp: 'https://wa.me/2348168696869',
+            + 'Contact us at checkamafrica@gmail.com from another address and we will send your report directly.',
         },
         { status: 403 }
       );

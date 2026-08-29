@@ -46,7 +46,7 @@ const paymentMethods = [
 const faqs = [
   {
     q: 'What if no data is found for my VIN?',
-    a: 'If we cannot retrieve any data for your VIN, we will issue a full refund. Email support@carhaki.com within 24 hours of purchase.',
+    a: 'If we cannot retrieve any data for your VIN, we will issue a full refund. Email checkamafrica@gmail.com within 24 hours of purchase.',
   },
   {
     q: 'How long does a report take?',
@@ -66,7 +66,7 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-ch-bg">
       {/* Hero */}
-      <div className="bg-ch-navy text-white py-14 px-4 text-center">
+      <div className="bg-ch-charcoal text-white py-14 px-4 text-center">
         <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
           Simple, Honest Pricing
         </p>
@@ -82,13 +82,13 @@ export default function PricingPage() {
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="grid sm:grid-cols-3 gap-6 mb-12">
           {/* Single */}
-          <div className="border-2 border-ch-blue rounded-2xl p-6 relative bg-white">
+          <div className="border-2 border-ch-primary rounded-2xl p-6 relative bg-white">
             <div className="absolute -top-3 left-4">
-              <span className="bg-ch-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
+              <span className="bg-ch-primary text-white text-xs font-semibold px-3 py-1 rounded-full">
                 MOST POPULAR
               </span>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1 mt-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1 mt-2">
               US Vehicle Report
             </p>
             <div className="text-4xl font-extrabold text-ch-text mb-0.5">₦15,000</div>
@@ -102,7 +102,7 @@ export default function PricingPage() {
               ))}
             </ul>
             <Link href="/search">
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift">
                 Get Report — ₦15,000
               </Button>
             </Link>
@@ -126,7 +126,7 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Link href="/search">
-                <Button variant="outline" className="w-full border-ch-blue text-ch-blue hover:bg-ch-blue-light">
+                <Button variant="outline" className="w-full border-ch-primary text-ch-primary hover:bg-ch-primary-light">
                   {bundle.cta}
                 </Button>
               </Link>

@@ -8,7 +8,7 @@ const SESSION_COOKIE = 'session';
 // data beyond a flag; the httpOnly `session` cookie above is what every
 // server-side check actually authorizes against. Spoofing this cookie only
 // lets someone see a link that will correctly bounce them at the server.
-const AUTHED_HINT_COOKIE = 'carhaki_authed';
+const AUTHED_HINT_COOKIE = 'checkam_authed';
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // ~30 days, per product call
 

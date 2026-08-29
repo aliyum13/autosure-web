@@ -11,16 +11,16 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-ch-bg">
       {/* Hero */}
-      <div className="bg-ch-navy text-white py-16 px-4 text-center">
+      <div className="bg-ch-charcoal text-white py-16 px-4 text-center">
         <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-          Why &ldquo;CarHaki&rdquo;?
+          Why &ldquo;CheckAm&rdquo;?
         </h1>
         <p className="text-slate-300 max-w-xl mx-auto text-lg leading-relaxed">
           &ldquo;Haki&rdquo; is a Swahili word that means truth, right, and genuineness.
           It carries weight across Africa.
         </p>
         <p className="text-slate-400 max-w-xl mx-auto mt-3">
-          <strong className="text-white">CarHaki</strong> means the genuine truth about your car.
+          <strong className="text-white">CheckAm</strong> means the genuine truth about your car.
           It is that simple.
         </p>
       </div>
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="bg-ch-red-light border border-red-200 rounded-2xl p-6 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-wider text-ch-red mb-3">Our Mission</p>
           <p className="text-lg text-ch-text leading-relaxed">
-            CarHaki was built with one mission: to protect Nigerian Tokunbo buyers from purchasing
+            CheckAm was built with one mission: to protect Nigerian Tokunbo buyers from purchasing
             vehicles with hidden histories, tampered odometers, salvage titles, and undisclosed damage.
           </p>
         </div>
@@ -39,10 +39,10 @@ export default function AboutPage() {
         {/* Vision */}
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-2">Our Vision</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Our Vision</p>
             <h2 className="text-2xl font-bold text-ch-text mb-3">Nigeria first, Africa next</h2>
             <p className="text-ch-text-secondary text-sm leading-relaxed mb-3">
-              CarHaki launched in Nigeria because Nigeria is the largest Tokunbo vehicle market
+              CheckAm launched in Nigeria because Nigeria is the largest Tokunbo vehicle market
               in Africa and buyers have historically had the least protection. But the problem
               exists across the continent.
             </p>
@@ -52,12 +52,12 @@ export default function AboutPage() {
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-2">Data Sources</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Data Sources</p>
             <h2 className="text-2xl font-bold text-ch-text mb-3">Official US government databases</h2>
             <div className="space-y-3">
               {dataSources.map((source) => (
                 <div key={source.name} className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-ch-blue rounded-lg flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 bg-ch-primary rounded-lg flex items-center justify-center shrink-0">
                     <span className="text-white text-xs font-bold">{source.code}</span>
                   </div>
                   <div>
@@ -74,7 +74,7 @@ export default function AboutPage() {
         <div className="bg-white border border-ch-border rounded-2xl p-6 sm:p-8">
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">
                 The Problem in Nigeria
               </p>
               <h3 className="text-xl font-bold text-ch-text mb-3">
@@ -83,7 +83,7 @@ export default function AboutPage() {
               <p className="text-sm text-ch-text-secondary leading-relaxed">
                 Nigeria imports hundreds of thousands of used vehicles from the United States
                 every year — Tokunbo cars that pass through Cotonou, Apapa, and Tin Can Island
-                ports. Before CarHaki, there was no reliable way for a Nigerian buyer to check
+                ports. Before CheckAm, there was no reliable way for a Nigerian buyer to check
                 a car&apos;s history before purchase.
               </p>
             </div>
@@ -108,12 +108,12 @@ export default function AboutPage() {
         </div>
 
         {/* CTA */}
-        <div className="bg-ch-navy rounded-2xl p-8 text-center text-white">
+        <div className="bg-ch-charcoal rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-3">Ready to check your next Tokunbo?</h3>
           <p className="text-slate-400 mb-6">One report. Full truth. ₦15,000.</p>
           <Link
             href="/search"
-            className="inline-block bg-ch-blue hover:bg-ch-blue-dark text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+            className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold px-8 py-3 rounded-lg transition-colors"
           >
             Check a Car Now
           </Link>

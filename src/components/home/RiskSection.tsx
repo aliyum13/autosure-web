@@ -4,7 +4,7 @@ const risks = [
     color: 'bg-orange-50 border-orange-100',
     iconBg: 'bg-orange-100',
     title: 'Mileage Rollback Fraud',
-    description: 'Odometers are wound back before export from the USA. A car showing 60,000 miles may have done 200,000. CarHaki shows the real mileage timeline from official US DMV records.',
+    description: 'Odometers are wound back before export from the USA. A car showing 60,000 miles may have done 200,000. CheckAm shows the real mileage timeline from official US DMV records.',
   },
   {
     icon: '🚗',
@@ -25,23 +25,23 @@ const risks = [
     color: 'bg-yellow-50 border-yellow-100',
     iconBg: 'bg-yellow-100',
     title: 'Open Safety Recalls',
-    description: 'Millions of Tokunbo cars have open NHTSA safety recalls never repaired before export. CarHaki checks every VIN against the national recall database.',
+    description: 'Millions of Tokunbo cars have open NHTSA safety recalls never repaired before export. CheckAm checks every VIN against the national recall database.',
   },
 ];
 
 export default function RiskSection() {
   return (
-    <section className="bg-slate-950 py-20 px-4">
+    <section className="bg-ch-charcoal py-20 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-ch-blue mb-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-ch-primary mb-4">
             Why It Matters
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             The Risks Every Nigerian Tokunbo Buyer Faces
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Dealers know the full history. Buyers know nothing. CarHaki closes that gap.
+            Dealers know the full history. Buyers know nothing. CheckAm closes that gap.
           </p>
         </div>
 

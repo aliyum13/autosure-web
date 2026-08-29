@@ -67,13 +67,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white border border-ch-border rounded-2xl p-8 shadow-soft-lg animate-fade-up">
-        <div className="w-16 h-16 bg-ch-blue/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Mail className="w-8 h-8 text-ch-blue" />
+        <div className="w-16 h-16 bg-ch-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Mail className="w-8 h-8 text-ch-primary" />
         </div>
 
         {step === 'email' ? (
           <>
-            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Log in to CarHaki</h1>
+            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Log in to CheckAm</h1>
             <p className="text-ch-text-secondary text-center mb-6">
               Enter the email you used at checkout — we&apos;ll send you a one-time code.
             </p>
@@ -91,7 +91,7 @@ export default function LoginPage() {
                 />
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading} className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow">
+              <Button type="submit" disabled={loading} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send code'}
               </Button>
             </form>
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 />
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow">
+              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & log in'}
               </Button>
               <button
@@ -135,7 +135,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-ch-text-secondary text-xs text-center mt-6">
-          Need help? <a href="mailto:support@carhaki.com" className="text-ch-blue">support@carhaki.com</a>
+          Need help? <a href="mailto:checkamafrica@gmail.com" className="text-ch-primary">checkamafrica@gmail.com</a>
         </p>
       </div>
     </div>

@@ -52,7 +52,7 @@ export default function ReferralDashboard() {
     );
   }
 
-  const referralLink = `https://carhaki.com/?ref=${stats.code}`;
+  const referralLink = `https://checkamvin.com/?ref=${stats.code}`;
   const paidCommission = stats.total_commission_ngn - stats.unpaid_commission_ngn;
 
   return (
@@ -60,18 +60,18 @@ export default function ReferralDashboard() {
       <div className="max-w-lg mx-auto space-y-6">
 
         {/* Header */}
-        <div className="bg-ch-blue rounded-2xl p-6 text-white">
+        <div className="bg-ch-primary rounded-2xl p-6 text-white">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-blue-100 text-xs font-medium uppercase tracking-wider">CarHaki Partner</p>
+              <p className="text-white/80 text-xs font-medium uppercase tracking-wider">CheckAm Partner</p>
               <h1 className="text-xl font-bold">{stats.name}</h1>
             </div>
           </div>
           <div className="bg-white/10 rounded-xl px-4 py-3">
-            <p className="text-blue-100 text-xs mb-1">Your referral link</p>
+            <p className="text-white/80 text-xs mb-1">Your referral link</p>
             <p className="text-white text-sm font-mono break-all">{referralLink}</p>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function ReferralDashboard() {
         )}
 
         <p className="text-center text-xs text-slate-400 pb-4">
-          Payouts are processed monthly to your bank account · CarHaki
+          Payouts are processed monthly to your bank account · CheckAm
         </p>
 
       </div>

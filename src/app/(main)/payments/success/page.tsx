@@ -102,7 +102,7 @@ function PaymentSuccessContent() {
     return (
       <div className="min-h-screen bg-ch-bg flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-ch-blue mx-auto mb-4" />
+          <Loader2 className="w-10 h-10 animate-spin text-ch-primary mx-auto mb-4" />
           <p className="text-ch-text font-semibold">Verifying your payment...</p>
           <p className="text-ch-text-muted text-sm mt-1">
             {attempt > 0 ? `Checking again (${attempt}/4)...` : 'Please wait'}
@@ -124,10 +124,10 @@ function PaymentSuccessContent() {
           </p>
           <div className="flex flex-col gap-3">
             <Link href="/">
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Try Again</Button>
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Try Again</Button>
             </Link>
-            <a href="mailto:support@carhaki.com">
-              <Button variant="outline" className="w-full border-ch-border">support@carhaki.com</Button>
+            <a href="mailto:checkamafrica@gmail.com">
+              <Button variant="outline" className="w-full border-ch-border">checkamafrica@gmail.com</Button>
             </a>
           </div>
         </div>
@@ -172,14 +172,14 @@ function PaymentSuccessContent() {
               We&apos;ve also emailed you a copy, but you can open it right now.
             </p>
             <Link href={`/reports/${reportId}`}>
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow">
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow">
                 View Your Report
               </Button>
             </Link>
           </div>
         ) : reportState === 'generating' ? (
-          <div className="bg-ch-blue/5 border border-ch-blue/20 rounded-2xl p-5 my-6">
-            <Loader2 className="w-8 h-8 text-ch-blue mx-auto mb-3 animate-spin" />
+          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-2xl p-5 my-6">
+            <Loader2 className="w-8 h-8 text-ch-primary mx-auto mb-3 animate-spin" />
             <p className="text-ch-text font-semibold mb-1">Generating your report…</p>
             <p className="text-ch-text-secondary text-sm">
               This usually takes under a minute. This page will update automatically —
@@ -187,8 +187,8 @@ function PaymentSuccessContent() {
             </p>
           </div>
         ) : (
-          <div className="bg-ch-blue/5 border border-ch-blue/20 rounded-2xl p-5 my-6">
-            <Mail className="w-8 h-8 text-ch-blue mx-auto mb-3" />
+          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-2xl p-5 my-6">
+            <Mail className="w-8 h-8 text-ch-primary mx-auto mb-3" />
             <p className="text-ch-text font-semibold mb-1">Your report is on its way!</p>
             <p className="text-ch-text-secondary text-sm">
               We are generating your full vehicle history report right now.
@@ -205,11 +205,11 @@ function PaymentSuccessContent() {
 
         <div className="flex flex-col gap-3">
           <Link href="/">
-            <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check Another Car</Button>
+            <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift">Check Another Car</Button>
           </Link>
-          <a href="mailto:support@carhaki.com">
+          <a href="mailto:checkamafrica@gmail.com">
             <Button variant="outline" className="w-full border-ch-border text-sm">
-              Need help? support@carhaki.com
+              Need help? checkamafrica@gmail.com
             </Button>
           </a>
         </div>
@@ -223,7 +223,7 @@ export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-ch-bg flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-ch-blue" />
+        <Loader2 className="w-10 h-10 animate-spin text-ch-primary" />
       </div>
     }>
       <PaymentSuccessContent />

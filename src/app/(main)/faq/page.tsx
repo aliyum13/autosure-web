@@ -3,8 +3,8 @@ const faqs = [
     category: 'About Reports',
     items: [
       {
-        q: 'What is a CarHaki US Vehicle Report?',
-        a: 'A CarHaki report pulls data from NMVTIS (National Motor Vehicle Title Information System), NHTSA (National Highway Traffic Safety Administration), US state DMV records, and US insurance databases to give you a comprehensive history of any USA-imported vehicle.',
+        q: 'What is a CheckAm US Vehicle Report?',
+        a: 'A CheckAm report pulls data from NMVTIS (National Motor Vehicle Title Information System), NHTSA (National Highway Traffic Safety Administration), US state DMV records, and US insurance databases to give you a comprehensive history of any USA-imported vehicle.',
       },
       {
         q: 'What does the report include?',
@@ -25,11 +25,11 @@ const faqs = [
       },
       {
         q: 'What if my VIN is less than 17 characters?',
-        a: 'USA VINs are always exactly 17 characters. If the number you have is shorter, it may be a chassis number from a Japanese vehicle, which CarHaki does not currently support. Please verify the VIN with the seller.',
+        a: 'USA VINs are always exactly 17 characters. If the number you have is shorter, it may be a chassis number from a Japanese vehicle, which CheckAm does not currently support. Please verify the VIN with the seller.',
       },
       {
         q: 'Can I check a locally registered Nigerian vehicle?',
-        a: 'Currently CarHaki only supports USA-imported vehicles (Tokunbo cars). We are working on expanding to locally registered vehicles in a future update.',
+        a: 'Currently CheckAm only supports USA-imported vehicles (Tokunbo cars). We are working on expanding to locally registered vehicles in a future update.',
       },
     ],
   },
@@ -42,11 +42,11 @@ const faqs = [
       },
       {
         q: 'What if no data is found for my VIN?',
-        a: 'If CarHaki cannot retrieve any data for your VIN, we will issue a full refund. Email us at support@carhaki.com within 24 hours of your purchase.',
+        a: 'If CheckAm cannot retrieve any data for your VIN, we will issue a full refund. Email us at checkamafrica@gmail.com within 24 hours of your purchase.',
       },
       {
         q: 'Is my payment secure?',
-        a: 'Yes. All payments are processed by Paystack, a PCI-DSS compliant payment processor trusted by thousands of Nigerian businesses. CarHaki never stores your card details.',
+        a: 'Yes. All payments are processed by Paystack, a PCI-DSS compliant payment processor trusted by thousands of Nigerian businesses. CheckAm never stores your card details.',
       },
     ],
   },
@@ -78,14 +78,14 @@ export default function FAQPage() {
             Frequently Asked Questions
           </h1>
           <p className="text-ch-text-secondary">
-            Everything you need to know about CarHaki reports.
+            Everything you need to know about CheckAm reports.
           </p>
         </div>
 
         <div className="space-y-8">
           {faqs.map((section) => (
             <div key={section.category}>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-4">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-4">
                 {section.category}
               </h2>
               <div className="space-y-3">
@@ -100,28 +100,20 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-10 bg-ch-navy rounded-2xl p-6 text-center text-white">
+        <div className="mt-10 bg-ch-charcoal rounded-2xl p-6 text-center text-white">
           <p className="font-semibold mb-2">Still have questions?</p>
           <p className="text-slate-400 text-sm mb-4">
-            Chat with us directly on WhatsApp, join our community channel, or email support@carhaki.com.
+            Email us and we will come back to you.
           </p>
           <div className="flex flex-wrap gap-3">
             <a
-              href="https://wa.me/2348168696869"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-ch-blue hover:bg-ch-blue-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
+              href="mailto:checkamafrica@gmail.com"
+              className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
             >
-              💬 Chat with us — 0816 869 6869
+              ✉️ Email us — checkamafrica@gmail.com
             </a>
-            <a
-              href="https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-white border border-ch-blue text-ch-blue hover:bg-blue-50 text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
-            >
-              Join WhatsApp Channel
-            </a>
+            {/* TODO(checkam-contact): a "Join WhatsApp Channel" button sat here,
+                pointing at CarHaki's channel. Restore it when CheckAm has one. */}
           </div>
         </div>
       </div>

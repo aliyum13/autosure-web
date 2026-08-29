@@ -59,7 +59,7 @@ export default function UndeliveredPanel() {
 
   useEffect(() => { fetchRows(); }, []);
 
-  const reportUrl = (id: string) => `https://carhaki.com/reports/${id}`;
+  const reportUrl = (id: string) => `https://checkamvin.com/reports/${id}`;
 
   const copyLink = (row: BlockRow) => {
     if (!row.report_id) return;
@@ -139,8 +139,8 @@ export default function UndeliveredPanel() {
             const wa = toWhatsAppNumber(row.guest_phone);
             const ready = row.report_status === 'COMPLETED' && !!row.report_id;
             const waText = ready
-              ? `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CarHaki. We could not deliver your report by email, so here is your link: ${reportUrl(row.report_id!)}`
-              : `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CarHaki about your vehicle report — we could not reach you by email.`;
+              ? `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CheckAm. We could not deliver your report by email, so here is your link: ${reportUrl(row.report_id!)}`
+              : `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CheckAm about your vehicle report — we could not reach you by email.`;
 
             return (
               <div key={row.id} className="border border-ch-border rounded-lg p-4">
@@ -148,7 +148,7 @@ export default function UndeliveredPanel() {
                   <span className="font-medium text-ch-text text-sm">{row.guest_name || '(no name on file)'}</span>
                   <OriginBadge origin={row.origin} />
                   {row.context === 'otp_login' && (
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-ch-primary-light text-ch-primary-dark">
                       Locked out of login
                     </span>
                   )}
@@ -205,7 +205,7 @@ export default function UndeliveredPanel() {
                       <Input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} type="email"
                         placeholder="corrected@example.com" className="text-sm" />
                       <Button size="sm" disabled={busy === row.id || !newEmail.trim()} onClick={() => correctEmail(row)}
-                        className="bg-ch-blue hover:bg-ch-blue-dark text-white text-xs shrink-0">
+                        className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs shrink-0">
                         {busy === row.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Update & re-send'}
                       </Button>
                     </div>

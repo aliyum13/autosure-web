@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'CarHaki — Know the Truth About Every Tokunbo Car',
-  description: 'Vehicle history reports for Nigerian Tokunbo buyers. Check accident records, title brands, mileage, and safety recalls before you buy.',
-  keywords: 'vehicle history, tokunbo cars, car check nigeria, VIN check, CarHaki',
+  title: 'CheckAm — Check Am Before You Buy',
+  description: 'Vehicle history reports for Nigerian Tokunbo buyers. Accident records, title brands, mileage and safety recalls — check am before you pay anybody.',
+  keywords: 'vehicle history, tokunbo cars, car check nigeria, VIN check, CheckAm',
   icons: {
     icon: [
       { url: '/favicon.ico' },
@@ -24,28 +24,22 @@ export const metadata: Metadata = {
     ],
     shortcut: '/logo-icon.png',
   },
-  metadataBase: new URL('https://carhaki.com'),
+  metadataBase: new URL('https://checkamvin.com'),
   openGraph: {
-    title: 'CarHaki — Know the Truth About Every Tokunbo Car',
+    title: 'CheckAm — Check Am Before You Buy',
     description: 'Vehicle history reports for Nigerian Tokunbo buyers.',
-    url: 'https://carhaki.com',
-    siteName: 'CarHaki',
+    url: 'https://checkamvin.com',
+    siteName: 'CheckAm',
     locale: 'en_NG',
     type: 'website',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'CarHaki — Know the Truth About Every Tokunbo Car',
-      },
-    ],
+    // No `images` here on purpose: app/opengraph-image.tsx generates the card
+    // and Next wires it up. Listing a static file as well produced two
+    // competing og:image tags.
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CarHaki — Know the Truth About Every Tokunbo Car',
+    title: 'CheckAm — Check Am Before You Buy',
     description: 'Vehicle history reports for Nigerian Tokunbo buyers.',
-    images: ['/og-image.png'],
   },
 };
 

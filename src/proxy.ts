@@ -8,7 +8,7 @@ export async function proxy(req: NextRequest) {
   const ref = req.nextUrl.searchParams.get('ref');
   const response = NextResponse.next();
   if (ref) {
-    response.cookies.set('carhaki_ref', ref.toUpperCase(), {
+    response.cookies.set('checkam_ref', ref.toUpperCase(), {
       maxAge: 60 * 60 * 24 * 30, // 30 days
       httpOnly: false,
       path: '/',

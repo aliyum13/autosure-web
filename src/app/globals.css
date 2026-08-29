@@ -47,22 +47,35 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* CarHaki design tokens — available as bg-ch-*, text-ch-*, border-ch-* etc. */
-  --color-ch-navy: #0F1C2E;
-  --color-ch-blue: #2563EB;
-  --color-ch-blue-dark: #1D4ED8;
-  --color-ch-blue-light: #EFF6FF;
+  /* CheckAm design tokens — available as bg-ch-*, text-ch-*, border-ch-* etc.
+     The `ch-` prefix predates the rename and still reads correctly.
+
+     `ch-primary` is the brand/CTA green. `ch-green` is the SUCCESS green and
+     happens to share its value today — they are kept separate because they
+     answer different questions ("is this a CheckAm action?" vs "did something
+     go right?"), and only one of them should move if the brand ever shifts.
+     Neither is the report grade scale: that lives in lib/generate.ts and is
+     deliberately built from different values so a page full of green CTAs
+     cannot be mistaken for a good grade. */
+  --color-ch-charcoal: #1A1A1A;
+  --color-ch-primary: #16A34A;
+  --color-ch-primary-dark: #0F7A38;
+  --color-ch-primary-light: #E9F7EF;
+  --color-ch-gold: #F5B400;
+  --color-ch-gold-light: #FEF6E0;
   --color-ch-green: #16A34A;
   --color-ch-green-light: #F0FDF4;
   --color-ch-amber: #D97706;
   --color-ch-amber-light: #FFFBEB;
   --color-ch-red: #DC2626;
   --color-ch-red-light: #FEF2F2;
-  --color-ch-bg: #F8FAFC;
-  --color-ch-border: #E2E8F0;
-  --color-ch-text: #0F172A;
-  --color-ch-text-secondary: #475569;
-  --color-ch-text-muted: #94A3B8;
+  --color-ch-bg: #F7F5EF;
+  /* Warm neutrals, picked to sit on the cream background — the previous set
+     was slate and reads cold against #F7F5EF. */
+  --color-ch-border: #E4DFD2;
+  --color-ch-text: #1A1A1A;
+  --color-ch-text-secondary: #55524A;
+  --color-ch-text-muted: #8C887C;
 }
 
 :root {
@@ -99,22 +112,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Raw CSS vars for inline usage */
-  --ch-navy: #0F1C2E;
-  --ch-blue: #2563EB;
-  --ch-blue-dark: #1D4ED8;
-  --ch-blue-light: #EFF6FF;
-  --ch-green: #16A34A;
-  --ch-green-light: #F0FDF4;
-  --ch-amber: #D97706;
-  --ch-amber-light: #FFFBEB;
-  --ch-red: #DC2626;
-  --ch-red-light: #FEF2F2;
-  --ch-bg: #F8FAFC;
-  --ch-border: #E2E8F0;
-  --ch-text: #0F172A;
-  --ch-text-secondary: #475569;
-  --ch-text-muted: #94A3B8;
 }
 
 .dark {
@@ -167,13 +164,13 @@
 @layer utilities {
   /* Soft elevated card shadow */
   .shadow-soft {
-    box-shadow: 0 1px 2px rgba(15, 28, 46, 0.04), 0 4px 16px rgba(15, 28, 46, 0.06);
+    box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04), 0 4px 16px rgba(26, 26, 26, 0.06);
   }
   .shadow-soft-lg {
-    box-shadow: 0 2px 4px rgba(15, 28, 46, 0.04), 0 12px 32px rgba(15, 28, 46, 0.08);
+    box-shadow: 0 2px 4px rgba(26, 26, 26, 0.04), 0 12px 32px rgba(26, 26, 26, 0.08);
   }
-  .shadow-blue-glow {
-    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.18);
+  .shadow-green-glow {
+    box-shadow: 0 4px 20px rgba(22, 163, 74, 0.20);
   }
 
   /* Hover lift interaction */
@@ -182,7 +179,7 @@
   }
   .hover-lift:hover {
     transform: translateY(-3px);
-    box-shadow: 0 2px 4px rgba(15, 28, 46, 0.04), 0 16px 40px rgba(15, 28, 46, 0.1);
+    box-shadow: 0 2px 4px rgba(26, 26, 26, 0.04), 0 16px 40px rgba(26, 26, 26, 0.1);
   }
 
   .animate-fade-up {
@@ -200,8 +197,8 @@
   }
 
   /* Gradient text */
-  .text-gradient-blue {
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  .text-gradient-green {
+    background: linear-gradient(135deg, #16A34A 0%, #0F7A38 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Shield } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { useState } from 'react';
 
 const footerLinks = {
@@ -12,10 +12,11 @@ const footerLinks = {
   ],
   Support: [
     { label: 'FAQ', href: '/faq' },
-    { label: 'About CarHaki', href: '/about' },
-    { label: '📞 Call / WhatsApp: 0816 869 6869', href: 'https://wa.me/2348168696869' },
-    { label: 'Join WhatsApp Community', href: 'https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t' },
-    { label: 'support@carhaki.com', href: 'mailto:support@carhaki.com' },
+    { label: 'About CheckAm', href: '/about' },
+    // TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet.
+    // A phone row and a community-group row sat here, both CarHaki's.
+    // Restore them once CheckAm has its own.
+    { label: 'checkamafrica@gmail.com', href: 'mailto:checkamafrica@gmail.com' },
   ],
   Legal: [
     { label: 'Terms of Service', href: '/terms' },
@@ -23,12 +24,11 @@ const footerLinks = {
   ],
 };
 
-const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/carhakinigeria' },
-  { label: 'X', href: 'https://twitter.com/carhakinigeria' },
-  { label: 'YouTube', href: 'https://youtube.com/@carhakinigeria' },
-  { label: 'WhatsApp', href: 'https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t' },
-];
+// TODO(checkam-contact): CheckAm has no social accounts yet. These were
+// CarHaki's handles, and pointing at them would hand CheckAm's traffic to
+// another brand. Empty until CheckAm has its own — the Footer renders
+// nothing for the row while it is.
+const socials: { label: string; href: string }[] = [];
 
 function SubscribeForm() {
   const [email, setEmail] = useState('');
@@ -53,7 +53,7 @@ function SubscribeForm() {
 
   if (status === 'success') {
     return (
-      <p className="text-sm text-ch-blue font-medium">
+      <p className="text-sm text-ch-primary font-medium">
         ✅ You&apos;re subscribed! Watch your inbox.
       </p>
     );
@@ -67,12 +67,12 @@ function SubscribeForm() {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
         required
-        className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-ch-blue min-w-0"
+        className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-ch-primary min-w-0"
       />
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-ch-blue hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap disabled:opacity-60"
+        className="bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap disabled:opacity-60"
       >
         {status === 'loading' ? '...' : 'Subscribe'}
       </button>
@@ -82,13 +82,13 @@ function SubscribeForm() {
 
 export default function Footer() {
   return (
-    <footer className="bg-ch-navy text-white">
+    <footer className="bg-ch-charcoal text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
 
         {/* Subscribe to Insights banner */}
         <div className="bg-slate-800 rounded-2xl px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1">
-            <h3 className="text-base font-bold text-white mb-1">CarHaki Insights 💡</h3>
+            <h3 className="text-base font-bold text-white mb-1">CheckAm Insights 💡</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
               Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
             </p>
@@ -103,12 +103,12 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 bg-ch-blue rounded-lg flex items-center justify-center">
-                <Shield className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 bg-ch-primary rounded-full flex items-center justify-center">
+                <Check className="w-4 h-4 text-white" strokeWidth={3} />
               </div>
               <span className="font-bold">
-                <span className="text-white">Car</span>
-                <span className="text-ch-blue">Haki</span>
+                <span className="text-white">Check</span>
+                <span className="text-ch-primary">Am</span>
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed mb-3">
@@ -144,7 +144,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-700 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-slate-500">
-            © 2026 CarHaki Nigeria. All rights reserved. Powered by USA government records.
+            © 2026 CheckAm Nigeria. All rights reserved. Powered by USA government records.
           </p>
           <div className="flex items-center gap-4">
             {socials.map((s) => (

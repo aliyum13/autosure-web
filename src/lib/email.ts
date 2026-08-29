@@ -67,13 +67,13 @@ export async function sendReportReadyEmail({
 }) {
   const carName = [year, make, model].filter(Boolean).join(' ') || vin;
   const firstName = name?.split(' ')[0] || 'there';
-  const reportUrl = reportId ? `https://carhaki.com/reports/${reportId}` : 'https://carhaki.com';
+  const reportUrl = reportId ? `https://checkamvin.com/reports/${reportId}` : 'https://checkamvin.com';
 
   const attachments = pdfBuffer
-    ? [{ filename: `CarHaki-Report-${vin}.pdf`, content: Buffer.from(pdfBuffer) }]
+    ? [{ filename: `CheckAm-Report-${vin}.pdf`, content: Buffer.from(pdfBuffer) }]
     : [];
 
-  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CarHaki <onboarding@resend.dev>';
+  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>';
   console.log('Sending email to:', to, '| PDF:', !!pdfBuffer);
 
 
@@ -87,44 +87,44 @@ export async function sendReportReadyEmail({
   const result = await sendTrackedEmail('send_report_ready', {
     from: fromAddr,
     to,
-    subject: `Your CarHaki Report is Ready — ${carName} (${vin})`,
+    subject: `Your CheckAm Report is Ready — ${carName} (${vin})`,
     attachments,
     html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 16px;">
+<body style="margin:0;padding:0;background:#F7F5EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5EF;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
         <!-- Header -->
-        <tr><td style="background:#1a56db;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://carhaki.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px;" alt="CarHaki">
+        <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
+          <img src="https://checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
           <br>
-          <span style="color:#ffffff;font-size:22px;font-weight:800;">Car<span style="color:#93c5fd;">Haki</span></span>
-          <p style="color:#bfdbfe;margin:6px 0 0;font-size:13px;">Know the truth about every Tokunbo car</p>
+          <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
+          <p style="color:#BBF7D0;margin:6px 0 0;font-size:13px;">Check am before you buy</p>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="background:#ffffff;padding:32px;">
-          <h1 style="color:#1e293b;font-size:22px;margin:0 0 8px;">Your Report is Ready! 🎉</h1>
+          <h1 style="color:#1A1A1A;font-size:22px;margin:0 0 8px;">Your Report is Ready! 🎉</h1>
           <p style="color:#64748b;margin:0 0 20px;">Hello ${firstName},</p>
           <p style="color:#475569;margin:0 0 24px;line-height:1.6;">
-            Your CarHaki vehicle history report for the <strong>${carName}</strong> has been generated.
+            Your CheckAm vehicle history report for the <strong>${carName}</strong> has been generated.
             ${pdfBuffer ? 'The full official ClearVin report is <strong>attached as a PDF</strong>.' : 'Your report has been generated successfully.'}
           </p>
 
           <!-- VIN box -->
-          <div style="background:#f1f5f9;border-radius:12px;padding:16px;margin:0 0 24px;">
+          <div style="background:#F2EFE7;border-radius:12px;padding:16px;margin:0 0 24px;">
             <p style="margin:0 0 4px;font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;">Vehicle Checked</p>
-            <p style="margin:0;font-size:17px;font-weight:700;color:#1e293b;font-family:monospace;">${vin}</p>
+            <p style="margin:0;font-size:17px;font-weight:700;color:#1A1A1A;font-family:monospace;">${vin}</p>
             <p style="margin:4px 0 0;font-size:14px;color:#475569;">${carName}</p>
           </div>
 
           <!-- View Report Online button — always works even if PDF attachment fails -->
           <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr><td align="center">
-            <a href="${reportUrl}" style="display:inline-block;background:#1a56db;color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;">
+            <a href="${reportUrl}" style="display:inline-block;background:#16A34A;color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;">
               View Your Full Report →
             </a>
           </td></tr></table>
@@ -134,26 +134,26 @@ export async function sendReportReadyEmail({
 
           ${pdfSection}
 
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:0 0 24px;">
-            <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1e293b;">
+          <div style="background:#F7F5EF;border:1px solid #E4DFD2;border-radius:12px;padding:16px;margin:0 0 24px;">
+            <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#1A1A1A;">
               Want all your reports in one place?
             </p>
             <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;">
-              Sign in at <a href="https://carhaki.com/login" style="color:#1a56db;">carhaki.com/login</a>
+              Sign in at <a href="https://checkamvin.com/login" style="color:#16A34A;">checkamvin.com/login</a>
               using <strong>this email address</strong> — no password needed, we&rsquo;ll send you a code.
               Every report you&rsquo;ve bought, including this one, will be there.
             </p>
           </div>
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
-            Need help? Email us at <a href="mailto:support@carhaki.com" style="color:#1a56db;">support@carhaki.com</a>
-            or WhatsApp us directly at <a href="https://wa.me/2348168696869" style="color:#1a56db;">0816 869 6869</a>.
+            <!-- TODO(checkam-contact): add CheckAm's WhatsApp number back here once it exists. -->
+            Need help? Email us at <a href="mailto:checkamafrica@gmail.com" style="color:#16A34A;">checkamafrica@gmail.com</a>.
           </p>
         </td></tr>
 
         <!-- Footer -->
-        <tr><td style="background:#0f172a;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
-          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CarHaki Nigeria. All rights reserved.</p>
+        <tr><td style="background:#1A1A1A;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
+          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CheckAm Nigeria. All rights reserved.</p>
           <p style="color:#64748b;font-size:11px;margin:0;">Powered by USA government records (NMVTIS) via ClearVin</p>
         </td></tr>
 
@@ -169,35 +169,35 @@ export async function sendReportReadyEmail({
 }
 
 export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
-  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CarHaki <onboarding@resend.dev>';
+  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>';
 
   return sendTrackedEmail('send_otp', {
     from: fromAddr,
     to,
-    subject: `${code} is your CarHaki login code`,
+    subject: `${code} is your CheckAm login code`,
     html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 16px;">
+<body style="margin:0;padding:0;background:#F7F5EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5EF;padding:32px 16px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
         <!-- Header -->
-        <tr><td style="background:#1a56db;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://carhaki.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:12px;margin-bottom:8px;" alt="CarHaki">
+        <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
+          <img src="https://checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
           <br>
-          <span style="color:#ffffff;font-size:22px;font-weight:800;">Car<span style="color:#93c5fd;">Haki</span></span>
+          <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="background:#ffffff;padding:32px;text-align:center;">
-          <h1 style="color:#1e293b;font-size:20px;margin:0 0 8px;">Your login code</h1>
-          <p style="color:#64748b;margin:0 0 24px;">Enter this code to sign in to CarHaki:</p>
+          <h1 style="color:#1A1A1A;font-size:20px;margin:0 0 8px;">Your login code</h1>
+          <p style="color:#64748b;margin:0 0 24px;">Enter this code to sign in to CheckAm:</p>
 
-          <div style="background:#f1f5f9;border-radius:12px;padding:20px;margin:0 0 24px;">
-            <p style="margin:0;font-size:32px;font-weight:800;letter-spacing:0.15em;color:#1e293b;font-family:monospace;">${code}</p>
+          <div style="background:#F2EFE7;border-radius:12px;padding:20px;margin:0 0 24px;">
+            <p style="margin:0;font-size:32px;font-weight:800;letter-spacing:0.15em;color:#1A1A1A;font-family:monospace;">${code}</p>
           </div>
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
@@ -206,8 +206,8 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
         </td></tr>
 
         <!-- Footer -->
-        <tr><td style="background:#0f172a;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
-          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CarHaki Nigeria. All rights reserved.</p>
+        <tr><td style="background:#1A1A1A;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
+          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CheckAm Nigeria. All rights reserved.</p>
         </td></tr>
 
       </table>
