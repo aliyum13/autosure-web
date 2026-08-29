@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import LogoutButton from '@/components/dashboard/LogoutButton';
 import ReferralCard from '@/components/dashboard/ReferralCard';
+import VinInput from '@/components/shared/VinInput';
 import { getOrCreateReferralCode, getReferralBalance, CUSTOMER_REFERRAL_REWARD_KOBO } from '@/lib/referral';
 import { prisma as db } from '@/lib/db';
 
@@ -110,6 +111,23 @@ export default async function DashboardPage() {
           <LogoutButton />
         </div>
 
+        {/* VIN search — ALWAYS rendered, not only in the empty state below.
+            Until now the single entry point sat inside `orders.length === 0`,
+            so the moment a customer bought anything they lost the ability to
+            start a new search from here at all — the one page they return to.
+
+            Routes to /preview/[vin], which is the only caller of
+            /api/orders/create. A search started here therefore inherits the
+            account prefill, the locked email and the credits/earnings balances
+            already shipped, with no checkout logic duplicated. */}
+        <div className="bg-white border border-ch-border rounded-2xl p-6 mb-6">
+          <h2 className="font-semibold text-ch-text mb-1">Check another VIN</h2>
+          <p className="text-sm text-ch-text-secondary mb-4">
+            Your details and any credits or earnings are applied automatically at checkout.
+          </p>
+          <VinInput showSamples={false} buttonText="Check VIN" />
+        </div>
+
         {/* Credits remaining */}
         <div className="bg-white border border-ch-border rounded-2xl p-6 mb-8 flex items-center justify-between">
           <div>
@@ -138,8 +156,7 @@ export default async function DashboardPage() {
         {orders.length === 0 ? (
           <div className="bg-white border border-ch-border rounded-2xl p-8 text-center">
             <FileText className="w-10 h-10 text-ch-text-muted mx-auto mb-3" />
-            <p className="text-ch-text-secondary mb-4">No reports yet.</p>
-            <Link href="/"><Button className="bg-ch-blue hover:bg-ch-blue-dark text-white">Check a VIN</Button></Link>
+            <p className="text-ch-text-secondary">No reports yet — enter a VIN above to run your first check.</p>
           </div>
         ) : (
           <div className="bg-white border border-ch-border rounded-2xl divide-y divide-ch-border overflow-hidden">
