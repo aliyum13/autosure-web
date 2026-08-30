@@ -3,7 +3,6 @@ import StatsStrip from '@/components/home/StatsStrip';
 import RiskSection from '@/components/home/RiskSection';
 import HowItWorks from '@/components/home/HowItWorks';
 import PricingPreview from '@/components/home/PricingPreview';
-import Testimonials from '@/components/home/Testimonials';
 import CTASection from '@/components/home/CTASection';
 
 export default function Home() {
@@ -14,7 +13,6 @@ export default function Home() {
       <RiskSection />
       <HowItWorks />
       <PricingPreview />
-      <Testimonials />
       <CTASection />
     </>
   );
