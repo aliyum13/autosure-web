@@ -146,14 +146,14 @@ export default function AdminPanel() {
   };
 
   const copyLink = (code: string) => {
-    navigator.clipboard.writeText(`https://carhaki.com?ref=${code}`);
+    navigator.clipboard.writeText(`https://checkamvin.com?ref=${code}`);
     setCopied(code);
     setTimeout(() => setCopied(null), 2000);
   };
 
   if (loading) return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-ch-blue" />
+      <Loader2 className="w-8 h-8 animate-spin text-ch-primary" />
     </div>
   );
 
@@ -162,7 +162,7 @@ export default function AdminPanel() {
       <div className="max-w-4xl mx-auto space-y-6">
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">Admin</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1">Admin</p>
           <h1 className="text-2xl font-bold text-ch-text">Referral Management</h1>
         </div>
 
@@ -237,7 +237,7 @@ export default function AdminPanel() {
                 placeholder="+234 800 000 0000" className="mt-1" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" disabled={creating} className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
+              <Button type="submit" disabled={creating} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Create Code
               </Button>
@@ -264,7 +264,7 @@ export default function AdminPanel() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <code className="text-sm font-bold text-ch-blue bg-ch-blue-light px-2 py-0.5 rounded">{rc.code}</code>
+                        <code className="text-sm font-bold text-ch-primary bg-ch-primary-light px-2 py-0.5 rounded">{rc.code}</code>
                         <span className="text-sm font-medium text-ch-text">{rc.name}</span>
                         {!rc.is_active && <Badge className="bg-slate-100 text-slate-500 border-0 text-xs">Inactive</Badge>}
                       </div>

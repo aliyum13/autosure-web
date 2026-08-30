@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { Menu, X, Shield, User } from 'lucide-react';
+import { Menu, X, Check, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -13,10 +13,12 @@ const navLinks = [
   { href: '/pricing', label: 'Pricing' },
   { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
-  { href: 'https://chat.whatsapp.com/CL4YVA9Ny0gG6vWfFIAQZP?mode=gi_t', label: 'Support', external: true },
+  // TODO(checkam-contact): this pointed at CarHaki's WhatsApp group. Point it
+  // at CheckAm's own support channel once one exists.
+  { href: 'mailto:checkamafrica@gmail.com', label: 'Support', external: true },
 ];
 
-// `carhaki_authed` is the non-httpOnly UI-hint cookie set alongside the real
+// `checkam_authed` is the non-httpOnly UI-hint cookie set alongside the real
 // httpOnly session (see lib/session.ts). It only decides which link to render —
 // /dashboard is independently gated server-side by verifySession(), so a spoofed
 // cookie just produces a link that bounces the visitor to /login.
@@ -28,7 +30,7 @@ const navLinks = [
 // which is what makes login and logout reflect without a hard reload.
 // Module-level so the references stay stable across renders.
 const subscribeToAuthCookie = () => () => {};
-const getAuthedSnapshot = () => Cookies.get('carhaki_authed') === '1';
+const getAuthedSnapshot = () => Cookies.get('checkam_authed') === '1';
 const getAuthedServerSnapshot = () => false;
 
 export default function Navbar() {
@@ -45,12 +47,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-ch-blue rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 shadow-blue-glow">
-              <Shield className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shadow-green-glow">
+              <Check className="w-5 h-5 text-white" strokeWidth={3} />
             </div>
             <span className="font-bold text-lg">
-              <span className="text-ch-text">Car</span>
-              <span className="text-ch-blue">Haki</span>
+              <span className="text-ch-text">Check</span>
+              <span className="text-ch-primary">Am</span>
             </span>
           </Link>
 
@@ -59,13 +61,13 @@ export default function Navbar() {
             {navLinks.map((link) => (
               link.external ? (
                 <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
-                  className="text-sm font-medium transition-colors text-ch-text-secondary hover:text-ch-blue">
+                  className="text-sm font-medium transition-colors text-ch-text-secondary hover:text-ch-primary">
                   {link.label}
                 </a>
               ) : (
                 <Link key={link.href} href={link.href}
                   className={cn('text-sm font-medium transition-colors',
-                    pathname === link.href ? 'text-ch-blue' : 'text-ch-text-secondary hover:text-ch-blue')}>
+                    pathname === link.href ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
                   {link.label}
                 </Link>
               )
@@ -76,12 +78,12 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5">
             <Link href={accountHref}
               className={cn('text-sm font-medium transition-colors inline-flex items-center gap-1.5',
-                pathname === accountHref ? 'text-ch-blue' : 'text-ch-text-secondary hover:text-ch-blue')}>
+                pathname === accountHref ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
               {authed && <User className="w-4 h-4" />}
               {accountLabel}
             </Link>
             <Link href="/">
-              <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white shadow-blue-glow hover-lift">Check a Car</Button>
+              <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift">Check a Car</Button>
             </Link>
           </div>
 
@@ -98,27 +100,27 @@ export default function Navbar() {
           {navLinks.map((link) => (
             link.external ? (
               <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
-                className="block text-sm font-medium text-ch-text-secondary hover:text-ch-blue py-2"
+                className="block text-sm font-medium text-ch-text-secondary hover:text-ch-primary py-2"
                 onClick={() => setMobileOpen(false)}>
                 {link.label}
               </a>
             ) : (
               <Link key={link.href} href={link.href}
-                className="block text-sm font-medium text-ch-text-secondary hover:text-ch-blue py-2"
+                className="block text-sm font-medium text-ch-text-secondary hover:text-ch-primary py-2"
                 onClick={() => setMobileOpen(false)}>
                 {link.label}
               </Link>
             )
           ))}
           <Link href={accountHref}
-            className="flex items-center gap-1.5 text-sm font-medium text-ch-text-secondary hover:text-ch-blue py-2"
+            className="flex items-center gap-1.5 text-sm font-medium text-ch-text-secondary hover:text-ch-primary py-2"
             onClick={() => setMobileOpen(false)}>
             {authed && <User className="w-4 h-4" />}
             {accountLabel}
           </Link>
           <div className="pt-2">
             <Link href="/" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">Check a Car</Button>
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Check a Car</Button>
             </Link>
           </div>
         </div>

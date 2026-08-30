@@ -48,7 +48,7 @@ function ReportPdfView({ id, vin }: { id: string; vin: string }) {
     <div className="flex-1 flex flex-col">
       <div className="max-w-4xl w-full mx-auto px-4 pt-4 print:hidden">
         <a href={pdfDownloadUrl} target="_blank" rel="noopener noreferrer" className="block">
-          <Button className="w-full sm:w-auto bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
+          <Button className="w-full sm:w-auto bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
             <Download className="w-4 h-4" />
             Download PDF
           </Button>
@@ -67,7 +67,7 @@ function ReportPdfView({ id, vin }: { id: string; vin: string }) {
             {vin} — your browser can&apos;t show the PDF inline, so download it instead.
           </p>
           <a href={pdfDownloadUrl} target="_blank" rel="noopener noreferrer">
-            <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-2">
+            <Button className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
               <Download className="w-4 h-4" />
               Download PDF
             </Button>
@@ -91,11 +91,11 @@ function ClearVinFrame({ html }: { html: string }) {
     const injectedScript = `
       <base target="_blank">
       <style>
-        /* Hide ClearVin's own download/print links - we handle these in CarHaki toolbar */
+        /* Hide ClearVin's own download/print links - we handle these in CheckAm toolbar */
         a[href*="download"][href*="format=pdf"],
         a[href*="format=pdf"] { display: none !important; }
         
-        /* Offset anchor jump targets to account for CarHaki sticky toolbar (~56px) */
+        /* Offset anchor jump targets to account for CheckAm sticky toolbar (~56px) */
         [id]::before {
           content: '';
           display: block;
@@ -184,7 +184,7 @@ export default function ReportPage() {
   // Pure UI hint read from a non-httpOnly cookie set at login — not an
   // authorization check. See src/lib/session.ts.
   const [authed, setAuthed] = useState(false);
-  useEffect(() => setAuthed(Cookies.get('carhaki_authed') === '1'), []);
+  useEffect(() => setAuthed(Cookies.get('checkam_authed') === '1'), []);
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -223,7 +223,7 @@ export default function ReportPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-ch-bg flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-ch-blue" /></div>;
+    return <div className="min-h-screen bg-ch-bg flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-ch-primary" /></div>;
   }
   if (!report) return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
@@ -231,7 +231,7 @@ export default function ReportPage() {
         <div className="text-5xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-ch-text mb-2">Report Not Found</h2>
         <p className="text-ch-text-secondary mb-6">This report may not exist or is still being generated. If you just paid, please check your dashboard.</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-blue hover:bg-ch-blue-dark text-white">Go to CarHaki</Button>
+        <Button onClick={() => router.push('/')} className="bg-ch-primary hover:bg-ch-primary-dark text-white">Go to CheckAm</Button>
       </div>
     </div>
   );
@@ -256,7 +256,7 @@ export default function ReportPage() {
             {/* Back button */}
             <Button variant="outline" size="sm" onClick={() => router.push(authed ? '/dashboard' : '/')} className="border-ch-border gap-1 shrink-0">
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{authed ? 'Dashboard' : 'CarHaki'}</span>
+              <span className="hidden sm:inline">{authed ? 'Dashboard' : 'CheckAm'}</span>
             </Button>
 
             {/* VIN + date — takes remaining space */}
@@ -270,7 +270,7 @@ export default function ReportPage() {
             {/* Action buttons — icon-only on mobile, icon+label on desktop */}
             <div className="flex items-center gap-1.5 shrink-0">
               <a href={`/api/reports/${id}/pdf?download=1`} target="_blank" rel="noopener noreferrer">
-                <Button size="sm" className="bg-ch-blue hover:bg-ch-blue-dark text-white gap-1.5 px-2 sm:px-3">
+                <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-1.5 px-2 sm:px-3">
                   <Download className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline text-xs">Download PDF</span>
                 </Button>
@@ -279,7 +279,7 @@ export default function ReportPage() {
                 <Copy className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline text-xs">{copied ? 'Copied!' : 'Copy Link'}</span>
               </Button>
-              <a href={`https://wa.me/?text=CarHaki Report: ${typeof window !== 'undefined' ? window.location.href : ''}`} target="_blank" rel="noopener noreferrer">
+              <a href={`https://wa.me/?text=CheckAm Report: ${typeof window !== 'undefined' ? window.location.href : ''}`} target="_blank" rel="noopener noreferrer">
                 <Button size="sm" variant="outline" className="border-ch-border gap-1.5 px-2 sm:px-3">
                   <Share2 className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline text-xs">Share</span>
@@ -308,7 +308,7 @@ export default function ReportPage() {
             <div className="max-w-4xl mx-auto px-4 pb-2 print:hidden">
               <button
                 onClick={() => { setGalleryImages(imgs); setGalleryIndex(0); }}
-                className="text-sm text-ch-blue underline hover:no-underline"
+                className="text-sm text-ch-primary underline hover:no-underline"
               >
                 View all {imgs.length} auction photos
               </button>
@@ -363,8 +363,11 @@ export default function ReportPage() {
   const theft = data?.theft || [];
   const odometer = data?.odometer_records || [];
 
-  const gradeColor = report.overall_grade === 'A' ? 'bg-ch-green text-white' :
-    report.overall_grade === 'B' ? 'bg-ch-blue text-white' :
+  // Mirrors the scale in lib/generate.ts — keep the two in step. Grade B is
+  // gold, which needs dark text: white on #F5B400 is about 1.9:1 and fails
+  // contrast at badge size.
+  const gradeColor = report.overall_grade === 'A' ? 'bg-ch-primary-dark text-white' :
+    report.overall_grade === 'B' ? 'bg-ch-gold text-ch-charcoal' :
     report.overall_grade === 'C' ? 'bg-ch-amber text-white' : 'bg-ch-red text-white';
 
   return (
@@ -373,7 +376,7 @@ export default function ReportPage() {
         <div className="bg-white border border-ch-border rounded-2xl p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-wider text-ch-blue font-semibold mb-1">US Vehicle History Report</p>
+              <p className="text-xs uppercase tracking-wider text-ch-primary font-semibold mb-1">US Vehicle History Report</p>
               <h1 className="text-2xl font-bold text-ch-text">
                 {String(vehicle?.year ?? '')} {String(vehicle?.make ?? '')} {String(vehicle?.model ?? '')}
               </h1>
@@ -384,7 +387,7 @@ export default function ReportPage() {
             </div>
             <div className="bg-slate-50 rounded-xl p-4 text-center shrink-0">
               <p className="text-xs uppercase tracking-wide text-ch-text-muted mb-1">Risk Score</p>
-              <p className="text-3xl font-extrabold text-ch-blue">{report.risk_score}</p>
+              <p className="text-3xl font-extrabold text-ch-primary">{report.risk_score}</p>
               <p className="text-xs text-ch-text-muted">out of 100</p>
             </div>
           </div>

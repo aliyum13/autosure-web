@@ -98,7 +98,7 @@ export default function ApiStatsPanel() {
         <div className="space-y-4">
           {services.map((svc) => (
             <div key={svc}>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">{SERVICE_LABELS[svc] || svc}</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1">{SERVICE_LABELS[svc] || svc}</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>

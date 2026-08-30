@@ -27,7 +27,7 @@ export default function HowItWorks() {
     <section className="bg-white py-20 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-ch-blue mb-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-ch-primary mb-4">
             How It Works
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-ch-text">
@@ -42,9 +42,9 @@ export default function HowItWorks() {
           {steps.map((step) => (
             <div key={step.number} className="relative text-center">
               {/* Step number circle */}
-              <div className="relative inline-flex items-center justify-center w-20 h-20 bg-ch-blue rounded-2xl mb-5 shadow-blue-glow hover-lift">
+              <div className="relative inline-flex items-center justify-center w-20 h-20 bg-ch-primary rounded-2xl mb-5 shadow-green-glow hover-lift">
                 <span className="text-3xl">{step.emoji}</span>
-                <span className="absolute -top-2 -right-2 w-6 h-6 bg-slate-900 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-ch-charcoal text-white text-xs font-bold rounded-full flex items-center justify-center">
                   {step.number.replace('0', '')}
                 </span>
               </div>
@@ -56,7 +56,7 @@ export default function HowItWorks() {
 
         <div className="text-center mt-12">
           <Link href="/search">
-            <Button className="bg-ch-blue hover:bg-ch-blue-dark text-white px-10 h-12 text-base font-semibold shadow-blue-glow hover-lift">
+            <Button className="bg-ch-primary hover:bg-ch-primary-dark text-white px-10 h-12 text-base font-semibold shadow-green-glow hover-lift">
               Check a Car Now →
             </Button>
           </Link>

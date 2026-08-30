@@ -14,11 +14,11 @@ interface RecentVIN {
 
 export function saveRecentVIN(entry: Omit<RecentVIN, 'viewedAt'>) {
   try {
-    const raw = localStorage.getItem('carhaki_recent_vins');
+    const raw = localStorage.getItem('checkam_recent_vins');
     const list: RecentVIN[] = raw ? JSON.parse(raw) : [];
     const filtered = list.filter((v) => v.vin !== entry.vin);
     const updated = [{ ...entry, viewedAt: Date.now() }, ...filtered].slice(0, 5);
-    localStorage.setItem('carhaki_recent_vins', JSON.stringify(updated));
+    localStorage.setItem('checkam_recent_vins', JSON.stringify(updated));
   } catch {}
 }
 
@@ -28,7 +28,7 @@ export default function RecentlyViewed() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem('carhaki_recent_vins');
+      const raw = localStorage.getItem('checkam_recent_vins');
       if (raw) setRecents(JSON.parse(raw));
     } catch {}
   }, []);

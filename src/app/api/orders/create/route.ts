@@ -270,7 +270,7 @@ export async function POST(req: NextRequest) {
           ref_code: ref_code?.toUpperCase() || null,
           report_type: 'US_VEHICLE_REPORT',
         },
-        callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://carhaki.com'}/payments/success`,
+        callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://checkamvin.com'}/payments/success`,
       }),
     });
 

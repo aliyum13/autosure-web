@@ -213,7 +213,7 @@ export default function PreviewPage() {
   if (redirecting) return (
     <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm flex items-center justify-center">
       <div className="text-center px-6">
-        <Loader2 className="w-10 h-10 animate-spin text-ch-blue mx-auto mb-4" />
+        <Loader2 className="w-10 h-10 animate-spin text-ch-primary mx-auto mb-4" />
         <h2 className="text-lg font-bold text-ch-text mb-1">Redirecting to secure payment...</h2>
         <p className="text-sm text-ch-text-secondary">Please wait, do not close this page.</p>
       </div>
@@ -223,7 +223,7 @@ export default function PreviewPage() {
   if (loading) return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center">
       <div className="text-center">
-        <Loader2 className="w-8 h-8 animate-spin text-ch-blue mx-auto mb-3" />
+        <Loader2 className="w-8 h-8 animate-spin text-ch-primary mx-auto mb-3" />
         <p className="text-ch-text-secondary">Checking vehicle records...</p>
       </div>
     </div>
@@ -235,7 +235,7 @@ export default function PreviewPage() {
         <div className="text-5xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-ch-text mb-2">Vehicle Not Found</h2>
         <p className="text-ch-text-secondary mb-6">{error || 'No data found for this VIN.'}</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-blue hover:bg-ch-blue-dark text-white">Try Another VIN</Button>
+        <Button onClick={() => router.push('/')} className="bg-ch-primary hover:bg-ch-primary-dark text-white">Try Another VIN</Button>
       </div>
     </div>
   );
@@ -326,8 +326,8 @@ export default function PreviewPage() {
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900">VIN# {vin}</h1>
               </div>
               <div className="shrink-0 flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-                <ShieldCheck className="w-4 h-4 text-ch-blue" />
-                <span className="text-xs font-bold text-ch-blue">CLEARVIN</span>
+                <ShieldCheck className="w-4 h-4 text-ch-primary" />
+                <span className="text-xs font-bold text-ch-primary">CLEARVIN</span>
               </div>
             </div>
           </div>
@@ -408,7 +408,7 @@ export default function PreviewPage() {
           </div>
           <h2 className="text-lg font-bold text-slate-900 mb-1">Unlock the Complete Report</h2>
           <p className="text-sm text-slate-500 mb-5">Auction photos, title records, accident history & more — delivered to your email as PDF</p>
-          <Button onClick={() => setShowModal(true)} className="bg-ch-blue hover:bg-ch-blue-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-xl">
+          <Button onClick={() => setShowModal(true)} className="bg-ch-primary hover:bg-ch-primary-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-xl">
             🔓 Unlock Full Report — ₦15,000
           </Button>
           <div className="flex items-center justify-center gap-2 mt-3">
@@ -425,7 +425,7 @@ export default function PreviewPage() {
             {/* Modal header */}
             <div className="flex items-center justify-between p-5 border-b border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-ch-blue rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center">
                   <ShieldCheck className="w-4 h-4 text-white" />
                 </div>
                 <div>
@@ -456,7 +456,7 @@ export default function PreviewPage() {
                     <p className="text-xs text-slate-500 mt-1">
                       Buying as <span className="font-medium text-slate-700">{accountEmail}</span> ·{' '}
                       <button type="button" onClick={() => setEditingEmail(true)}
-                        className="text-ch-blue underline underline-offset-2">use a different email</button>
+                        className="text-ch-primary underline underline-offset-2">use a different email</button>
                     </p>
                   )}
                   {accountEmail && editingEmail && form.email.trim().toLowerCase() !== accountEmail.toLowerCase() && (
@@ -504,10 +504,10 @@ export default function PreviewPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {BUNDLES.map((bundle) => (
                     <button key={bundle.id} onClick={() => setSelectedBundle(bundle.id)}
-                      className={`relative rounded-xl border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-blue bg-ch-blue/5' : 'border-slate-200'}`}>
-                      {bundle.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-ch-blue text-white whitespace-nowrap">{bundle.badge}</span>}
+                      className={`relative rounded-xl border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-primary bg-ch-primary/5' : 'border-slate-200'}`}>
+                      {bundle.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-ch-primary text-white whitespace-nowrap">{bundle.badge}</span>}
                       <p className="text-xs font-semibold text-slate-700">{bundle.label}</p>
-                      <p className="text-sm font-bold text-ch-blue">₦{bundle.price.toLocaleString()}</p>
+                      <p className="text-sm font-bold text-ch-primary">₦{bundle.price.toLocaleString()}</p>
                       {bundle.saving && <p className="text-[10px] text-green-600 font-medium">{bundle.saving}</p>}
                     </button>
                   ))}
@@ -528,27 +528,28 @@ export default function PreviewPage() {
 
               {orderError && <p className="text-sm text-red-500">{orderError}</p>}
 
-              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-blue hover:bg-ch-blue-dark text-white font-bold text-base rounded-xl">
+              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary hover:bg-ch-primary-dark text-white font-bold text-base rounded-xl">
                 {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
 
               <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
 
               <p className="text-center text-xs text-slate-500">
-                Questions before you pay? WhatsApp us:{' '}
-                <a href="https://wa.me/2348168696869" target="_blank" rel="noopener noreferrer" className="text-ch-blue font-semibold">0816 869 6869</a>
+                {/* TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet. */}
+                Questions before you pay? Email us:{' '}
+                <a href="mailto:checkamafrica@gmail.com" className="text-ch-primary font-semibold">checkamafrica@gmail.com</a>
               </p>
 
               <p className="text-center text-xs text-slate-400">
                 By clicking ORDER REPORT NOW you agree to{' '}
-                <a href="/terms" className="text-ch-blue hover:underline">Terms and Conditions</a>{' '}
-                and <a href="/privacy" className="text-ch-blue hover:underline">NMVTIS disclaimer</a>.
+                <a href="/terms" className="text-ch-primary hover:underline">Terms and Conditions</a>{' '}
+                and <a href="/privacy" className="text-ch-primary hover:underline">NMVTIS disclaimer</a>.
               </p>
 
               <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                 <p className="text-[10px] text-slate-500 leading-relaxed">
                   <strong>NMVTIS DISCLAIMER:</strong> The National Motor Vehicle Title Information System (NMVTIS) is an electronic system that contains information on certain automobiles titled in the United States. NMVTIS is intended to serve as a reliable source of title and brand history for automobiles, but it does not contain detailed information regarding a vehicle&apos;s repair history. A vehicle history report is NOT a substitute for an independent vehicle inspection.{' '}
-                  <a href="/privacy" className="text-ch-blue hover:underline">Read full disclaimer →</a>
+                  <a href="/privacy" className="text-ch-primary hover:underline">Read full disclaimer →</a>
                 </p>
               </div>
             </div>

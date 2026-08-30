@@ -23,7 +23,7 @@ export default function PricingPreview() {
     <section className="bg-white py-16 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-3">
             Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3">
@@ -36,13 +36,13 @@ export default function PricingPreview() {
 
         <div className="grid sm:grid-cols-3 gap-6">
           {/* Single report */}
-          <div className="border-2 border-ch-blue rounded-2xl p-6 relative shadow-blue-glow hover-lift bg-white">
+          <div className="border-2 border-ch-primary rounded-2xl p-6 relative shadow-green-glow hover-lift bg-white">
             <div className="absolute -top-3 left-4">
-              <span className="bg-ch-blue text-white text-xs font-semibold px-3 py-1 rounded-full shadow-blue-glow">
+              <span className="bg-ch-primary text-white text-xs font-semibold px-3 py-1 rounded-full shadow-green-glow">
                 MOST POPULAR
               </span>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-blue mb-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1">
               US Vehicle Report
             </p>
             <div className="text-4xl font-extrabold text-ch-text mb-1">₦15,000</div>
@@ -56,7 +56,7 @@ export default function PricingPreview() {
               ))}
             </ul>
             <Link href="/search">
-              <Button className="w-full bg-ch-blue hover:bg-ch-blue-dark text-white">
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
                 Get Report — ₦15,000
               </Button>
             </Link>
@@ -86,7 +86,7 @@ export default function PricingPreview() {
               </ul>
               
                 <Link href="/search">
-                <Button variant="outline" className="w-full border-ch-blue text-ch-blue hover:bg-ch-blue-light">
+                <Button variant="outline" className="w-full border-ch-primary text-ch-primary hover:bg-ch-primary-light">
                   Buy {bundle.label}
                 </Button>
               </Link>
@@ -96,7 +96,7 @@ export default function PricingPreview() {
         </div>
 
         <div className="text-center mt-8">
-          <Link href="/pricing" className="text-sm text-ch-blue hover:underline">
+          <Link href="/pricing" className="text-sm text-ch-primary hover:underline">
             See Full Pricing →
           </Link>
         </div>

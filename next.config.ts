@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       headers: [
         {
           key: 'x-powered-by',
-          value: 'CarHaki',
+          value: 'CheckAm',
         },
       ],
     },

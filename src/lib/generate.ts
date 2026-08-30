@@ -125,7 +125,13 @@ export async function generateReportAndEmail(
   const score = Math.max(0, 100 - recallsList.length * 5);
   const grade = score>=90?'A':score>=75?'B':score>=55?'C':score>=35?'D':'F';
   const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
-  const colour = score>=90?'#16a34a':score>=75?'#2563eb':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
+  // Deliberately NOT the brand green (#16A34A). That colour is on every button
+  // and CTA in the app, so reusing it here would make "this is a CheckAm
+  // action" and "this car scored 90+" look identical. A is a deeper green and
+  // B is the brand gold, which also turns the scale into a proper heat ramp —
+  // green, gold, amber, orange, red — instead of the odd green/blue/amber it
+  // was. Kept in step with the badge colours in app/(main)/reports/[id].
+  const colour = score>=90?'#0F7A38':score>=75?'#F5B400':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
 
   // If ClearVin returned nothing at all, don't deliver an empty report — flag for retry.
   if (!clearvinHtml && !pdfBuffer) {
@@ -156,8 +162,8 @@ export async function generateReportAndEmail(
     );
     try {
       await sendTrackedEmail('send_admin_alert', {
-        from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
-        to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
+        from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+        to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
         subject: isPermanentlyInvalid
           ? `ClearVin rejects VIN ${vin} as invalid — not retryable`
           : `ClearVin returned nothing for ${vin} — needs retry`,
@@ -212,12 +218,12 @@ export async function generateReportAndEmail(
         });
         try {
           await sendTrackedEmail('send_admin_alert', {
-            from: process.env.RESEND_FROM_EMAIL || 'CarHaki <reports@carhaki.com>',
-            to: process.env.ADMIN_EMAIL || 'support@carhaki.com',
+            from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+            to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
             html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list${suppression.origin ? ` (origin: <strong>${suppression.origin}</strong>)` : ''}.
               Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>
-              <p>Open the <a href="https://carhaki.com/admin">admin panel</a> — this customer is now in the
+              <p>Open the <a href="https://checkamvin.com/admin">admin panel</a> — this customer is now in the
               "Undelivered Reports" queue with their report link and WhatsApp number.</p>`,
           });
         } catch (e) { console.error('[generate] admin suppression alert failed:', e); }

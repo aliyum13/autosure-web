@@ -29,15 +29,22 @@ export default function PrivacyPage() {
             },
             {
               title: '6. Your Rights (NDPA 2023)',
-              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at support@carhaki.com to exercise these rights.',
+              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at checkamafrica@gmail.com to exercise these rights.',
             },
             {
               title: '7. Cookies',
               content: 'We use httpOnly cookies for authentication (JWT tokens). We do not use tracking or advertising cookies. You can clear cookies at any time through your browser settings.',
             },
             {
+              // TODO(checkam-legal): no registered address here yet, and that
+              // is a known compliance gap rather than an oversight. Nigeria's
+              // NDPA generally expects a data controller to publish a physical
+              // address alongside its contact details. The address that used to
+              // sit here arrived with the CarHaki rename and was that business's,
+              // so it has been removed rather than misattributed. Put CheckAm's
+              // own registered address back once the entity is formalised.
               title: '8. Contact',
-              content: 'Data Controller: CarHaki Nigeria | Suite 211, Fabdal Plaza, Wuse Zone 4, Abuja, Nigeria | privacy@carhaki.com',
+              content: 'Data Controller: CheckAm | checkamafrica@gmail.com',
             },
           ].map((section) => (
             <div key={section.title}>

@@ -88,7 +88,7 @@ export default function VinInput({
               placeholder={placeholder}
               maxLength={17}
               className={cn(
-                'font-mono w-full border-ch-border focus-visible:ring-ch-blue pr-14',
+                'font-mono w-full border-ch-border focus-visible:ring-ch-primary pr-14',
                 size === 'large' ? 'h-12 text-base' : 'h-10',
                 error && 'border-ch-red focus-visible:ring-ch-red',
                 looksValid && !error && 'border-green-500 focus-visible:ring-green-500'
@@ -107,7 +107,7 @@ export default function VinInput({
             type="submit"
             disabled={loading}
             className={cn(
-              'bg-ch-blue hover:bg-ch-blue-dark text-white shrink-0',
+              'bg-ch-primary hover:bg-ch-primary-dark text-white shrink-0',
               size === 'large' ? 'h-12 px-6' : 'h-10 px-4'
             )}
           >
@@ -133,7 +133,7 @@ export default function VinInput({
             key={v}
             type="button"
             onClick={() => setVin(v)}
-            className="text-xs font-mono bg-slate-100 hover:bg-ch-blue-light text-ch-text-secondary hover:text-ch-blue px-2 py-1 rounded transition-colors"
+            className="text-xs font-mono bg-slate-100 hover:bg-ch-primary-light text-ch-text-secondary hover:text-ch-primary px-2 py-1 rounded transition-colors"
           >
             {v}
           </button>
