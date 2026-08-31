@@ -2,37 +2,43 @@ import Link from 'next/link';
 import { Check, CreditCard, Landmark, Smartphone, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const singleFeatures = [
+const included = [
   'Full title history (salvage / rebuilt / flood)',
   'Odometer timeline — detect rollback',
-  'Accident & damage records',
+  'Accident and damage records',
   'Open NHTSA recall alerts',
   'Theft records',
   'AI plain-English summary',
   'Overall grade (A–F) with risk score',
-  'PDF download + shareable link',
+  'PDF download and shareable link',
 ];
 
-const bundles = [
+// A classified rate card: one row per rate, read across. The single report is
+// the main path and carries the heavier rule rather than a "popular" sticker.
+const rates = [
   {
-    label: '3-Report Bundle',
-    tag: '3-REPORT BUNDLE',
-    price: '₦35,000',
-    perReport: '₦11,667 per report',
-    saving: 'Save ₦10,000 vs buying separately',
-    features: ['3 × US Vehicle Reports', 'Everything in single report', 'Use one at a time — no expiry'],
-    cta: 'Buy 3-Report Bundle',
-    bundleId: 'triple',
+    label: 'One report',
+    price: '₦15,000',
+    per: '₦15,000 per car',
+    saving: null,
+    cta: 'Get a report',
+    lead: true,
   },
   {
-    label: '5-Report Bundle',
-    tag: '5-REPORT BUNDLE',
+    label: 'Three reports',
+    price: '₦35,000',
+    per: '₦11,667 per car',
+    saving: 'Saves ₦10,000',
+    cta: 'Buy three',
+    lead: false,
+  },
+  {
+    label: 'Five reports',
     price: '₦50,000',
-    perReport: '₦10,000 per report',
-    saving: 'Save ₦25,000 vs buying separately',
-    features: ['5 × US Vehicle Reports', 'Everything in single report', 'Use one at a time — no expiry'],
-    cta: 'Buy 5-Report Bundle',
-    bundleId: 'five',
+    per: '₦10,000 per car',
+    saving: 'Saves ₦25,000',
+    cta: 'Buy five',
+    lead: false,
   },
 ];
 
@@ -45,110 +51,114 @@ const paymentMethods = [
 
 const faqs = [
   {
-    q: 'What if no data is found for my VIN?',
-    a: 'If we cannot retrieve any data for your VIN, we will issue a full refund. Email checkamafrica@gmail.com within 24 hours of purchase.',
+    q: 'What if there is no data for my VIN?',
+    a: 'You get a full refund. Some cars were never registered in the United States and have no US history to return. Email checkamafrica@gmail.com within 24 hours of paying.',
   },
   {
     q: 'How long does a report take?',
-    a: 'Reports are generated instantly — usually within 30 seconds of payment confirmation.',
+    a: 'Usually about thirty seconds after Paystack confirms the payment. It appears on screen and arrives by email as a PDF.',
   },
   {
     q: 'Can I share my report?',
-    a: 'Yes. Every completed report has a shareable link you can send to mechanics, family, or the seller.',
+    a: 'Yes. Every completed report has a link you can send to a mechanic, your family, or the seller.',
   },
   {
-    q: 'Do bundles expire?',
-    a: 'Bundle credits are stored in your account. After purchase, check any VIN from your dashboard — each check uses one credit. Credits never expire.',
+    q: 'Do bundle credits expire?',
+    a: 'No. Credits sit in your account and you spend them one car at a time, whenever you like.',
   },
 ];
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-ch-bg">
-      {/* Hero */}
-      <div className="bg-ch-charcoal text-white py-14 px-4 text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-3">
-          Protect a ₦3M Purchase for Just ₦15,000
+    <div className="min-h-screen bg-ch-paper">
+      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
+        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
+          ₦15,000 a car.
         </h1>
-        <p className="text-slate-400 max-w-md mx-auto">
-          No subscriptions. Pay per report. Money-back guarantee if no data found.
+        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+          No subscription, no account required. You pay for one car at a time, and
+          if America holds no record of it you get your money back.
         </p>
-      </div>
 
-      {/* Cards */}
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        <div className="grid sm:grid-cols-3 gap-6 mb-12">
-          {/* Single */}
-          <div className="border-2 border-ch-primary rounded-none p-6 relative bg-white">
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary-dark mb-1 mt-2">
-              US Vehicle Report
-            </p>
-            <div className="text-4xl font-extrabold text-ch-text mb-0.5">₦15,000</div>
-            <p className="text-xs text-ch-text-muted mb-5">Full history — one report</p>
-            <ul className="space-y-2 mb-6">
-              {singleFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                  <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link href="/search">
-              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
-                Get Report — ₦15,000
-              </Button>
-            </Link>
-          </div>
-
-          {/* Bundles — go to /search, bundle selected on preview page */}
-          {bundles.map((bundle) => (
-            <div key={bundle.label} className="border border-ch-border rounded-none p-6 bg-white">
-              <h3 className="font-display text-lg text-ch-ink mb-1">{bundle.tag}</h3>
-              <div className="text-4xl font-extrabold text-ch-text mb-0.5">{bundle.price}</div>
-              <p className="text-xs text-ch-text-muted mb-0.5">{bundle.perReport}</p>
-              <p className="text-xs text-ch-primary-dark font-medium mb-5">{bundle.saving}</p>
-              <ul className="space-y-2 mb-6">
-                {bundle.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                    <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/search">
-                <Button variant="outline" className="w-full border-ch-primary text-ch-primary-dark hover:bg-ch-primary-light">
-                  {bundle.cta}
-                </Button>
-              </Link>
+        {/* Rate card */}
+        <div className="mt-14 rule-t">
+          {rates.map((r) => (
+            <div
+              key={r.label}
+              className={`grid sm:grid-cols-12 gap-3 sm:gap-6 items-baseline py-6 ${
+                r.lead ? 'border-b-2 border-ch-ink' : 'rule-b'
+              }`}
+            >
+              <h2 className={`sm:col-span-3 text-ch-ink ${r.lead ? 'text-2xl' : 'text-xl'}`}>
+                {r.label}
+              </h2>
+              <div className="sm:col-span-3">
+                <span className={`text-ch-ink tabular ${r.lead ? 'text-4xl sm:text-5xl' : 'text-3xl'}`}>
+                  {r.price}
+                </span>
+              </div>
+              <p className="sm:col-span-3 text-sm text-ch-text-muted tabular">
+                {r.per}
+                {r.saving && (
+                  <span className="block text-ch-primary-dark font-medium">{r.saving}</span>
+                )}
+              </p>
+              <div className="sm:col-span-3 sm:text-right">
+                <Link href="/search">
+                  <Button
+                    className={
+                      r.lead
+                        ? 'bg-ch-primary-dark hover:bg-ch-ink text-white rounded-none h-11 px-6'
+                        : 'bg-transparent border border-ch-ink text-ch-ink hover:bg-ch-ink hover:text-white rounded-none h-10 px-5'
+                    }
+                  >
+                    {r.cta}
+                  </Button>
+                </Link>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Payment methods */}
-        <div className="text-center mb-12">
-          <p className="text-sm text-ch-text-muted mb-4">Accepted payment methods via Paystack</p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            {paymentMethods.map((m) => (
-              <div key={m.label} className="flex items-center gap-2 bg-white border border-ch-border rounded-none px-4 py-2">
-                <m.Icon className="w-4 h-4 text-ch-primary-dark" strokeWidth={2} aria-hidden />
-                <span className="text-sm text-ch-text-secondary">{m.label}</span>
-              </div>
+        {/* What you get, once — it is identical at every rate. */}
+        <section className="mt-16">
+          <h2 className="text-2xl sm:text-3xl text-ch-ink">Every report contains</h2>
+          <ul className="mt-6 grid sm:grid-cols-2 gap-x-10 rule-t">
+            {included.map((f) => (
+              <li key={f} className="flex items-start gap-2.5 py-3 text-sm text-ch-text-secondary rule-b">
+                <Check className="w-4 h-4 text-ch-primary-dark shrink-0 mt-0.5" strokeWidth={2.5} aria-hidden />
+                {f}
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
 
-        {/* FAQs */}
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-ch-text text-center mb-6">Pricing FAQ</h2>
-          <div className="space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="bg-white border border-ch-border rounded-none p-5">
-                <p className="font-semibold text-ch-text mb-2">{faq.q}</p>
-                <p className="text-sm text-ch-text-secondary">{faq.a}</p>
+        <section className="mt-16">
+          <h2 className="text-2xl sm:text-3xl text-ch-ink">Paying</h2>
+          <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3 rule-y py-4">
+            {paymentMethods.map(({ Icon, label }) => (
+              <li key={label} className="flex items-center gap-2 text-sm text-ch-text-secondary">
+                <Icon className="w-4 h-4 text-ch-primary-dark" strokeWidth={2} aria-hidden />
+                {label}
+              </li>
+            ))}
+          </ul>
+          <p className="measure mt-4 text-sm text-ch-text-muted">
+            All payments run through Paystack. CheckAm never sees your card details.
+          </p>
+        </section>
+
+        <section className="mt-16">
+          <h2 className="text-2xl sm:text-3xl text-ch-ink">Questions about paying</h2>
+          <dl className="mt-6 rule-t">
+            {faqs.map((f) => (
+              <div key={f.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 py-6 rule-b">
+                <dt className="sm:col-span-5 text-lg text-ch-ink font-display">{f.q}</dt>
+                <dd className="sm:col-span-7 measure text-ch-text-secondary leading-relaxed">{f.a}</dd>
               </div>
             ))}
-          </div>
-        </div>
+          </dl>
+        </section>
       </div>
     </div>
   );

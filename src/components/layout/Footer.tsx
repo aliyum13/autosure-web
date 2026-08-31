@@ -89,7 +89,7 @@ export default function Footer() {
         <div className="bg-white/[0.06] rounded-none px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1">
             <h3 className="font-display text-lg text-white mb-1">CheckAm Insights</h3>
-            <p className="text-sm text-white/60 leading-relaxed">
+            <p className="measure text-sm text-white/60 leading-relaxed">
               Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
             </p>
           </div>
@@ -131,7 +131,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-slate-300 hover:text-white transition-colors"
+                      className="text-sm text-white/80 hover:text-white transition-colors"
                     >
                       {link.label}
                     </Link>

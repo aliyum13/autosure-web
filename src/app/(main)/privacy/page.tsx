@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           ].map((section) => (
             <div key={section.title}>
               <h2 className="text-lg font-semibold text-ch-text mb-2">{section.title}</h2>
-              <p className="text-ch-text-secondary text-sm leading-relaxed">{section.content}</p>
+              <p className="measure text-ch-text-secondary text-sm leading-relaxed">{section.content}</p>
             </div>
           ))}
         </div>
