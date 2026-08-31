@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useState } from 'react';
 
 const footerLinks = {
@@ -104,7 +104,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 bg-ch-primary rounded-full flex items-center justify-center">
-                <Check className="w-4 h-4 text-white" strokeWidth={3} />
+                <Search className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
               <span className="font-display tracking-tight font-bold">
                 <span className="text-white">Check</span>

@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { Menu, X, Check, User } from 'lucide-react';
+import { Menu, X, Search, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -48,7 +48,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center transition-transform group-hover:scale-105">
-              <Check className="w-5 h-5 text-white" strokeWidth={3} />
+              <Search className="w-[18px] h-[18px] text-white" strokeWidth={3} />
             </div>
             <span className="font-display tracking-tight font-bold text-lg">
               <span className="text-ch-text">Check</span>
