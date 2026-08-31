@@ -1,5 +1,5 @@
 /*
- * Renders the CheckAm brand mark — a green circle with a white checkmark — at
+ * Renders the CheckAm brand mark — a green disc with a white magnifying glass — at
  * every size the app needs, plus favicon.ico.
  *
  *   node scripts/gen-favicons.js
@@ -24,15 +24,17 @@ const APP = path.join(__dirname, '..', 'src', 'app');
 const GREEN = [0x16, 0xa3, 0x4a]; // --color-ch-primary
 const WHITE = [0xff, 0xff, 0xff];
 
-// Unit-square geometry (0..1). The checkmark is a two-segment polyline drawn
-// with a round-capped stroke; the caps come free from the distance function.
+// Unit-square geometry (0..1). The glass is an unfilled ring plus a round-capped
+// handle; both round caps and the ring's even thickness fall out of the distance
+// functions below. The handle starts slightly inside the ring's outer edge so
+// the two read as one drawn stroke rather than two touching shapes.
 const MARK = {
   radius: 0.5,
-  stroke: 0.058,
-  points: [
-    [0.270, 0.520],
-    [0.435, 0.678],
-    [0.742, 0.352],
+  stroke: 0.055,
+  lens: { cx: 0.425, cy: 0.415, r: 0.185 },
+  handle: [
+    [0.556, 0.546],
+    [0.745, 0.735],
   ],
 };
 
@@ -49,13 +51,15 @@ function distToSegment(px, py, ax, ay, bx, by) {
 
 function onMark(x, y) {
   // Returns 0 = transparent, 1 = green, 2 = white
-  const dxc = x - 0.5, dyc = y - 0.5;
-  if (Math.hypot(dxc, dyc) > MARK.radius) return 0;
-  for (let i = 0; i < MARK.points.length - 1; i++) {
-    const [ax, ay] = MARK.points[i];
-    const [bx, by] = MARK.points[i + 1];
-    if (distToSegment(x, y, ax, ay, bx, by) <= MARK.stroke) return 2;
-  }
+  if (Math.hypot(x - 0.5, y - 0.5) > MARK.radius) return 0;
+
+  // Lens: white only on the ring itself, so the disc shows through the middle.
+  const { cx, cy, r } = MARK.lens;
+  if (Math.abs(Math.hypot(x - cx, y - cy) - r) <= MARK.stroke) return 2;
+
+  const [[ax, ay], [bx, by]] = MARK.handle;
+  if (distToSegment(x, y, ax, ay, bx, by) <= MARK.stroke) return 2;
+
   return 1;
 }
 
