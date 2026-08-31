@@ -85,14 +85,14 @@ export default function FAQPage() {
         <div className="space-y-8">
           {faqs.map((section) => (
             <div key={section.category}>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-4">
+              <h2 className="font-display text-2xl text-ch-ink mb-4">
                 {section.category}
               </h2>
               <div className="space-y-3">
                 {section.items.map((item) => (
-                  <div key={item.q} className="bg-white border border-ch-border rounded-xl p-5">
+                  <div key={item.q} className="bg-white border border-ch-border rounded-none p-5">
                     <p className="font-semibold text-ch-text mb-2">{item.q}</p>
-                    <p className="text-sm text-ch-text-secondary leading-relaxed">{item.a}</p>
+                    <p className="measure text-sm text-ch-text-secondary leading-relaxed">{item.a}</p>
                   </div>
                 ))}
               </div>
@@ -100,7 +100,7 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-10 bg-ch-charcoal rounded-2xl p-6 text-center text-white">
+        <div className="mt-10 bg-ch-charcoal rounded-none p-6 text-center text-white">
           <p className="font-semibold mb-2">Still have questions?</p>
           <p className="text-slate-400 text-sm mb-4">
             Email us and we will come back to you.
@@ -108,9 +108,9 @@ export default function FAQPage() {
           <div className="flex flex-wrap gap-3">
             <a
               href="mailto:checkamafrica@gmail.com"
-              className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
+              className="inline-block bg-ch-primary-dark hover:bg-ch-ink text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
             >
-              ✉️ Email us — checkamafrica@gmail.com
+              Email us — checkamafrica@gmail.com
             </a>
             {/* TODO(checkam-contact): a "Join WhatsApp Channel" button sat here,
                 pointing at CarHaki's channel. Restore it when CheckAm has one. */}

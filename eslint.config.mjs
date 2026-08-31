@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party skill scripts (impeccable). Not our source, and
+    // linting them buried our own warnings under ~150 of theirs.
+    ".claude/**",
   ]),
 ]);
 

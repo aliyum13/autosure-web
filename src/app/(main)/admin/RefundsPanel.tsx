@@ -67,13 +67,13 @@ export default function RefundsPanel() {
   };
 
   if (loading) {
-    return <div className="bg-white border border-ch-border rounded-xl p-6"><Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" /></div>;
+    return <div className="bg-white border border-ch-border rounded-none p-6"><Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" /></div>;
   }
 
   // "Couldn't load" must never look like "nobody is owed money".
   if (loadFailed) {
     return (
-      <div className="border rounded-xl p-6 bg-amber-50 border-amber-200">
+      <div className="border rounded-none p-6 bg-amber-50 border-amber-200">
         <h2 className="font-semibold text-ch-text mb-1">Refunds Owed</h2>
         <p className="text-sm text-amber-800">
           Could not load the refund queue. <strong>This is not the same as nothing being owed.</strong>
@@ -83,7 +83,7 @@ export default function RefundsPanel() {
   }
 
   return (
-    <div className={`border rounded-xl p-6 ${owed.length > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-ch-border'}`}>
+    <div className={`border rounded-none p-6 ${owed.length > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-ch-border'}`}>
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         <BadgeDollarSign className="w-4 h-4" /> Refunds Owed ({owed.length})
       </h2>

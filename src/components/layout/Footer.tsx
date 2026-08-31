@@ -67,12 +67,12 @@ function SubscribeForm() {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
         required
-        className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-ch-primary min-w-0"
+        className="flex-1 bg-white/[0.06] border border-white/15 rounded-none px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:border-ch-primary min-w-0"
       />
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap disabled:opacity-60"
+        className="bg-ch-primary-dark hover:bg-ch-ink text-white text-sm font-semibold px-4 py-2 rounded-none transition-colors whitespace-nowrap disabled:opacity-60"
       >
         {status === 'loading' ? '...' : 'Subscribe'}
       </button>
@@ -86,10 +86,10 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
 
         {/* Subscribe to Insights banner */}
-        <div className="bg-slate-800 rounded-2xl px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
+        <div className="bg-white/[0.06] rounded-none px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1">
-            <h3 className="text-base font-bold text-white mb-1">CheckAm Insights 💡</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h3 className="font-display text-lg text-white mb-1">CheckAm Insights</h3>
+            <p className="text-sm text-white/60 leading-relaxed">
               Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
             </p>
           </div>
@@ -106,24 +106,24 @@ export default function Footer() {
               <div className="w-7 h-7 bg-ch-primary rounded-full flex items-center justify-center">
                 <Check className="w-4 h-4 text-white" strokeWidth={3} />
               </div>
-              <span className="font-bold">
+              <span className="font-display tracking-tight font-bold">
                 <span className="text-white">Check</span>
                 <span className="text-ch-primary">Am</span>
               </span>
             </div>
-            <p className="text-sm text-slate-400 leading-relaxed mb-3">
+            <p className="text-sm text-white/60 leading-relaxed mb-3">
               Nigeria&apos;s vehicle intelligence platform. Know the truth about every Tokunbo car before you buy.
             </p>
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 bg-ch-green rounded-full animate-pulse" />
-              <span className="text-xs text-slate-400">All systems operational</span>
+              <span className="text-xs text-white/60">All systems operational</span>
             </div>
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60 mb-3">
                 {category}
               </h4>
               <ul className="space-y-2">
@@ -142,8 +142,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-slate-700 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p className="text-xs text-slate-500">
+        <div className="border-t border-white/15 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p className="text-xs text-white/60">
             © 2026 CheckAm Nigeria. All rights reserved. Powered by USA government records.
           </p>
           <div className="flex items-center gap-4">
@@ -153,7 +153,7 @@ export default function Footer() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                className="text-xs text-white/60 hover:text-white/80 transition-colors"
               >
                 {s.label}
               </a>

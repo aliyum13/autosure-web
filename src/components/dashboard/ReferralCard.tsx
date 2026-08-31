@@ -32,7 +32,7 @@ export default function ReferralCard({
   const shortfall = reportPriceKobo - balanceKobo;
 
   return (
-    <div className="bg-white border border-ch-border rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-ch-border rounded-none p-6 mb-8">
       <div className="flex items-center gap-2 mb-1">
         <Gift className="w-4 h-4 text-ch-primary" />
         <h2 className="font-semibold text-ch-text">Refer a friend</h2>
@@ -43,7 +43,7 @@ export default function ReferralCard({
       </p>
 
       <div className="grid sm:grid-cols-2 gap-4 mb-5">
-        <div className="bg-ch-primary-light rounded-xl p-4">
+        <div className="bg-ch-primary-light rounded-none p-4">
           <p className="text-xs text-ch-text-secondary mb-1">Your balance</p>
           <p className="text-2xl font-bold text-ch-primary">{naira(balanceKobo)}</p>
           <p className="text-xs text-ch-text-muted mt-1">
@@ -52,7 +52,7 @@ export default function ReferralCard({
               : `${naira(shortfall)} more for a free report.`}
           </p>
         </div>
-        <div className="bg-slate-50 rounded-xl p-4">
+        <div className="bg-slate-50 rounded-none p-4">
           <p className="text-xs text-ch-text-secondary mb-1">Successful referrals</p>
           <p className="text-2xl font-bold text-ch-text">{confirmedReferrals}</p>
           {pendingReferrals > 0 && (

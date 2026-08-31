@@ -107,7 +107,7 @@ export default function VinInput({
             type="submit"
             disabled={loading}
             className={cn(
-              'bg-ch-primary hover:bg-ch-primary-dark text-white shrink-0',
+              'bg-ch-primary-dark hover:bg-ch-ink text-white shrink-0',
               size === 'large' ? 'h-12 px-6' : 'h-10 px-4'
             )}
           >

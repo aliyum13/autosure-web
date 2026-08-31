@@ -102,7 +102,7 @@ export default function CompReportPanel() {
   };
 
   return (
-    <div className="bg-white border border-ch-border rounded-xl p-6">
+    <div className="bg-white border border-ch-border rounded-none p-6">
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2"><Gift className="w-4 h-4" /> Issue Comp Report</h2>
       <p className="text-sm text-ch-text-secondary mb-4">
         For &quot;paid but didn&apos;t receive report&quot; cases. Must link to the customer&apos;s original paid order, or give an explicit reason if there isn&apos;t one.
@@ -163,7 +163,7 @@ export default function CompReportPanel() {
 
         {submitError && <p className="text-sm text-red-600">{submitError}</p>}
         {submitOk && <p className="text-sm text-green-700">{submitOk}</p>}
-        <Button type="submit" disabled={submitting} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
+        <Button type="submit" disabled={submitting} className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-2">
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
           Issue Free Report
         </Button>

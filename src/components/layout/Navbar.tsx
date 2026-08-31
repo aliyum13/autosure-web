@@ -42,17 +42,17 @@ export default function Navbar() {
   const accountLabel = authed ? 'My Account' : 'Sign In';
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-ch-border/60 shadow-soft">
+    <nav className="sticky top-0 z-50 bg-ch-paper rule-b">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shadow-green-glow">
+            <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center transition-transform group-hover:scale-105">
               <Check className="w-5 h-5 text-white" strokeWidth={3} />
             </div>
-            <span className="font-bold text-lg">
+            <span className="font-display tracking-tight font-bold text-lg">
               <span className="text-ch-text">Check</span>
-              <span className="text-ch-primary">Am</span>
+              <span className="text-ch-primary-dark">Am</span>
             </span>
           </Link>
 
@@ -67,7 +67,7 @@ export default function Navbar() {
               ) : (
                 <Link key={link.href} href={link.href}
                   className={cn('text-sm font-medium transition-colors',
-                    pathname === link.href ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
+                    pathname === link.href ? 'text-ch-primary-dark' : 'text-ch-text-secondary hover:text-ch-primary-dark')}>
                   {link.label}
                 </Link>
               )
@@ -78,12 +78,12 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5">
             <Link href={accountHref}
               className={cn('text-sm font-medium transition-colors inline-flex items-center gap-1.5',
-                pathname === accountHref ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
+                pathname === accountHref ? 'text-ch-primary-dark' : 'text-ch-text-secondary hover:text-ch-primary-dark')}>
               {authed && <User className="w-4 h-4" />}
               {accountLabel}
             </Link>
             <Link href="/">
-              <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift">Check a Car</Button>
+              <Button size="sm" className="bg-ch-primary-dark hover:bg-ch-ink text-white rounded-none">Check a Car</Button>
             </Link>
           </div>
 
@@ -120,7 +120,7 @@ export default function Navbar() {
           </Link>
           <div className="pt-2">
             <Link href="/" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Check a Car</Button>
+              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Check a Car</Button>
             </Link>
           </div>
         </div>

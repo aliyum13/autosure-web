@@ -66,7 +66,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-ch-border rounded-2xl p-8 shadow-soft-lg animate-fade-up">
+      <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 animate-fade-up">
         <div className="w-16 h-16 bg-ch-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <Mail className="w-8 h-8 text-ch-primary" />
         </div>
@@ -91,7 +91,7 @@ export default function LoginPage() {
                 />
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow">
+              <Button type="submit" disabled={loading} className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send code'}
               </Button>
             </form>
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 />
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow">
+              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & log in'}
               </Button>
               <button

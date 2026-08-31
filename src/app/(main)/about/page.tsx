@@ -28,8 +28,8 @@ export default function AboutPage() {
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
 
         {/* Mission */}
-        <div className="bg-ch-red-light border border-red-200 rounded-2xl p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-red mb-3">Our Mission</p>
+        <div className="bg-ch-red-light border border-red-200 rounded-none p-6 sm:p-8">
+          <h2 className="font-display text-2xl text-ch-ink mb-3">Our Mission</h2>
           <p className="text-lg text-ch-text leading-relaxed">
             CheckAm was built with one mission: to protect Nigerian Tokunbo buyers from purchasing
             vehicles with hidden histories, tampered odometers, salvage titles, and undisclosed damage.
@@ -39,7 +39,6 @@ export default function AboutPage() {
         {/* Vision */}
         <div className="grid sm:grid-cols-2 gap-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Our Vision</p>
             <h2 className="text-2xl font-bold text-ch-text mb-3">Nigeria first, Africa next</h2>
             <p className="text-ch-text-secondary text-sm leading-relaxed mb-3">
               CheckAm launched in Nigeria because Nigeria is the largest Tokunbo vehicle market
@@ -52,7 +51,6 @@ export default function AboutPage() {
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Data Sources</p>
             <h2 className="text-2xl font-bold text-ch-text mb-3">Official US government databases</h2>
             <div className="space-y-3">
               {dataSources.map((source) => (
@@ -71,12 +69,9 @@ export default function AboutPage() {
         </div>
 
         {/* Problem */}
-        <div className="bg-white border border-ch-border rounded-2xl p-6 sm:p-8">
+        <div className="bg-white border border-ch-border rounded-none p-6 sm:p-8">
           <div className="grid sm:grid-cols-2 gap-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">
-                The Problem in Nigeria
-              </p>
               <h3 className="text-xl font-bold text-ch-text mb-3">
                 Thousands of Tokunbo buyers get deceived every year
               </h3>
@@ -87,7 +82,7 @@ export default function AboutPage() {
                 a car&apos;s history before purchase.
               </p>
             </div>
-            <div className="bg-ch-red-light rounded-xl p-5">
+            <div className="bg-ch-red-light rounded-none p-5">
               <p className="text-sm font-semibold text-ch-text mb-3">Common hidden problems we uncover</p>
               <ul className="space-y-2">
                 {[
@@ -108,12 +103,12 @@ export default function AboutPage() {
         </div>
 
         {/* CTA */}
-        <div className="bg-ch-charcoal rounded-2xl p-8 text-center text-white">
+        <div className="bg-ch-charcoal rounded-none p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-3">Ready to check your next Tokunbo?</h3>
           <p className="text-slate-400 mb-6">One report. Full truth. ₦15,000.</p>
           <Link
             href="/search"
-            className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+            className="inline-block bg-ch-primary-dark hover:bg-ch-ink text-white font-semibold px-8 py-3 rounded-lg transition-colors"
           >
             Check a Car Now
           </Link>

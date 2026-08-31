@@ -78,7 +78,7 @@ export default function ApiStatsPanel() {
   const services = Array.from(new Set(stats.map((s) => s.service)));
 
   return (
-    <div className="bg-white border border-ch-border rounded-xl p-6">
+    <div className="bg-white border border-ch-border rounded-none p-6">
       <div className="flex items-start justify-between mb-1">
         <h2 className="font-semibold text-ch-text flex items-center gap-2"><Activity className="w-4 h-4" /> API Call Monitoring</h2>
         <Button type="button" variant="outline" size="sm" onClick={load} disabled={loading} className="border-ch-border gap-1">

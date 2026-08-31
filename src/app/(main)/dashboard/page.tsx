@@ -120,7 +120,7 @@ export default async function DashboardPage() {
             /api/orders/create. A search started here therefore inherits the
             account prefill, the locked email and the credits/earnings balances
             already shipped, with no checkout logic duplicated. */}
-        <div className="bg-white border border-ch-border rounded-2xl p-6 mb-6">
+        <div className="bg-white border border-ch-border rounded-none p-6 mb-6">
           <h2 className="font-semibold text-ch-text mb-1">Check another VIN</h2>
           <p className="text-sm text-ch-text-secondary mb-4">
             Your details and any credits or earnings are applied automatically at checkout.
@@ -129,7 +129,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Credits remaining */}
-        <div className="bg-white border border-ch-border rounded-2xl p-6 mb-8 flex items-center justify-between">
+        <div className="bg-white border border-ch-border rounded-none p-6 mb-8 flex items-center justify-between">
           <div>
             <p className="text-sm text-ch-text-secondary">Bundle credits remaining</p>
             <p className="text-3xl font-bold text-ch-text">{creditsRemaining}</p>
@@ -154,12 +154,12 @@ export default async function DashboardPage() {
         {/* Order history */}
         <h2 className="text-lg font-bold text-ch-text mb-4">Your Reports</h2>
         {orders.length === 0 ? (
-          <div className="bg-white border border-ch-border rounded-2xl p-8 text-center">
+          <div className="bg-white border border-ch-border rounded-none p-8 text-center">
             <FileText className="w-10 h-10 text-ch-text-muted mx-auto mb-3" />
             <p className="text-ch-text-secondary">No reports yet — enter a VIN above to run your first check.</p>
           </div>
         ) : (
-          <div className="bg-white border border-ch-border rounded-2xl divide-y divide-ch-border overflow-hidden">
+          <div className="bg-white border border-ch-border rounded-none divide-y divide-ch-border overflow-hidden">
             {orders.map((o) => (
               <div key={o.order_id} className="p-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
@@ -180,7 +180,7 @@ export default async function DashboardPage() {
                       <Button variant="outline" size="sm" className="border-ch-border">View</Button>
                     </Link>
                     <a href={`/api/reports/${o.report_id}/pdf?download=1`}>
-                      <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-1">
+                      <Button size="sm" className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-1">
                         <Download className="w-3.5 h-3.5" /> PDF
                       </Button>
                     </a>

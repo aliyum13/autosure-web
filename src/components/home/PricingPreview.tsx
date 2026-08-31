@@ -2,103 +2,78 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 
-const singleFeatures = [
+const included = [
   'Full title history (salvage / rebuilt / flood)',
   'Odometer timeline — detect rollback',
-  'Accident & damage records',
+  'Accident and damage records',
   'Open NHTSA recall alerts',
-  'Theft & stolen vehicle records',
-  'Auction sale history & photos',
+  'Theft and stolen vehicle records',
+  'Auction sale history and photos',
   'Overall grade (A–F) with risk score',
-  'PDF download + shareable link',
+  'PDF download and shareable link',
 ];
 
 const bundles = [
-  { label: '3-Report Bundle', price: '₦35,000', saving: 'Save ₦10,000', qty: 3 },
-  { label: '5-Report Bundle', price: '₦50,000', saving: 'Save ₦25,000', qty: 5 },
+  { label: 'Three reports', price: '₦35,000', saving: 'Saves ₦10,000', qty: 3 },
+  { label: 'Five reports', price: '₦50,000', saving: 'Saves ₦25,000', qty: 5 },
 ];
 
 export default function PricingPreview() {
   return (
-    <section className="bg-white py-16 px-4">
+    <section className="bg-ch-paper py-20 sm:py-24 px-4 rule-t">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-3">
-            Pricing
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3">
-            One Report. Full Truth. ₦15,000.
-          </h2>
-          <p className="text-ch-text-secondary">
-            That&apos;s less than a tank of fuel. The cost of not checking could be your entire investment.
-          </p>
-        </div>
+        <h2 className="text-3xl sm:text-5xl text-ch-ink max-w-2xl">
+          ₦15,000 a car. Less than a tank of fuel.
+        </h2>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          {/* Single report */}
-          <div className="border-2 border-ch-primary rounded-2xl p-6 relative shadow-green-glow hover-lift bg-white">
-            <div className="absolute -top-3 left-4">
-              <span className="bg-ch-primary text-white text-xs font-semibold px-3 py-1 rounded-full shadow-green-glow">
-                MOST POPULAR
-              </span>
+        <div className="mt-14 grid lg:grid-cols-12 gap-10 lg:gap-12">
+          {/* The single report is the main path, so it gets the width and the
+              rule weight rather than a "most popular" sticker. */}
+          <div className="lg:col-span-7">
+            <div className="flex items-baseline justify-between gap-4 pb-4 border-b-2 border-ch-ink">
+              <h3 className="text-2xl text-ch-ink">One report</h3>
+              <span className="text-4xl sm:text-5xl text-ch-ink tabular">₦15,000</span>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1">
-              US Vehicle Report
-            </p>
-            <div className="text-4xl font-extrabold text-ch-text mb-1">₦15,000</div>
-            <p className="text-xs text-ch-text-muted mb-5">Full history — one report</p>
-            <ul className="space-y-2 mb-6">
-              {singleFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                  <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
+            <ul className="mt-6 grid sm:grid-cols-2 gap-x-8">
+              {included.map((f) => (
+                <li key={f} className="flex items-start gap-2.5 py-2.5 text-sm text-ch-text-secondary rule-b">
+                  <Check className="w-4 h-4 text-ch-primary shrink-0 mt-0.5" strokeWidth={2.5} aria-hidden />
                   {f}
                 </li>
               ))}
             </ul>
-            <Link href="/search">
-              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
-                Get Report — ₦15,000
+            <Link href="/search" className="inline-block mt-8">
+              <Button className="bg-ch-primary-dark hover:bg-ch-ink text-white px-10 h-12 text-base font-semibold rounded-none">
+                Get a report — ₦15,000
               </Button>
             </Link>
           </div>
 
-          {/* Bundles */}
-          {bundles.map((bundle) => (
-            <div key={bundle.label} className="border border-ch-border rounded-2xl p-6 hover-lift bg-white shadow-soft">
-              <p className="text-xs font-semibold uppercase tracking-wider text-ch-text-muted mb-1">
-                {bundle.label}
-              </p>
-              <div className="text-4xl font-extrabold text-ch-text mb-1">{bundle.price}</div>
-              <p className="text-xs text-ch-green font-medium mb-5">{bundle.saving}</p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                  <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
-                  {bundle.qty} × US Vehicle Reports
-                </li>
-                <li className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                  <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
-                  Everything in single report
-                </li>
-                <li className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                  <Check className="w-4 h-4 text-ch-green shrink-0 mt-0.5" />
-                  Use one at a time — no expiry
-                </li>
-              </ul>
-              
-                <Link href="/search">
-                <Button variant="outline" className="w-full border-ch-primary text-ch-primary hover:bg-ch-primary-light">
-                  Buy {bundle.label}
-                </Button>
-              </Link>
-
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-8">
-          <Link href="/pricing" className="text-sm text-ch-primary hover:underline">
-            See Full Pricing →
-          </Link>
+          <div className="lg:col-span-5 lg:pl-12 lg:rule-l">
+            <h3 className="text-xl text-ch-ink">Buying more than one</h3>
+            <p className="measure mt-3 text-sm text-ch-text-secondary leading-relaxed">
+              Credits never expire, and you spend them one car at a time.
+            </p>
+            <dl className="mt-6 rule-t">
+              {bundles.map((b) => (
+                <div key={b.label} className="py-5 rule-b">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <dt className="text-ch-ink font-semibold">{b.label}</dt>
+                    <dd className="text-2xl text-ch-ink tabular">{b.price}</dd>
+                  </div>
+                  <p className="mt-1 text-sm text-ch-primary-dark">{b.saving}</p>
+                  <Link href="/search" className="inline-block mt-3">
+                    <Button
+                      variant="outline"
+                      className="border-ch-ink text-ch-ink hover:bg-ch-ink hover:text-white rounded-none h-9"
+                    >
+                      Buy {b.qty} reports
+                    </Button>
+                  </Link>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </div>
     </section>

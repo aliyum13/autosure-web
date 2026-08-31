@@ -178,7 +178,7 @@ export default function AdminPanel() {
         <ClearVinCreditsPanel />
 
         {/* Stuck report recovery */}
-        <div className="bg-white border border-amber-200 rounded-xl p-6">
+        <div className="bg-white border border-amber-200 rounded-none p-6">
           <h2 className="font-semibold text-ch-text mb-1">🔧 Recover Stuck Reports</h2>
           <p className="text-sm text-ch-text-secondary mb-4">
             Regenerates all paid reports stuck at PROCESSING/FAILED and emails them to customers.
@@ -212,7 +212,7 @@ export default function AdminPanel() {
         <CompReportPanel />
 
         {/* Create new code */}
-        <div className="bg-white border border-ch-border rounded-xl p-6">
+        <div className="bg-white border border-ch-border rounded-none p-6">
           <h2 className="font-semibold text-ch-text mb-4">Create Referral Code</h2>
           {error && <p className="text-ch-red text-sm mb-3">{error}</p>}
           <form onSubmit={createCode} className="grid sm:grid-cols-2 gap-4">
@@ -237,7 +237,7 @@ export default function AdminPanel() {
                 placeholder="+234 800 000 0000" className="mt-1" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" disabled={creating} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
+              <Button type="submit" disabled={creating} className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-2">
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Create Code
               </Button>
@@ -246,7 +246,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Codes list */}
-        <div className="bg-white border border-ch-border rounded-xl overflow-hidden">
+        <div className="bg-white border border-ch-border rounded-none overflow-hidden">
           <div className="px-5 py-4 border-b border-ch-border">
             <h2 className="font-semibold text-ch-text">Active Referral Codes ({codes.length})</h2>
             <p className="text-xs text-ch-text-muted mt-1">

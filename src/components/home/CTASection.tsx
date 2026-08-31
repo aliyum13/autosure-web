@@ -3,27 +3,35 @@ import { Button } from '@/components/ui/button';
 
 export default function CTASection() {
   return (
-    <section className="relative bg-ch-charcoal py-20 px-4 overflow-hidden">
-      {/* gradient accent */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-ch-primary/20 rounded-full blur-3xl" />
-      </div>
-      <div className="relative max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-          Check am before you pay.
-        </h2>
-        <p className="text-slate-400 mb-8 text-lg">One report. Full truth. ₦15,000.</p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/search">
-            <Button className="bg-white text-ch-charcoal hover:bg-slate-100 font-semibold px-8 h-12 hover-lift">
-              Check a Car Now
-            </Button>
-          </Link>
-          <Link href="/pricing">
-            <Button variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800 px-8 h-12">
-              See Pricing
-            </Button>
-          </Link>
+    <section className="bg-ch-primary-dark py-20 sm:py-24 px-4">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid lg:grid-cols-12 gap-8 items-end">
+          <div className="lg:col-span-7">
+            <h2 className="text-4xl sm:text-6xl text-white">
+              Check am before
+              <br />
+              you pay.
+            </h2>
+            <p className="measure mt-6 text-white/90 text-lg leading-relaxed">
+              One VIN, one report, ₦15,000. If America has no record of the car,
+              you get your money back.
+            </p>
+          </div>
+          <div className="lg:col-span-5 flex flex-col sm:flex-row lg:justify-end gap-3">
+            <Link href="/search">
+              <Button className="w-full sm:w-auto bg-white text-ch-ink hover:bg-white/90 font-semibold px-8 h-12 rounded-none">
+                Check a car now
+              </Button>
+            </Link>
+            <Link href="/pricing">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto bg-transparent border-white/50 text-white hover:bg-white/10 hover:text-white px-8 h-12 rounded-none"
+              >
+                See pricing
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

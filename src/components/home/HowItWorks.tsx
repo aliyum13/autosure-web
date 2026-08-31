@@ -1,66 +1,55 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+// The step numbers stay: this is a real sequence a first-time buyer has to
+// follow in order, so the numbering carries information rather than decorating.
 const steps = [
   {
-    number: '01',
-    emoji: '🔍',
-    title: 'Enter the VIN',
-    description: "Find the 17-character VIN on the car's dashboard (visible through the windshield), door sticker, or import documents.",
+    n: '1',
+    title: 'Find the VIN',
+    body: 'Seventeen characters, on the dashboard through the windscreen, the driver’s door sticker, or the import papers.',
   },
   {
-    number: '02',
-    emoji: '🔒',
-    title: 'Pay Securely',
-    description: 'Pay ₦15,000 via card or bank transfer through Paystack. Money-back guarantee if no data is found for your VIN.',
+    n: '2',
+    title: 'Pay ₦15,000',
+    body: 'Card or bank transfer through Paystack. If there is no US record for your VIN, you get your money back.',
   },
   {
-    number: '03',
-    emoji: '📋',
-    title: 'Get Your Report',
-    description: 'Full report instantly: accident history, title brands, odometer timeline, auction photos, and open recalls — sent to your email as PDF.',
+    n: '3',
+    title: 'Read the report',
+    body: 'Title brands, odometer timeline, accidents, auction photos and open recalls — on screen in about thirty seconds, and emailed to you as a PDF.',
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white py-20 px-4">
+    <section className="bg-ch-paper py-20 sm:py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-ch-primary mb-4">
-            How It Works
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-ch-text">
-            Get a Full Report in 3 Steps
-          </h2>
-        </div>
+        <h2 className="text-3xl sm:text-5xl text-ch-ink max-w-2xl">
+          Three steps, one price, no account needed.
+        </h2>
 
-        <div className="relative grid sm:grid-cols-3 gap-8">
-          {/* Connecting line (desktop only) */}
-          <div className="hidden sm:block absolute top-10 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-slate-200" />
-
+        <ol className="mt-14 grid sm:grid-cols-3 gap-px bg-ch-rule rule-y">
           {steps.map((step) => (
-            <div key={step.number} className="relative text-center">
-              {/* Step number circle */}
-              <div className="relative inline-flex items-center justify-center w-20 h-20 bg-ch-primary rounded-2xl mb-5 shadow-green-glow hover-lift">
-                <span className="text-3xl">{step.emoji}</span>
-                <span className="absolute -top-2 -right-2 w-6 h-6 bg-ch-charcoal text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {step.number.replace('0', '')}
-                </span>
-              </div>
-              <h3 className="font-bold text-ch-text mb-2 text-base">{step.title}</h3>
-              <p className="text-sm text-ch-text-secondary leading-relaxed">{step.description}</p>
-            </div>
+            <li key={step.n} className="bg-ch-paper p-6 sm:p-8">
+              <span className="block text-5xl text-ch-primary tabular font-display leading-none">
+                {step.n}
+              </span>
+              <h3 className="mt-5 text-xl text-ch-ink">{step.title}</h3>
+              <p className="mt-3 text-ch-text-secondary leading-relaxed">{step.body}</p>
+            </li>
           ))}
-        </div>
+        </ol>
 
-        <div className="text-center mt-12">
+        <div className="mt-12">
           <Link href="/search">
-            <Button className="bg-ch-primary hover:bg-ch-primary-dark text-white px-10 h-12 text-base font-semibold shadow-green-glow hover-lift">
-              Check a Car Now →
+            <Button className="bg-ch-primary-dark hover:bg-ch-ink text-white px-10 h-12 text-base font-semibold rounded-none">
+              Check a car now
             </Button>
           </Link>
-          <p className="text-xs text-slate-400 mt-3">No account needed · Results in 30 seconds</p>
+          <p className="mt-3 text-sm text-ch-text-muted">
+            No account needed. Results in about thirty seconds.
+          </p>
         </div>
       </div>
     </section>

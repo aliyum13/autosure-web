@@ -86,7 +86,7 @@ export default function ClearVinCreditsPanel() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-ch-border rounded-xl p-6">
+      <div className="bg-white border border-ch-border rounded-none p-6">
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
       </div>
     );
@@ -98,7 +98,7 @@ export default function ClearVinCreditsPanel() {
     : alarm ? 'bg-amber-50 border-amber-200' : 'bg-white border-ch-border';
 
   return (
-    <div className={`border rounded-xl p-6 ${shell}`}>
+    <div className={`border rounded-none p-6 ${shell}`}>
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         {alarm ? <AlertTriangle className="w-4 h-4 text-amber-600" /> : <Gauge className="w-4 h-4" />}
         ClearVin Credits
@@ -182,7 +182,7 @@ export default function ClearVinCreditsPanel() {
               placeholder="Daria, WhatsApp" className="mt-1" />
           </div>
           <div className="sm:col-span-3 flex items-center gap-3">
-            <Button type="submit" disabled={saving} className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs gap-1">
+            <Button type="submit" disabled={saving} className="bg-ch-primary-dark hover:bg-ch-ink text-white text-xs gap-1">
               {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Record
             </Button>
             <span className="text-xs text-ch-text-muted">

@@ -1,11 +1,20 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Fraunces, Archivo } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
+// Fraunces carries the masthead voice; Archivo is the news grotesque doing
+// body, UI and tabular data. See DESIGN.md — no third face.
+const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-fraunces',
+  axes: ['SOFT', 'WONK', 'opsz'],
+});
+
+const archivo = Archivo({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-archivo',
 });
 
 export const metadata: Metadata = {
@@ -46,7 +55,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${fraunces.variable} ${archivo.variable} font-sans`}>
         {children}
       </body>
     </html>

@@ -5,7 +5,7 @@ export default function TermsPage() {
         <h1 className="text-3xl font-bold text-ch-text mb-2">Terms of Service</h1>
         <p className="text-ch-text-muted text-sm mb-8">Last updated: June 2026</p>
 
-        <div className="bg-white border border-ch-border rounded-2xl p-6 sm:p-8 space-y-6">
+        <div className="bg-white border border-ch-border rounded-none p-6 sm:p-8 space-y-6">
           {[
             {
               title: '1. Acceptance of Terms',

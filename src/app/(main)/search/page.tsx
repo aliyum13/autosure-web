@@ -52,12 +52,12 @@ export default function SearchPage() {
               onChange={(e) => { setVin(e.target.value.toUpperCase()); setError(''); }}
               placeholder="Enter VIN — e.g. 1HGCM82633A004352"
               maxLength={17}
-              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-primary text-base shadow-soft"
+              className="flex-1 font-mono h-12 border-ch-border focus-visible:ring-ch-primary text-base"
             />
             <Button
               type="submit"
               disabled={loading}
-              className="h-12 px-6 bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift"
+              className="h-12 px-6 bg-ch-primary-dark hover:bg-ch-ink text-white"
             >
               {loading
                 ? <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -86,7 +86,7 @@ export default function SearchPage() {
 
       {/* Tip */}
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white border border-ch-border rounded-2xl p-5 shadow-soft hover-lift">
+        <div className="bg-white border border-ch-border rounded-none p-5">
           <p className="text-sm font-semibold text-ch-text mb-1">📍 Where to find the VIN</p>
           <p className="text-sm text-ch-text-secondary">
             Look on the driver&apos;s door sticker, the dashboard (visible through the windscreen),

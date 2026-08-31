@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Impeccable design skill (3.5MB of vendored third-party scripts) and
+# machine-specific Claude settings. Reinstall with `npx impeccable install`.
+.claude/

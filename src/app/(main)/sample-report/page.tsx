@@ -10,10 +10,10 @@ export const metadata = {
 export default function SampleReportPage() {
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4 py-16">
-      <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center space-y-6">
+      <div className="max-w-md w-full bg-white rounded-none border border-slate-200 shadow-sm p-8 text-center space-y-6">
 
-        <div className="w-14 h-14 bg-ch-primary/10 rounded-2xl flex items-center justify-center mx-auto">
-          <FileText className="w-7 h-7 text-ch-primary" />
+        <div className="w-14 h-14 bg-ch-primary/10 rounded-none flex items-center justify-center mx-auto">
+          <FileText className="w-7 h-7 text-ch-primary-dark" />
         </div>
 
         <div>
@@ -24,7 +24,7 @@ export default function SampleReportPage() {
         </div>
 
         <a href="/sample-report.pdf" target="_blank" rel="noopener noreferrer" className="block">
-          <Button className="bg-ch-primary hover:bg-ch-primary-dark text-white w-full h-12 text-base font-semibold">
+          <Button className="bg-ch-primary-dark hover:bg-ch-ink text-white w-full h-12 text-base font-semibold">
             View Sample Report (PDF)
           </Button>
         </a>

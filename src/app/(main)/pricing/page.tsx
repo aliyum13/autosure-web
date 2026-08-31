@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { Check, CreditCard, Landmark, Smartphone, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const singleFeatures = [
@@ -37,10 +37,10 @@ const bundles = [
 ];
 
 const paymentMethods = [
-  { icon: '💳', label: 'Visa / Mastercard' },
-  { icon: '🏦', label: 'Bank Transfer' },
-  { icon: '📱', label: 'USSD' },
-  { icon: '💰', label: 'PayAttitude' },
+  { Icon: CreditCard, label: 'Visa / Mastercard' },
+  { Icon: Landmark, label: 'Bank transfer' },
+  { Icon: Smartphone, label: 'USSD' },
+  { Icon: Wallet, label: 'PayAttitude' },
 ];
 
 const faqs = [
@@ -67,9 +67,6 @@ export default function PricingPage() {
     <div className="min-h-screen bg-ch-bg">
       {/* Hero */}
       <div className="bg-ch-charcoal text-white py-14 px-4 text-center">
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
-          Simple, Honest Pricing
-        </p>
         <h1 className="text-3xl sm:text-4xl font-bold mb-3">
           Protect a ₦3M Purchase for Just ₦15,000
         </h1>
@@ -82,13 +79,8 @@ export default function PricingPage() {
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="grid sm:grid-cols-3 gap-6 mb-12">
           {/* Single */}
-          <div className="border-2 border-ch-primary rounded-2xl p-6 relative bg-white">
-            <div className="absolute -top-3 left-4">
-              <span className="bg-ch-primary text-white text-xs font-semibold px-3 py-1 rounded-full">
-                MOST POPULAR
-              </span>
-            </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-1 mt-2">
+          <div className="border-2 border-ch-primary rounded-none p-6 relative bg-white">
+            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary-dark mb-1 mt-2">
               US Vehicle Report
             </p>
             <div className="text-4xl font-extrabold text-ch-text mb-0.5">₦15,000</div>
@@ -102,7 +94,7 @@ export default function PricingPage() {
               ))}
             </ul>
             <Link href="/search">
-              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white shadow-green-glow hover-lift">
+              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
                 Get Report — ₦15,000
               </Button>
             </Link>
@@ -110,13 +102,11 @@ export default function PricingPage() {
 
           {/* Bundles — go to /search, bundle selected on preview page */}
           {bundles.map((bundle) => (
-            <div key={bundle.label} className="border border-ch-border rounded-2xl p-6 bg-white">
-              <p className="text-xs font-semibold uppercase tracking-wider text-ch-text-muted mb-1">
-                {bundle.tag}
-              </p>
+            <div key={bundle.label} className="border border-ch-border rounded-none p-6 bg-white">
+              <h3 className="font-display text-lg text-ch-ink mb-1">{bundle.tag}</h3>
               <div className="text-4xl font-extrabold text-ch-text mb-0.5">{bundle.price}</div>
               <p className="text-xs text-ch-text-muted mb-0.5">{bundle.perReport}</p>
-              <p className="text-xs text-ch-green font-medium mb-5">{bundle.saving}</p>
+              <p className="text-xs text-ch-primary-dark font-medium mb-5">{bundle.saving}</p>
               <ul className="space-y-2 mb-6">
                 {bundle.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-ch-text-secondary">
@@ -126,7 +116,7 @@ export default function PricingPage() {
                 ))}
               </ul>
               <Link href="/search">
-                <Button variant="outline" className="w-full border-ch-primary text-ch-primary hover:bg-ch-primary-light">
+                <Button variant="outline" className="w-full border-ch-primary text-ch-primary-dark hover:bg-ch-primary-light">
                   {bundle.cta}
                 </Button>
               </Link>
@@ -139,8 +129,8 @@ export default function PricingPage() {
           <p className="text-sm text-ch-text-muted mb-4">Accepted payment methods via Paystack</p>
           <div className="flex justify-center gap-4 flex-wrap">
             {paymentMethods.map((m) => (
-              <div key={m.label} className="flex items-center gap-2 bg-white border border-ch-border rounded-lg px-4 py-2">
-                <span>{m.icon}</span>
+              <div key={m.label} className="flex items-center gap-2 bg-white border border-ch-border rounded-none px-4 py-2">
+                <m.Icon className="w-4 h-4 text-ch-primary-dark" strokeWidth={2} aria-hidden />
                 <span className="text-sm text-ch-text-secondary">{m.label}</span>
               </div>
             ))}
@@ -152,7 +142,7 @@ export default function PricingPage() {
           <h2 className="text-2xl font-bold text-ch-text text-center mb-6">Pricing FAQ</h2>
           <div className="space-y-4">
             {faqs.map((faq) => (
-              <div key={faq.q} className="bg-white border border-ch-border rounded-xl p-5">
+              <div key={faq.q} className="bg-white border border-ch-border rounded-none p-5">
                 <p className="font-semibold text-ch-text mb-2">{faq.q}</p>
                 <p className="text-sm text-ch-text-secondary">{faq.a}</p>
               </div>

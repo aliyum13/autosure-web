@@ -45,7 +45,7 @@ export default function ReferralDashboard() {
   if (error || !stats) {
     return (
       <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center max-w-sm w-full">
+        <div className="bg-white rounded-none border border-slate-200 p-8 text-center max-w-sm w-full">
           <p className="text-slate-500 text-sm">{error || 'Something went wrong.'}</p>
         </div>
       </div>
@@ -60,9 +60,9 @@ export default function ReferralDashboard() {
       <div className="max-w-lg mx-auto space-y-6">
 
         {/* Header */}
-        <div className="bg-ch-primary rounded-2xl p-6 text-white">
+        <div className="bg-ch-primary rounded-none p-6 text-white">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-white/20 rounded-none flex items-center justify-center">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -70,7 +70,7 @@ export default function ReferralDashboard() {
               <h1 className="text-xl font-bold">{stats.name}</h1>
             </div>
           </div>
-          <div className="bg-white/10 rounded-xl px-4 py-3">
+          <div className="bg-white/10 rounded-none px-4 py-3">
             <p className="text-white/80 text-xs mb-1">Your referral link</p>
             <p className="text-white text-sm font-mono break-all">{referralLink}</p>
           </div>
@@ -78,7 +78,7 @@ export default function ReferralDashboard() {
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+          <div className="bg-white rounded-none border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
               <MousePointerClick className="w-4 h-4 text-slate-400" />
               <p className="text-xs text-slate-500 font-medium">Link Clicks</p>
@@ -86,7 +86,7 @@ export default function ReferralDashboard() {
             <p className="text-3xl font-bold text-slate-900">{stats.clicks.toLocaleString()}</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+          <div className="bg-white rounded-none border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-4 h-4 text-slate-400" />
               <p className="text-xs text-slate-500 font-medium">Reports Sold</p>
@@ -94,7 +94,7 @@ export default function ReferralDashboard() {
             <p className="text-3xl font-bold text-slate-900">{stats.total_sales}</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+          <div className="bg-white rounded-none border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
               <Banknote className="w-4 h-4 text-green-500" />
               <p className="text-xs text-slate-500 font-medium">Total Earned</p>
@@ -102,7 +102,7 @@ export default function ReferralDashboard() {
             <p className="text-2xl font-bold text-green-600">{fmt(stats.total_commission_ngn)}</p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+          <div className="bg-white rounded-none border border-slate-200 p-5">
             <div className="flex items-center gap-2 mb-3">
               <Clock className="w-4 h-4 text-orange-400" />
               <p className="text-xs text-slate-500 font-medium">Pending Payout</p>
@@ -112,7 +112,7 @@ export default function ReferralDashboard() {
         </div>
 
         {/* Commission breakdown */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="bg-white rounded-none border border-slate-200 p-6">
           <h2 className="text-sm font-semibold text-slate-700 mb-4">Commission Per Sale</h2>
           <div className="space-y-3">
             {[
@@ -130,7 +130,7 @@ export default function ReferralDashboard() {
 
         {/* Payout status */}
         {paidCommission > 0 && (
-          <div className="bg-green-50 border border-green-100 rounded-2xl p-5">
+          <div className="bg-green-50 border border-green-100 rounded-none p-5">
             <p className="text-sm text-green-700 font-medium">
               ✅ {fmt(paidCommission)} has been paid out to you
             </p>
