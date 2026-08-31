@@ -1,64 +1,62 @@
+import { Gauge, CarFront, Droplets, TriangleAlert } from 'lucide-react';
+
+// Four ways an imported car lies, each paired with the US record that catches
+// it. Set as a numbered editorial list rather than a grid of equal cards: these
+// are not four features, they are four claims with evidence behind them.
 const risks = [
   {
-    icon: '🔄',
-    color: 'bg-orange-50 border-orange-100',
-    iconBg: 'bg-orange-100',
-    title: 'Mileage Rollback Fraud',
-    description: 'Odometers are wound back before export from the USA. A car showing 60,000 miles may have done 200,000. CheckAm shows the real mileage timeline from official US DMV records.',
+    Icon: Gauge,
+    title: 'Mileage rollback',
+    body: 'Odometers are wound back before export. A car showing 60,000 miles may have done 200,000.',
+    record: 'US DMV odometer readings, dated at each title transfer',
   },
   {
-    icon: '🚗',
-    color: 'bg-red-50 border-red-100',
-    iconBg: 'bg-red-100',
-    title: 'Salvage & Rebuilt Titles',
-    description: 'Insurance write-offs are repaired, repainted, and shipped to Nigeria. A salvage title means the car was declared a total loss — a fact sellers rarely disclose.',
+    Icon: CarFront,
+    title: 'Salvage and rebuilt titles',
+    body: 'Insurance write-offs are repaired, repainted and shipped. A salvage title means the car was declared a total loss.',
+    record: 'NMVTIS title brands, reported by the state that issued them',
   },
   {
-    icon: '💧',
-    color: 'bg-blue-50 border-blue-100',
-    iconBg: 'bg-blue-100',
-    title: 'Flood & Fire Damage',
-    description: 'Flood-damaged cars are dried out and exported. Electrical failures and rust appear months later. Reports reveal flood damage brands from US insurance companies.',
+    Icon: Droplets,
+    title: 'Flood and fire damage',
+    body: 'Flood cars are dried out and exported. The electrical faults and rust arrive months later.',
+    record: 'Damage brands filed by US insurers',
   },
   {
-    icon: '⚠️',
-    color: 'bg-yellow-50 border-yellow-100',
-    iconBg: 'bg-yellow-100',
-    title: 'Open Safety Recalls',
-    description: 'Millions of Tokunbo cars have open NHTSA safety recalls never repaired before export. CheckAm checks every VIN against the national recall database.',
+    Icon: TriangleAlert,
+    title: 'Open safety recalls',
+    body: 'Recalls issued in America are rarely repaired before a car leaves it, and never mentioned after.',
+    record: 'NHTSA recall database, checked per VIN',
   },
 ];
 
 export default function RiskSection() {
   return (
-    <section className="bg-ch-charcoal py-20 px-4">
+    <section className="bg-ch-ink text-white py-20 sm:py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-ch-primary mb-4">
-            Why It Matters
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            The Risks Every Nigerian Tokunbo Buyer Faces
-          </h2>
-          <p className="text-slate-400 max-w-xl mx-auto">
-            Dealers know the full history. Buyers know nothing. CheckAm closes that gap.
-          </p>
-        </div>
+        <h2 className="text-3xl sm:text-5xl text-white max-w-3xl">
+          The seller knows. You don&apos;t. That is the whole business.
+        </h2>
+        <p className="measure mt-6 text-white/60 text-lg leading-relaxed">
+          Four things that happen to a car in America and are never mentioned in
+          Nigeria — and the record that catches each one.
+        </p>
 
-        <div className="grid sm:grid-cols-2 gap-5">
-          {risks.map((risk) => (
-            <div
-              key={risk.title}
-              className={`border rounded-2xl p-6 ${risk.color} hover-lift`}
+        <ol className="mt-14 border-t border-white/15">
+          {risks.map(({ Icon, title, body, record }) => (
+            <li
+              key={title}
+              className="grid sm:grid-cols-12 gap-4 sm:gap-8 py-8 border-b border-white/15"
             >
-              <div className={`w-12 h-12 ${risk.iconBg} rounded-xl flex items-center justify-center text-2xl mb-4`}>
-                {risk.icon}
+              <div className="sm:col-span-5 flex items-start gap-3">
+                <Icon className="w-5 h-5 text-ch-primary shrink-0 translate-y-1" strokeWidth={2} aria-hidden />
+                <h3 className="text-xl sm:text-2xl text-white">{title}</h3>
               </div>
-              <h3 className="font-bold text-slate-900 mb-2 text-base">{risk.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{risk.description}</p>
-            </div>
+              <p className="sm:col-span-4 text-white/70 leading-relaxed">{body}</p>
+              <p className="sm:col-span-3 text-sm text-ch-primary leading-relaxed">{record}</p>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

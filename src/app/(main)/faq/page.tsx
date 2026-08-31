@@ -63,7 +63,7 @@ const faqs = [
       },
       {
         q: "What does the A–F grade mean?",
-        a: "The overall grade summarises the vehicle's history: A (Excellent, 90–100), B (Good, 75–89), C (Acceptable, 60–74), D (Concerning, 45–59), E (Poor, 20–44), F (Critical Risk, 0–19). The grade is calculated from title brands, accidents, recalls, odometer issues, and theft records.",
+        a: "The overall grade summarises the vehicle's history: A (Excellent, 90–100), B (Good, 75–89), C (Fair, 55–74), D (Poor, 35–54), F (High Risk, below 35). There is no E grade. The score is calculated from title brands, accidents, recalls, odometer issues and theft records.",
       },
     ],
   },
@@ -71,51 +71,46 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="min-h-screen bg-ch-bg py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-ch-text-secondary">
-            Everything you need to know about CheckAm reports.
-          </p>
-        </div>
+    <div className="min-h-screen bg-ch-paper">
+      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
+        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
+          Questions.
+        </h1>
+        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+          What the report covers, where the data comes from, and what it cannot
+          tell you.
+        </p>
 
-        <div className="space-y-8">
-          {faqs.map((section) => (
-            <div key={section.category}>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-4">
-                {section.category}
-              </h2>
-              <div className="space-y-3">
-                {section.items.map((item) => (
-                  <div key={item.q} className="bg-white border border-ch-border rounded-xl p-5">
-                    <p className="font-semibold text-ch-text mb-2">{item.q}</p>
-                    <p className="text-sm text-ch-text-secondary leading-relaxed">{item.a}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {faqs.map((section) => (
+          <section key={section.category} className="mt-16">
+            <h2 className="text-2xl sm:text-3xl text-ch-ink">{section.category}</h2>
+            <dl className="mt-6 rule-t">
+              {section.items.map((item) => (
+                <div key={item.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 py-6 rule-b">
+                  <dt className="sm:col-span-5 font-display text-lg text-ch-ink">{item.q}</dt>
+                  <dd className="sm:col-span-7 measure text-ch-text-secondary leading-relaxed">
+                    {item.a}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
 
-        <div className="mt-10 bg-ch-charcoal rounded-2xl p-6 text-center text-white">
-          <p className="font-semibold mb-2">Still have questions?</p>
-          <p className="text-slate-400 text-sm mb-4">
-            Email us and we will come back to you.
+        <section className="mt-16 bg-ch-ink text-white p-8 sm:p-10">
+          <h2 className="text-2xl sm:text-3xl text-white">Still stuck?</h2>
+          <p className="measure mt-3 text-white/70 leading-relaxed">
+            Email us and a person will answer. We have no phone line yet.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <a
-              href="mailto:checkamafrica@gmail.com"
-              className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
-            >
-              ✉️ Email us — checkamafrica@gmail.com
-            </a>
-            {/* TODO(checkam-contact): a "Join WhatsApp Channel" button sat here,
-                pointing at CarHaki's channel. Restore it when CheckAm has one. */}
-          </div>
-        </div>
+          {/* TODO(checkam-contact): a WhatsApp button sat here pointing at
+              CarHaki's channel. Restore it when CheckAm has one of its own. */}
+          <a
+            href="mailto:checkamafrica@gmail.com"
+            className="inline-block mt-6 bg-white text-ch-ink hover:bg-white/90 text-sm font-semibold px-6 py-3 transition-colors"
+          >
+            checkamafrica@gmail.com
+          </a>
+        </section>
       </div>
     </div>
   );

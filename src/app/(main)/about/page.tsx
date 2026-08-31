@@ -1,123 +1,104 @@
 import Link from 'next/link';
 
 const dataSources = [
-  { code: 'US', name: 'NMVTIS', desc: 'National Motor Vehicle Title Information System' },
-  { code: 'US', name: 'NHTSA', desc: 'National Highway Traffic Safety Administration' },
-  { code: 'US', name: 'State DMV Records', desc: 'All 50 US states title and registration data' },
-  { code: 'US', name: 'Insurance Databases', desc: 'US insurance claims and total loss records' },
+  { name: 'NMVTIS', desc: 'National Motor Vehicle Title Information System — the federal title database' },
+  { name: 'NHTSA', desc: 'National Highway Traffic Safety Administration — recall notices, per VIN' },
+  { name: 'State DMV records', desc: 'Title and registration data from all fifty US states' },
+  { name: 'Insurance databases', desc: 'US insurance claims and total-loss records' },
+];
+
+const hidden = [
+  'Salvage or rebuilt titles from US insurance write-offs',
+  'Odometers rolled back by tens of thousands of miles',
+  'Flood damage repaired and hidden under fresh paint',
+  'Theft records and outstanding finance',
+  'Open safety recalls never repaired before export',
 ];
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-ch-bg">
-      {/* Hero */}
-      <div className="bg-ch-charcoal text-white py-16 px-4 text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">
-          Why &ldquo;CheckAm&rdquo;?
+    <div className="min-h-screen bg-ch-paper">
+      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
+        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
+          Check am.
         </h1>
-        <p className="text-slate-300 max-w-xl mx-auto text-lg leading-relaxed">
-          &ldquo;Haki&rdquo; is a Swahili word that means truth, right, and genuineness.
-          It carries weight across Africa.
+        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+          It is Nigerian Pidgin, and it means exactly what it sounds like: check
+          it. Before you hand over the money, before you trust the mileage on the
+          dash, before you believe the story about one careful owner in Houston —
+          check am.
         </p>
-        <p className="text-slate-400 max-w-xl mx-auto mt-3">
-          <strong className="text-white">CheckAm</strong> means the genuine truth about your car.
-          It is that simple.
-        </p>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
-
-        {/* Mission */}
-        <div className="bg-ch-red-light border border-red-200 rounded-2xl p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ch-red mb-3">Our Mission</p>
-          <p className="text-lg text-ch-text leading-relaxed">
-            CheckAm was built with one mission: to protect Nigerian Tokunbo buyers from purchasing
-            vehicles with hidden histories, tampered odometers, salvage titles, and undisclosed damage.
-          </p>
-        </div>
-
-        {/* Vision */}
-        <div className="grid sm:grid-cols-2 gap-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Our Vision</p>
-            <h2 className="text-2xl font-bold text-ch-text mb-3">Nigeria first, Africa next</h2>
-            <p className="text-ch-text-secondary text-sm leading-relaxed mb-3">
-              CheckAm launched in Nigeria because Nigeria is the largest Tokunbo vehicle market
-              in Africa and buyers have historically had the least protection. But the problem
-              exists across the continent.
+        <section className="mt-16 grid lg:grid-cols-12 gap-10 lg:gap-12">
+          <div className="lg:col-span-7">
+            <h2 className="text-2xl sm:text-4xl text-ch-ink">
+              The paperwork already exists. It is just on the wrong continent.
+            </h2>
+            <p className="measure mt-6 text-ch-text-secondary leading-relaxed">
+              Nigeria imports hundreds of thousands of used American vehicles a
+              year, through Cotonou, Apapa and Tin Can Island. Every one of them
+              left behind a paper trail in the United States: who titled it, what
+              an insurer paid out on it, what the odometer read each time it
+              changed hands.
             </p>
-            <p className="text-ch-text-secondary text-sm leading-relaxed">
-              Our roadmap includes expansion to Ghana, Kenya, and Tanzania — the same databases,
-              the same grading system, the same commitment to putting buyers first.
+            <p className="measure mt-4 text-ch-text-secondary leading-relaxed">
+              That record is federal, it is dated, and the man selling you the car
+              in Lagos cannot reach it, edit it, or delete it. Until now he could
+              simply assume you would never look.
             </p>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">Data Sources</p>
-            <h2 className="text-2xl font-bold text-ch-text mb-3">Official US government databases</h2>
-            <div className="space-y-3">
-              {dataSources.map((source) => (
-                <div key={source.name} className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-ch-primary rounded-lg flex items-center justify-center shrink-0">
-                    <span className="text-white text-xs font-bold">{source.code}</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-ch-text">{source.name}</p>
-                    <p className="text-xs text-ch-text-muted">{source.desc}</p>
-                  </div>
+
+          <div className="lg:col-span-5 lg:pl-10 lg:rule-l">
+            <h2 className="text-xl text-ch-ink">Where the data comes from</h2>
+            <dl className="mt-6 rule-t">
+              {dataSources.map((s) => (
+                <div key={s.name} className="py-4 rule-b">
+                  <dt className="text-sm font-semibold text-ch-ink">{s.name}</dt>
+                  <dd className="mt-1 text-sm text-ch-text-muted leading-relaxed">{s.desc}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
-        </div>
+        </section>
 
-        {/* Problem */}
-        <div className="bg-white border border-ch-border rounded-2xl p-6 sm:p-8">
-          <div className="grid sm:grid-cols-2 gap-6">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-ch-primary mb-2">
-                The Problem in Nigeria
-              </p>
-              <h3 className="text-xl font-bold text-ch-text mb-3">
-                Thousands of Tokunbo buyers get deceived every year
-              </h3>
-              <p className="text-sm text-ch-text-secondary leading-relaxed">
-                Nigeria imports hundreds of thousands of used vehicles from the United States
-                every year — Tokunbo cars that pass through Cotonou, Apapa, and Tin Can Island
-                ports. Before CheckAm, there was no reliable way for a Nigerian buyer to check
-                a car&apos;s history before purchase.
-              </p>
-            </div>
-            <div className="bg-ch-red-light rounded-xl p-5">
-              <p className="text-sm font-semibold text-ch-text mb-3">Common hidden problems we uncover</p>
-              <ul className="space-y-2">
-                {[
-                  'Salvage or rebuilt titles from US insurance write-offs',
-                  'Odometers rolled back by tens of thousands of miles',
-                  'Flood damage repaired and hidden under fresh paint',
-                  'Theft records and outstanding finance',
-                  'Open safety recalls never repaired before export',
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-ch-text-secondary">
-                    <span className="text-ch-red shrink-0">•</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
+        <section className="mt-16">
+          <h2 className="text-2xl sm:text-4xl text-ch-ink max-w-2xl">
+            What a report turns up.
+          </h2>
+          <ul className="mt-6 rule-t">
+            {hidden.map((item) => (
+              <li key={item} className="py-4 rule-b text-ch-text-secondary">
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p className="measure mt-6 text-sm text-ch-text-muted leading-relaxed">
+            A report is not an inspection. Not every incident reaches a US
+            database, so check the car physically as well — this tells you what
+            the paperwork says, which is the half nobody else can show you.
+          </p>
+        </section>
 
-        {/* CTA */}
-        <div className="bg-ch-charcoal rounded-2xl p-8 text-center text-white">
-          <h3 className="text-2xl font-bold mb-3">Ready to check your next Tokunbo?</h3>
-          <p className="text-slate-400 mb-6">One report. Full truth. ₦15,000.</p>
+        <section className="mt-16">
+          <h2 className="text-2xl sm:text-4xl text-ch-ink">Nigeria first.</h2>
+          <p className="measure mt-6 text-ch-text-secondary leading-relaxed">
+            CheckAm launched in Nigeria because it is the largest Tokunbo market in
+            Africa and the one where buyers have had the least protection. The
+            same databases cover every American car exported anywhere, so the same
+            check works wherever those cars land next.
+          </p>
+        </section>
+
+        <section className="mt-16 bg-ch-ink text-white p-8 sm:p-12">
+          <h2 className="text-3xl sm:text-4xl text-white">Ready to check your next Tokunbo?</h2>
+          <p className="measure mt-3 text-white/70 text-lg">One VIN. ₦15,000. About thirty seconds.</p>
           <Link
             href="/search"
-            className="inline-block bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+            className="inline-block mt-8 bg-white text-ch-ink hover:bg-white/90 font-semibold px-8 py-3.5 transition-colors"
           >
-            Check a Car Now
+            Check a car now
           </Link>
-        </div>
+        </section>
       </div>
     </div>
   );

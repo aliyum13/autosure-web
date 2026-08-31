@@ -5,7 +5,7 @@ export default function PrivacyPage() {
         <h1 className="text-3xl font-bold text-ch-text mb-2">Privacy Policy</h1>
         <p className="text-ch-text-muted text-sm mb-8">Last updated: June 2026</p>
 
-        <div className="bg-white border border-ch-border rounded-2xl p-6 sm:p-8 space-y-6">
+        <div className="bg-white border border-ch-border rounded-none p-6 sm:p-8 space-y-6">
           {[
             {
               title: '1. Information We Collect',
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           ].map((section) => (
             <div key={section.title}>
               <h2 className="text-lg font-semibold text-ch-text mb-2">{section.title}</h2>
-              <p className="text-ch-text-secondary text-sm leading-relaxed">{section.content}</p>
+              <p className="measure text-ch-text-secondary text-sm leading-relaxed">{section.content}</p>
             </div>
           ))}
         </div>

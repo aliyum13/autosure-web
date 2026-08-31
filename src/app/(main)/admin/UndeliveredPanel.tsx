@@ -118,7 +118,7 @@ export default function UndeliveredPanel() {
   };
 
   return (
-    <div className="bg-white border border-ch-border rounded-xl p-6">
+    <div className="bg-white border border-ch-border rounded-none p-6">
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         <MailX className="w-4 h-4" /> Undelivered Reports ({rows.length})
       </h2>
@@ -205,7 +205,7 @@ export default function UndeliveredPanel() {
                       <Input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} type="email"
                         placeholder="corrected@example.com" className="text-sm" />
                       <Button size="sm" disabled={busy === row.id || !newEmail.trim()} onClick={() => correctEmail(row)}
-                        className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs shrink-0">
+                        className="bg-ch-primary-dark hover:bg-ch-ink text-white text-xs shrink-0">
                         {busy === row.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Update & re-send'}
                       </Button>
                     </div>

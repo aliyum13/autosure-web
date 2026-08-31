@@ -52,7 +52,7 @@ export default function AlertsPanel() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-ch-border rounded-xl p-6">
+      <div className="bg-white border border-ch-border rounded-none p-6">
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
       </div>
     );
@@ -60,7 +60,7 @@ export default function AlertsPanel() {
 
   if (loadFailed) {
     return (
-      <div className="border rounded-xl p-6 bg-amber-50 border-amber-200">
+      <div className="border rounded-none p-6 bg-amber-50 border-amber-200">
         <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-amber-600" /> System Health
         </h2>
@@ -81,7 +81,7 @@ export default function AlertsPanel() {
     : 'bg-white border-ch-border';
 
   return (
-    <div className={`border rounded-xl p-6 ${shell}`}>
+    <div className={`border rounded-none p-6 ${shell}`}>
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         {open.length > 0 ? <ShieldAlert className="w-4 h-4 text-red-600" /> : <ShieldCheck className="w-4 h-4 text-green-600" />}
         System Health

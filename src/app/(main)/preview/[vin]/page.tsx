@@ -235,7 +235,7 @@ export default function PreviewPage() {
         <div className="text-5xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-ch-text mb-2">Vehicle Not Found</h2>
         <p className="text-ch-text-secondary mb-6">{error || 'No data found for this VIN.'}</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-primary hover:bg-ch-primary-dark text-white">Try Another VIN</Button>
+        <Button onClick={() => router.push('/')} className="bg-ch-primary-dark hover:bg-ch-ink text-white">Try Another VIN</Button>
       </div>
     </div>
   );
@@ -267,7 +267,7 @@ export default function PreviewPage() {
             our provider has no records for — so the only recoverable case was
             buried in wording about neither. */}
         {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk === false && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+          <div className="bg-red-50 border border-red-200 rounded-none p-4 mb-4 flex items-start gap-3">
             <span className="text-lg shrink-0">🛑</span>
             <div>
               <p className="text-sm font-semibold text-red-800 mb-1">
@@ -285,7 +285,7 @@ export default function PreviewPage() {
         )}
 
         {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk !== false && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+          <div className="bg-amber-50 border border-amber-200 rounded-none p-4 mb-4 flex items-start gap-3">
             <span className="text-lg shrink-0">⚠️</span>
             <div>
               <p className="text-sm font-semibold text-amber-800 mb-1">
@@ -302,7 +302,7 @@ export default function PreviewPage() {
         )}
 
         {preview.source === 'nhtsa' && preview.fallback_reason !== 'vin_rejected' && (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-start gap-3">
+          <div className="bg-amber-50 border border-amber-200 rounded-none p-4 mb-4 flex items-start gap-3">
             <span className="text-lg shrink-0">⚠️</span>
             <div>
               <p className="text-sm font-semibold text-amber-800 mb-1">
@@ -318,7 +318,7 @@ export default function PreviewPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+        <div className="bg-white rounded-none overflow-hidden border border-slate-200 shadow-sm">
           <div className="px-6 pt-6 pb-4 border-b border-slate-100">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -352,7 +352,7 @@ export default function PreviewPage() {
                 <div className="flex justify-between border-b border-slate-100 pb-2"><span className="text-slate-500">Date:</span><span className="font-semibold text-slate-700">{new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
                 {recallCount > 0 && <div className="flex justify-between border-b border-slate-100 pb-2"><span className="text-slate-500">Recalls:</span><span className="font-semibold text-amber-600">⚠ {recallCount} found</span></div>}
               </div>
-              <div className="bg-slate-50 rounded-xl p-3 text-center border border-slate-200">
+              <div className="bg-slate-50 rounded-none p-3 text-center border border-slate-200">
                 <Lock className="w-5 h-5 text-slate-400 mx-auto mb-1" />
                 <p className="text-xs text-slate-500 font-medium">ClearVin Vehicle Rating</p>
                 <p className="text-xs text-slate-400">Unlock full report to view</p>
@@ -362,11 +362,11 @@ export default function PreviewPage() {
         </div>
 
         {/* Summary cards */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-5">
           <h3 className="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Report Summary</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {summaryCards.map((card) => (
-              <div key={card.label} className={`relative rounded-xl border p-3 text-center transition-all ${card.status === 'warn' ? 'border-amber-200 bg-amber-50' : card.status === 'lock' ? 'border-slate-200 bg-slate-50 opacity-75' : 'border-green-200 bg-green-50'}`}>
+              <div key={card.label} className={`relative rounded-none border p-3 text-center transition-all ${card.status === 'warn' ? 'border-amber-200 bg-amber-50' : card.status === 'lock' ? 'border-slate-200 bg-slate-50 opacity-75' : 'border-green-200 bg-green-50'}`}>
                 <div className={`absolute top-1.5 right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${card.status === 'warn' ? 'bg-amber-500 text-white' : card.status === 'lock' ? 'bg-slate-300 text-slate-500' : 'bg-green-500 text-white'}`}>
                   {card.status === 'warn' ? '!' : card.status === 'lock' ? '–' : '✓'}
                 </div>
@@ -383,7 +383,7 @@ export default function PreviewPage() {
         </div>
 
         {/* Specs */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-5">
           <h3 className="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Vehicle Specifications <span className="text-slate-400 font-normal normal-case">(free)</span></h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
@@ -401,14 +401,14 @@ export default function PreviewPage() {
         </div>
 
         {/* CTA */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 text-center">
+        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-6 text-center">
           <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 mb-3">
             <Lock className="w-3.5 h-3.5 text-amber-600" />
             <span className="text-xs font-semibold text-amber-700">Full History Analysis Available</span>
           </div>
           <h2 className="text-lg font-bold text-slate-900 mb-1">Unlock the Complete Report</h2>
           <p className="text-sm text-slate-500 mb-5">Auction photos, title records, accident history & more — delivered to your email as PDF</p>
-          <Button onClick={() => setShowModal(true)} className="bg-ch-primary hover:bg-ch-primary-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-xl">
+          <Button onClick={() => setShowModal(true)} className="bg-ch-primary-dark hover:bg-ch-ink text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-none">
             🔓 Unlock Full Report — ₦15,000
           </Button>
           <div className="flex items-center justify-center gap-2 mt-3">
@@ -421,7 +421,7 @@ export default function PreviewPage() {
       {/* Checkout Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
-          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-none w-full max-w-md max-h-[90vh] overflow-y-auto">
             {/* Modal header */}
             <div className="flex items-center justify-between p-5 border-b border-slate-100">
               <div className="flex items-center gap-3">
@@ -504,7 +504,7 @@ export default function PreviewPage() {
                 <div className="grid grid-cols-3 gap-2">
                   {BUNDLES.map((bundle) => (
                     <button key={bundle.id} onClick={() => setSelectedBundle(bundle.id)}
-                      className={`relative rounded-xl border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-primary bg-ch-primary/5' : 'border-slate-200'}`}>
+                      className={`relative rounded-none border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-primary bg-ch-primary/5' : 'border-slate-200'}`}>
                       {bundle.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-ch-primary text-white whitespace-nowrap">{bundle.badge}</span>}
                       <p className="text-xs font-semibold text-slate-700">{bundle.label}</p>
                       <p className="text-sm font-bold text-ch-primary">₦{bundle.price.toLocaleString()}</p>
@@ -515,7 +515,7 @@ export default function PreviewPage() {
               </div>
 
               {/* Price summary */}
-              <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div className="bg-slate-50 rounded-none p-3 border border-slate-100">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-slate-600">Vehicle History Report</span>
                   <span className="font-medium">₦{selected.price.toLocaleString()}</span>
@@ -528,7 +528,7 @@ export default function PreviewPage() {
 
               {orderError && <p className="text-sm text-red-500">{orderError}</p>}
 
-              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary hover:bg-ch-primary-dark text-white font-bold text-base rounded-xl">
+              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary-dark hover:bg-ch-ink text-white font-bold text-base rounded-none">
                 {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
 
@@ -546,7 +546,7 @@ export default function PreviewPage() {
                 and <a href="/privacy" className="text-ch-primary hover:underline">NMVTIS disclaimer</a>.
               </p>
 
-              <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div className="bg-slate-50 rounded-none p-3 border border-slate-100">
                 <p className="text-[10px] text-slate-500 leading-relaxed">
                   <strong>NMVTIS DISCLAIMER:</strong> The National Motor Vehicle Title Information System (NMVTIS) is an electronic system that contains information on certain automobiles titled in the United States. NMVTIS is intended to serve as a reliable source of title and brand history for automobiles, but it does not contain detailed information regarding a vehicle&apos;s repair history. A vehicle history report is NOT a substitute for an independent vehicle inspection.{' '}
                   <a href="/privacy" className="text-ch-primary hover:underline">Read full disclaimer →</a>

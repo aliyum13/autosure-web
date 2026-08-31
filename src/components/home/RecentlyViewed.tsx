@@ -46,7 +46,7 @@ export default function RecentlyViewed() {
           <button
             key={entry.vin}
             onClick={() => router.push(`/preview/${entry.vin}`)}
-            className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 transition-colors group"
+            className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-none px-3 py-2 transition-colors group"
           >
             <div className="text-left">
               <p className="text-xs font-semibold text-slate-700 font-mono">{entry.vin}</p>
