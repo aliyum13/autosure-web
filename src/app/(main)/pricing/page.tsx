@@ -56,7 +56,7 @@ const faqs = [
   },
   {
     q: 'How long does a report take?',
-    a: 'Usually about thirty seconds after Paystack confirms the payment. It appears on screen and arrives by email as a PDF.',
+    a: 'The check starts the moment Paystack confirms your payment. The report appears on screen when it completes and arrives by email as a PDF.',
   },
   {
     q: 'Can I share my report?',
