@@ -91,7 +91,7 @@ export default function AboutPage() {
 
         <section className="mt-16 bg-ch-ink text-white p-8 sm:p-12">
           <h2 className="text-3xl sm:text-4xl text-white">Ready to check your next Tokunbo?</h2>
-          <p className="measure mt-3 text-white/70 text-lg">One VIN. ₦15,000. About thirty seconds.</p>
+          <p className="measure mt-3 text-white/70 text-lg">One VIN. ₦15,000. Checked against the US federal record.</p>
           <Link
             href="/search"
             className="inline-block mt-8 bg-white text-ch-ink hover:bg-white/90 font-semibold px-8 py-3.5 transition-colors"

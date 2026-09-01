@@ -17,7 +17,7 @@ const steps = [
   {
     n: '3',
     title: 'Read the report',
-    body: 'Title brands, odometer timeline, accidents, auction photos and open recalls — on screen in about thirty seconds, and emailed to you as a PDF.',
+    body: 'Title brands, odometer timeline, accidents, auction photos and open recalls — on screen as soon as the check completes, and emailed to you as a PDF.',
   },
 ];
 
@@ -48,7 +48,7 @@ export default function HowItWorks() {
             </Button>
           </Link>
           <p className="mt-3 text-sm text-ch-text-muted">
-            No account needed. Results in about thirty seconds.
+            No account needed. The check starts the moment your payment clears.
           </p>
         </div>
       </div>

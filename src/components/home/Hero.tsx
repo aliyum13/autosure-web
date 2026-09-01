@@ -7,8 +7,8 @@ import { Landmark, Database, Timer, Lock } from 'lucide-react';
 // than floating as pills.
 const provenance = [
   { Icon: Landmark, label: 'NMVTIS', detail: 'US federal title database' },
-  { Icon: Database, label: '50M+ records', detail: 'US titles, recalls, insurance' },
-  { Icon: Timer, label: '~30 seconds', detail: 'Report delivered by email' },
+  { Icon: Database, label: 'Official records', detail: 'US titles, recalls, insurance claims' },
+  { Icon: Timer, label: 'Straight after payment', detail: 'Emailed to you as a PDF' },
   { Icon: Lock, label: 'Paystack', detail: 'Card or bank transfer' },
 ];
 
