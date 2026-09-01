@@ -100,7 +100,7 @@ export async function sendReportReadyEmail({
 
         <!-- Header -->
         <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
+          <img src="https://www.checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
           <br>
           <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
           <p style="color:#BBF7D0;margin:6px 0 0;font-size:13px;">Check am before you buy</p>
@@ -186,7 +186,7 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
 
         <!-- Header -->
         <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
+          <img src="https://www.checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
           <br>
           <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
         </td></tr>
