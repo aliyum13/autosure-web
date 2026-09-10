@@ -528,6 +528,14 @@ export default function PreviewPage() {
 
               {orderError && <p className="text-sm text-red-500">{orderError}</p>}
 
+              <p className="text-center text-xs text-slate-500">
+                This report uses official NMVTIS federal vehicle data. See our{' '}
+                <a href="/terms#nmvtis-disclaimer" className="text-ch-primary font-semibold hover:underline">
+                  Terms
+                </a>{' '}
+                for the full data source disclosure.
+              </p>
+
               <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary-dark hover:bg-ch-ink text-white font-bold text-base rounded-none">
                 {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
@@ -543,13 +551,13 @@ export default function PreviewPage() {
               <p className="text-center text-xs text-slate-400">
                 By clicking ORDER REPORT NOW you agree to{' '}
                 <a href="/terms" className="text-ch-primary hover:underline">Terms and Conditions</a>{' '}
-                and <a href="/privacy" className="text-ch-primary hover:underline">NMVTIS disclaimer</a>.
+                and <a href="/terms#nmvtis-disclaimer" className="text-ch-primary hover:underline">NMVTIS disclaimer</a>.
               </p>
 
               <div className="bg-slate-50 rounded-none p-3 border border-slate-100">
                 <p className="text-[10px] text-slate-500 leading-relaxed">
                   <strong>NMVTIS DISCLAIMER:</strong> The National Motor Vehicle Title Information System (NMVTIS) is an electronic system that contains information on certain automobiles titled in the United States. NMVTIS is intended to serve as a reliable source of title and brand history for automobiles, but it does not contain detailed information regarding a vehicle&apos;s repair history. A vehicle history report is NOT a substitute for an independent vehicle inspection.{' '}
-                  <a href="/privacy" className="text-ch-primary hover:underline">Read full disclaimer →</a>
+                  <a href="/terms#nmvtis-disclaimer" className="text-ch-primary hover:underline">Read full disclaimer →</a>
                 </p>
               </div>
             </div>
