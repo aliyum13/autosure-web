@@ -238,6 +238,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Payment service unavailable.' }, { status: 503 });
     }
 
+    // Revenue-split code for Paystack's split-payment API. Missing this must
+    // NOT fail checkout — but silently sends 100% of the payment to the main
+    // account with no split and no record that splitting was skipped. Warn
+    // loudly so that specific failure is never silent.
+    const PAYSTACK_SPLIT_CODE = process.env.PAYSTACK_SPLIT_CODE;
+    if (!PAYSTACK_SPLIT_CODE) {
+      console.warn('[orders/create] PAYSTACK_SPLIT_CODE is not set — this payment will go 100% to the main account, unsplit.');
+    }
+
     const BUNDLES: Record<string, { price: number; count: number }> = {
       single: { price: 15000, count: 1 },
       triple: { price: 35000, count: 3 },
@@ -260,6 +269,7 @@ export async function POST(req: NextRequest) {
         amount: priceKobo,
         reference,
         currency: 'NGN',
+        ...(PAYSTACK_SPLIT_CODE ? { split_code: PAYSTACK_SPLIT_CODE } : {}),
         metadata: {
           vin: upperVin,
           guest_name: name.trim(),
