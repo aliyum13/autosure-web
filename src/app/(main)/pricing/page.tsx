@@ -52,7 +52,7 @@ const paymentMethods = [
 const faqs = [
   {
     q: 'What if there is no data for my VIN?',
-    a: 'You get a full refund. Some cars were never registered in the United States and have no US history to return. Email checkamafrica@gmail.com within 24 hours of paying.',
+    a: 'You get a full refund. Some cars were never registered in the United States and have no US history to return. Email support@checkamvin.com within 24 hours of paying.',
   },
   {
     q: 'How long does a report take?',

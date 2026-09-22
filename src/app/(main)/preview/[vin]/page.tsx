@@ -545,7 +545,7 @@ export default function PreviewPage() {
               <p className="text-center text-xs text-slate-500">
                 {/* TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet. */}
                 Questions before you pay? Email us:{' '}
-                <a href="mailto:checkamafrica@gmail.com" className="text-ch-primary font-semibold">checkamafrica@gmail.com</a>
+                <a href="mailto:support@checkamvin.com" className="text-ch-primary font-semibold">support@checkamvin.com</a>
               </p>
 
               <p className="text-center text-xs text-slate-400">

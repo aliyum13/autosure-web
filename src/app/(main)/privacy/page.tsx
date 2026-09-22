@@ -29,7 +29,7 @@ export default function PrivacyPage() {
             },
             {
               title: '6. Your Rights (NDPA 2023)',
-              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at checkamafrica@gmail.com to exercise these rights.',
+              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at support@checkamvin.com to exercise these rights.',
             },
             {
               title: '7. Cookies',
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
               // so it has been removed rather than misattributed. Put CheckAm's
               // own registered address back once the entity is formalised.
               title: '8. Contact',
-              content: 'Data Controller: CheckAm | checkamafrica@gmail.com',
+              content: 'Data Controller: CheckAm | support@checkamvin.com',
             },
           ].map((section) => (
             <div key={section.title}>

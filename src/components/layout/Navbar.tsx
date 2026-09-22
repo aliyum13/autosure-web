@@ -15,7 +15,7 @@ const navLinks = [
   { href: '/about', label: 'About' },
   // TODO(checkam-contact): this pointed at CarHaki's WhatsApp group. Point it
   // at CheckAm's own support channel once one exists.
-  { href: 'mailto:checkamafrica@gmail.com', label: 'Support', external: true },
+  { href: 'mailto:support@checkamvin.com', label: 'Support', external: true },
 ];
 
 // `checkam_authed` is the non-httpOnly UI-hint cookie set alongside the real

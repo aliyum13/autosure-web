@@ -42,7 +42,7 @@ const faqs = [
       },
       {
         q: 'What if no data is found for my VIN?',
-        a: 'If CheckAm cannot retrieve any data for your VIN, we will issue a full refund. Email us at checkamafrica@gmail.com within 24 hours of your purchase.',
+        a: 'If CheckAm cannot retrieve any data for your VIN, we will issue a full refund. Email us at support@checkamvin.com within 24 hours of your purchase.',
       },
       {
         q: 'Is my payment secure?',
@@ -105,10 +105,10 @@ export default function FAQPage() {
           {/* TODO(checkam-contact): a WhatsApp button sat here pointing at
               CarHaki's channel. Restore it when CheckAm has one of its own. */}
           <a
-            href="mailto:checkamafrica@gmail.com"
+            href="mailto:support@checkamvin.com"
             className="inline-block mt-6 bg-white text-ch-ink hover:bg-white/90 text-sm font-semibold px-6 py-3 transition-colors"
           >
-            checkamafrica@gmail.com
+            support@checkamvin.com
           </a>
         </section>
       </div>

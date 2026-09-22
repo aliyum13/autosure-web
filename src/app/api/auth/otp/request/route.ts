@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
           // It is the only channel CheckAm has today — give this one a real
           // WhatsApp number first when one exists.
           error: 'We can no longer deliver email to this address, so we cannot send you a code. '
-            + 'Contact us at checkamafrica@gmail.com from another address and we will send your report directly.',
+            + 'Contact us at support@checkamvin.com from another address and we will send your report directly.',
         },
         { status: 403 }
       );
