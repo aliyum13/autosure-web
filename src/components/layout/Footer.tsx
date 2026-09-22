@@ -16,7 +16,7 @@ const footerLinks = {
     // TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet.
     // A phone row and a community-group row sat here, both CarHaki's.
     // Restore them once CheckAm has its own.
-    { label: 'checkamafrica@gmail.com', href: 'mailto:checkamafrica@gmail.com' },
+    { label: 'support@checkamvin.com', href: 'mailto:support@checkamvin.com' },
   ],
   Legal: [
     { label: 'Terms of Service', href: '/terms' },

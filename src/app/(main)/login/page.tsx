@@ -135,7 +135,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-ch-text-secondary text-xs text-center mt-6">
-          Need help? <a href="mailto:checkamafrica@gmail.com" className="text-ch-primary">checkamafrica@gmail.com</a>
+          Need help? <a href="mailto:support@checkamvin.com" className="text-ch-primary">support@checkamvin.com</a>
         </p>
       </div>
     </div>

@@ -64,7 +64,7 @@ That is the honest position: not "we know cars" but "America wrote this down."
 - **Brand commitments:** the name CheckAm (Nigerian Pidgin, "check it"), the
   circular checkmark mark, and the brand green `#16A34A`. Confirmed as fixed by
   the user; a redesign works around them.
-- **Contact is currently email only** (`checkamafrica@gmail.com`). There is no
+- **Contact is currently email only** (`support@checkamvin.com`). There is no
   WhatsApp line or social account yet, and the design must not imply otherwise.
   See `TODO(checkam-contact)` in the code.
 - **No customer testimonials exist.** CheckAm has served no customers under this

@@ -16,7 +16,7 @@ export default function PaymentFailedPage() {
             <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Try Again</Button>
           </Link>
           {/* TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet. */}
-          <a href="mailto:checkamafrica@gmail.com">
+          <a href="mailto:support@checkamvin.com">
             <Button variant="outline" className="w-full border-ch-border">Email Support</Button>
           </a>
           <Link href="/dashboard">

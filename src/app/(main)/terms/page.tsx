@@ -89,7 +89,7 @@ const sections: { title: string; content: ReactNode }[] = [
     // TODO(checkam-legal): address removed — it was CarHaki's, carried
     // over by the rename. Restore with CheckAm's own registered address
     // once the entity is formalised. See the same TODO in privacy.
-    content: 'For questions about these terms: checkamafrica@gmail.com',
+    content: 'For questions about these terms: support@checkamvin.com',
   },
 ];
 

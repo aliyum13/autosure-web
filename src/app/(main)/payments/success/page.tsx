@@ -126,8 +126,8 @@ function PaymentSuccessContent() {
             <Link href="/">
               <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Try Again</Button>
             </Link>
-            <a href="mailto:checkamafrica@gmail.com">
-              <Button variant="outline" className="w-full border-ch-border">checkamafrica@gmail.com</Button>
+            <a href="mailto:support@checkamvin.com">
+              <Button variant="outline" className="w-full border-ch-border">support@checkamvin.com</Button>
             </a>
           </div>
         </div>
@@ -207,9 +207,9 @@ function PaymentSuccessContent() {
           <Link href="/">
             <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Check Another Car</Button>
           </Link>
-          <a href="mailto:checkamafrica@gmail.com">
+          <a href="mailto:support@checkamvin.com">
             <Button variant="outline" className="w-full border-ch-border text-sm">
-              Need help? checkamafrica@gmail.com
+              Need help? support@checkamvin.com
             </Button>
           </a>
         </div>

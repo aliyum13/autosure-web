@@ -147,7 +147,7 @@ export async function sendReportReadyEmail({
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
             <!-- TODO(checkam-contact): add CheckAm's WhatsApp number back here once it exists. -->
-            Need help? Email us at <a href="mailto:checkamafrica@gmail.com" style="color:#16A34A;">checkamafrica@gmail.com</a>.
+            Need help? Email us at <a href="mailto:support@checkamvin.com" style="color:#16A34A;">support@checkamvin.com</a>.
           </p>
         </td></tr>
 
