@@ -62,9 +62,9 @@ That is the honest position: not "we know cars" but "America wrote this down."
   multi-report bundles. Bundle credits and referral earnings can pay for a
   report instead of cash.
 - **Brand commitments:** the name AutoSure (domain autosurevin.com), the
-  AutoSure logo, brand blue `#1E40AF` and brand teal `#0D9488`, set in
-  Playfair Display and Crimson Text. Confirmed as fixed by the user; a
-  redesign works around them.
+  AutoSure logo, brand blue `#1E40AF` and brand teal `#0D9488`. Confirmed as
+  fixed by the user; a redesign works around them. (Type is a design decision,
+  not a brand commitment — see DESIGN.md.)
 - **Contact is currently email only** (`support@autosurevin.com`). There is no
   WhatsApp line or social account yet, and the design must not imply otherwise.
   See `TODO(autosure-contact)` in the code.

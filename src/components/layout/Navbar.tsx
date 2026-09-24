@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { Menu, X, Search, User } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -42,17 +43,15 @@ export default function Navbar() {
   const accountLabel = authed ? 'My Account' : 'Sign In';
 
   return (
-    <nav className="sticky top-0 z-50 bg-ch-paper rule-b">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-ch-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center transition-transform group-hover:scale-105">
-              <Search className="w-[18px] h-[18px] text-white" strokeWidth={3} />
-            </div>
-            <span className="font-display tracking-tight font-bold text-lg">
-              <span className="text-ch-text">Auto</span>
-              <span className="text-ch-primary-dark">Sure</span>
+          <Link href="/" className="flex items-center gap-2 rounded-lg">
+            <Image src="/images/logo-180.png" alt="" width={36} height={36} priority className="rounded-md" />
+            <span className="tracking-tight font-bold text-lg">
+              <span className="text-ch-ink">Auto</span>
+              <span className="text-ch-primary">Sure</span>
             </span>
           </Link>
 
@@ -66,8 +65,8 @@ export default function Navbar() {
                 </a>
               ) : (
                 <Link key={link.href} href={link.href}
-                  className={cn('text-sm font-medium transition-colors',
-                    pathname === link.href ? 'text-ch-primary-dark' : 'text-ch-text-secondary hover:text-ch-primary-dark')}>
+                  className={cn('text-sm font-medium transition-colors duration-200 ease-out',
+                    pathname === link.href ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
                   {link.label}
                 </Link>
               )
@@ -78,17 +77,22 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5">
             <Link href={accountHref}
               className={cn('text-sm font-medium transition-colors inline-flex items-center gap-1.5',
-                pathname === accountHref ? 'text-ch-primary-dark' : 'text-ch-text-secondary hover:text-ch-primary-dark')}>
+                pathname === accountHref ? 'text-ch-primary' : 'text-ch-text-secondary hover:text-ch-primary')}>
               {authed && <User className="w-4 h-4" />}
               {accountLabel}
             </Link>
-            <Link href="/">
-              <Button size="sm" className="bg-ch-primary-dark hover:bg-ch-ink text-white rounded-none">Check a Car</Button>
-            </Link>
+            <Button asChild className="h-9 px-4 rounded-lg bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold transition-colors duration-200 ease-out">
+              <Link href="/">Check a Car</Link>
+            </Button>
           </div>
 
           {/* Mobile hamburger */}
-          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className="md:hidden p-2 rounded-lg"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+          >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -119,9 +123,9 @@ export default function Navbar() {
             {accountLabel}
           </Link>
           <div className="pt-2">
-            <Link href="/" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Check a Car</Button>
-            </Link>
+            <Button asChild className="w-full h-11 rounded-lg bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold">
+              <Link href="/" onClick={() => setMobileOpen(false)}>Check a Car</Link>
+            </Button>
           </div>
         </div>
       )}

@@ -1,24 +1,22 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
 import { useState } from 'react';
 
 const footerLinks = {
-  Product: [
+  'Quick Links': [
     { label: 'Check a Car', href: '/search' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'Sample Report', href: '/sample-report' },
+    { label: 'About AutoSure', href: '/about' },
   ],
   Support: [
     { label: 'FAQ', href: '/faq' },
-    { label: 'About AutoSure', href: '/about' },
     // TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet.
     // A phone row and a community-group row sat here, both CarHaki's.
     // Restore them once AutoSure has its own.
     { label: 'support@autosurevin.com', href: 'mailto:support@autosurevin.com' },
-  ],
-  Legal: [
     { label: 'Terms of Service', href: '/terms' },
     { label: 'Privacy Policy', href: '/privacy' },
   ],
@@ -53,26 +51,27 @@ function SubscribeForm() {
 
   if (status === 'success') {
     return (
-      <p className="text-sm text-ch-primary font-medium">
+      <p className="text-sm text-ch-primary-on-dark font-medium">
         ✅ You&apos;re subscribed! Watch your inbox.
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mt-3">
+    <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
       <input
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
         required
-        className="flex-1 bg-white/[0.06] border border-white/15 rounded-none px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:border-ch-primary min-w-0"
+        aria-label="Email address"
+        className="flex-1 bg-white/[0.06] border border-white/15 rounded-lg px-3 h-10 text-sm text-white placeholder-white/40 focus:border-ch-primary-on-dark min-w-0 transition-colors duration-200 ease-out"
       />
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-ch-primary-dark hover:bg-ch-ink text-white text-sm font-semibold px-4 py-2 rounded-none transition-colors whitespace-nowrap disabled:opacity-60"
+        className="bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold px-4 h-10 rounded-lg transition-colors duration-200 ease-out whitespace-nowrap disabled:opacity-60"
       >
         {status === 'loading' ? '...' : 'Subscribe'}
       </button>
@@ -82,52 +81,51 @@ function SubscribeForm() {
 
 export default function Footer() {
   return (
-    <footer className="bg-ch-charcoal text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-
-        {/* Subscribe to Insights banner */}
-        <div className="bg-white/[0.06] rounded-none px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex-1">
-            <h3 className="font-display text-lg text-white mb-1">AutoSure Insights</h3>
-            <p className="measure text-sm text-white/60 leading-relaxed">
-              Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
-            </p>
-          </div>
-          <div className="md:w-80 shrink-0">
-            <SubscribeForm />
-            {/* error state */}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <footer className="bg-ch-ink text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1.4fr]">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 bg-ch-primary rounded-full flex items-center justify-center">
-                <Search className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-              </div>
-              <span className="font-display tracking-tight font-bold">
+          <div>
+            <div className="flex items-center gap-2">
+              {/* The logo carries its own white ground, so it sits on a white tile. */}
+              <Image src="/images/logo-180.png" alt="" width={36} height={36} className="rounded-md bg-white" />
+              <span className="tracking-tight font-bold text-lg">
                 <span className="text-white">Auto</span>
                 <span className="text-ch-primary-on-dark">Sure</span>
               </span>
             </div>
-            <p className="text-sm text-white/60 leading-relaxed mb-3">
+            <p className="mt-4 text-sm text-white/60">
               Nigeria&apos;s vehicle intelligence platform. Know the truth about every Tokunbo car before you buy.
             </p>
+            {socials.length > 0 && (
+              <div className="mt-4 flex items-center gap-4">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-white/60 hover:text-white transition-colors duration-200 ease-out"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60 mb-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60">
                 {category}
               </h4>
-              <ul className="space-y-2">
+              <ul className="mt-4 space-y-3">
                 {links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/80 hover:text-white transition-colors"
+                      className="text-sm text-white/80 hover:text-white transition-colors duration-200 ease-out break-all sm:break-normal"
                     >
                       {link.label}
                     </Link>
@@ -136,25 +134,23 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+
+          {/* Email capture — posts to the existing /api/subscribe. */}
+          <div>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-white/60">
+              AutoSure Insights
+            </h4>
+            <p className="mt-4 text-sm text-white/60">
+              Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
+            </p>
+            <SubscribeForm />
+          </div>
         </div>
 
-        <div className="border-t border-white/15 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div className="border-t border-white/10 mt-12 pt-6">
           <p className="text-xs text-white/60">
             © 2026 AutoSure Nigeria. All rights reserved. Powered by ClearVin.
           </p>
-          <div className="flex items-center gap-4">
-            {socials.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-white/60 hover:text-white/80 transition-colors"
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { TriangleAlert } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const dataSources = [
   { name: 'NMVTIS', desc: 'National Motor Vehicle Title Information System — the federal title database' },
@@ -17,12 +19,11 @@ const hidden = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-ch-paper">
-      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
-        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
-          Use AutoSure to be sure.
-        </h1>
-        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto px-4 pt-16 sm:pt-20 pb-20">
+        <p className="text-sm font-semibold text-ch-primary">About AutoSure</p>
+        <h1 className="mt-4 text-4xl sm:text-h1 text-ch-ink">Use AutoSure to be sure.</h1>
+        <p className="measure mt-4 text-lg text-ch-text-secondary">
           Auto, as in the car. Sure, as in certain — not &ldquo;the seller
           swore,&rdquo; not &ldquo;e dey kampe,&rdquo; certain. Before you hand
           over the money, before you trust the mileage on the dash, before you
@@ -31,59 +32,60 @@ export default function AboutPage() {
           one you can be confident about.
         </p>
 
-        <section className="mt-16 grid lg:grid-cols-12 gap-10 lg:gap-12">
+        <section className="mt-20 grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           <div className="lg:col-span-7">
-            <h2 className="text-2xl sm:text-4xl text-ch-ink">
+            <h2 className="text-3xl sm:text-h2 text-ch-ink">
               The paperwork already exists. It is just on the wrong continent.
             </h2>
-            <p className="measure mt-6 text-ch-text-secondary leading-relaxed">
+            <p className="measure mt-6 text-ch-text-secondary">
               Nigeria imports hundreds of thousands of used American vehicles a
               year, through Cotonou, Apapa and Tin Can Island. Every one of them
               left behind a paper trail in the United States: who titled it, what
               an insurer paid out on it, what the odometer read each time it
               changed hands.
             </p>
-            <p className="measure mt-4 text-ch-text-secondary leading-relaxed">
+            <p className="measure mt-4 text-ch-text-secondary">
               That record is federal, it is dated, and the man selling you the car
               in Lagos cannot reach it, edit it, or delete it. Until now he could
               simply assume you would never look.
             </p>
           </div>
 
-          <div className="lg:col-span-5 lg:pl-10 lg:rule-l">
+          <div className="lg:col-span-5 surface-card p-6">
             <h2 className="text-xl text-ch-ink">Where the data comes from</h2>
-            <dl className="mt-6 rule-t">
+            <dl className="mt-4 divide-y divide-ch-border">
               {dataSources.map((s) => (
-                <div key={s.name} className="py-4 rule-b">
+                <div key={s.name} className="py-4 last:pb-0">
                   <dt className="text-sm font-semibold text-ch-ink">{s.name}</dt>
-                  <dd className="mt-1 text-sm text-ch-text-muted leading-relaxed">{s.desc}</dd>
+                  <dd className="mt-1 text-sm text-ch-text-muted">{s.desc}</dd>
                 </div>
               ))}
             </dl>
           </div>
         </section>
 
-        <section className="mt-16">
-          <h2 className="text-2xl sm:text-4xl text-ch-ink max-w-2xl">
+        <section className="mt-20">
+          <h2 className="text-3xl sm:text-h2 text-ch-ink max-w-2xl">
             What a report turns up.
           </h2>
-          <ul className="mt-6 rule-t">
+          <ul className="mt-8 surface-card divide-y divide-ch-border">
             {hidden.map((item) => (
-              <li key={item} className="py-4 rule-b text-ch-text-secondary">
+              <li key={item} className="px-6 py-4 flex items-start gap-3 text-ch-text-secondary">
+                <TriangleAlert className="w-5 h-5 text-ch-red shrink-0 mt-0.5" strokeWidth={2} aria-hidden />
                 {item}
               </li>
             ))}
           </ul>
-          <p className="measure mt-6 text-sm text-ch-text-muted leading-relaxed">
+          <p className="measure mt-6 text-sm text-ch-text-muted">
             A report is not an inspection. Not every incident reaches a US
             database, so check the car physically as well — this tells you what
             the paperwork says, which is the half nobody else can show you.
           </p>
         </section>
 
-        <section className="mt-16">
-          <h2 className="text-2xl sm:text-4xl text-ch-ink">Nigeria first.</h2>
-          <p className="measure mt-6 text-ch-text-secondary leading-relaxed">
+        <section className="mt-20">
+          <h2 className="text-3xl sm:text-h2 text-ch-ink">Nigeria first.</h2>
+          <p className="measure mt-6 text-ch-text-secondary">
             AutoSure launched in Nigeria because it is the largest Tokunbo market in
             Africa and the one where buyers have had the least protection. The
             same databases cover every American car exported anywhere, so the same
@@ -91,15 +93,12 @@ export default function AboutPage() {
           </p>
         </section>
 
-        <section className="mt-16 bg-ch-ink text-white p-8 sm:p-12">
-          <h2 className="text-3xl sm:text-4xl text-white">Ready to check your next Tokunbo?</h2>
-          <p className="measure mt-3 text-white/70 text-lg">One VIN. ₦15,000. Checked against the US federal record.</p>
-          <Link
-            href="/search"
-            className="inline-block mt-8 bg-white text-ch-ink hover:bg-white/90 font-semibold px-8 py-3.5 transition-colors"
-          >
-            Check a car now
-          </Link>
+        <section className="mt-20 rounded-2xl bg-ch-primary text-white p-8 sm:p-12">
+          <h2 className="text-3xl sm:text-h2 text-white">Ready to check your next Tokunbo?</h2>
+          <p className="measure mt-3 text-white/85 text-lg">One VIN. ₦15,000. Checked against the US federal record.</p>
+          <Button asChild className="mt-8 h-12 px-8 rounded-lg bg-white text-ch-primary hover:bg-ch-primary-light text-base font-semibold transition-colors duration-200 ease-out">
+            <Link href="/search">Check a car now</Link>
+          </Button>
         </section>
       </div>
     </div>

@@ -1,8 +1,8 @@
-import { Gauge, CarFront, Droplets, TriangleAlert } from 'lucide-react';
+import { Gauge, CarFront, Droplets, TriangleAlert, ShieldAlert } from 'lucide-react';
 
-// Four ways an imported car lies, each paired with the US record that catches
-// it. Set as a numbered editorial list rather than a grid of equal cards: these
-// are not four features, they are four claims with evidence behind them.
+// Five ways an imported car lies, each paired with the US record that catches
+// it. "Auction records" is deliberately not one of them: ClearVin does not
+// return auction data for every VIN, so it cannot be promised as a category.
 const risks = [
   {
     Icon: Gauge,
@@ -13,50 +13,66 @@ const risks = [
   {
     Icon: CarFront,
     title: 'Salvage and rebuilt titles',
-    body: 'Insurance write-offs are repaired, repainted and shipped. A salvage title means the car was declared a total loss.',
-    record: 'NMVTIS title brands, reported by the state that issued them',
+    body: 'Insurance write-offs are repaired, repainted and shipped as clean.',
+    record: 'NMVTIS title brands, reported by the issuing state',
   },
   {
     Icon: Droplets,
     title: 'Flood and fire damage',
-    body: 'Flood cars are dried out and exported. The electrical faults and rust arrive months later.',
+    body: 'Flood cars are dried out and exported. The electrical faults arrive months later.',
     record: 'Damage brands filed by US insurers',
   },
   {
     Icon: TriangleAlert,
     title: 'Open safety recalls',
-    body: 'Recalls issued in America are rarely repaired before a car leaves it, and never mentioned after.',
+    body: 'Recalls issued in America are rarely repaired before a car leaves it.',
     record: 'NHTSA recall database, checked per VIN',
+  },
+  {
+    Icon: ShieldAlert,
+    title: 'Theft records',
+    body: 'A car reported stolen in the US can still turn up on a Lagos lot.',
+    record: 'Theft records in the vehicle history report',
   },
 ];
 
 export default function RiskSection() {
   return (
-    <section className="bg-ch-ink text-white py-20 sm:py-24 px-4">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl sm:text-5xl text-white max-w-3xl">
+    <section className="bg-ch-surface py-20 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl sm:text-4xl text-ch-ink max-w-3xl">
           The seller knows. You don&apos;t. That is the whole business.
         </h2>
-        <p className="measure mt-6 text-white/60 text-lg leading-relaxed">
-          Four things that happen to a car in America and are never mentioned in
+        <p className="measure mt-4 text-lg text-ch-text-secondary">
+          Five things that happen to a car in America and are never mentioned in
           Nigeria — and the record that catches each one.
         </p>
 
-        <ol className="mt-14 border-t border-white/15">
+        {/* One card, five columns split by hairlines. Two-up on tablet (the
+            fifth spans the row), stacked on mobile. */}
+        <ul className="mt-12 surface-card grid sm:grid-cols-2 lg:grid-cols-5 overflow-hidden">
           {risks.map(({ Icon, title, body, record }) => (
             <li
               key={title}
-              className="grid sm:grid-cols-12 gap-4 sm:gap-8 py-8 border-b border-white/15"
+              className="p-6 border-ch-border max-sm:not-first:border-t sm:max-lg:nth-[n+3]:border-t sm:max-lg:even:border-l sm:max-lg:last:col-span-2 lg:not-first:border-l"
             >
-              <div className="sm:col-span-5 flex items-start gap-3">
-                <Icon className="w-5 h-5 text-ch-primary shrink-0 translate-y-1" strokeWidth={2} aria-hidden />
-                <h3 className="text-xl sm:text-2xl text-white">{title}</h3>
-              </div>
-              <p className="sm:col-span-4 text-white/70 leading-relaxed">{body}</p>
-              <p className="sm:col-span-3 text-sm text-ch-primary leading-relaxed">{record}</p>
+              <span className="w-10 h-10 rounded-lg bg-ch-primary-light text-ch-primary flex items-center justify-center">
+                <Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
+              </span>
+              <h3 className="mt-4 text-base text-ch-ink">{title}</h3>
+              <p className="mt-2 text-sm text-ch-text-secondary">{body}</p>
+              <p className="mt-3 text-xs text-ch-text-muted">{record}</p>
             </li>
           ))}
-        </ol>
+        </ul>
+
+        {/* The premise of the product: why a US record exists at all. */}
+        <p className="measure mt-10 text-lg text-ch-text-secondary">
+          <span className="font-semibold text-ch-ink">
+            A car written off in Texas carries that fact in a US government record.
+          </span>{' '}
+          The seller in front of you cannot edit it, delete it, or talk his way around it.
+        </p>
       </div>
     </section>
   );

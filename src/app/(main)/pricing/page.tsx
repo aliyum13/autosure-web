@@ -68,75 +68,77 @@ const faqs = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-ch-paper">
-      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
-        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
-          ₦15,000 a car.
-        </h1>
-        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto px-4 pt-16 sm:pt-20 pb-20">
+        <p className="text-sm font-semibold text-ch-primary">Pricing</p>
+        <h1 className="mt-4 text-4xl sm:text-h1 text-ch-ink">₦15,000 a car.</h1>
+        <p className="measure mt-4 text-lg text-ch-text-secondary">
           No subscription, no account required. You pay for one car at a time, and
           if America holds no record of it you get your money back.
         </p>
 
-        {/* Rate card */}
-        <div className="mt-14 rule-t">
+        {/* Rate card: one row per rate, read across. The single report is the
+            main path, so it carries the primary border rather than a sticker. */}
+        <div className="mt-12 grid gap-4">
           {rates.map((r) => (
             <div
               key={r.label}
-              className={`grid sm:grid-cols-12 gap-3 sm:gap-6 items-baseline py-6 ${
-                r.lead ? 'border-b-2 border-ch-ink' : 'rule-b'
+              className={`surface-card p-6 grid sm:grid-cols-12 gap-3 sm:gap-6 items-center ${
+                r.lead ? 'border-ch-primary' : ''
               }`}
             >
               <h2 className={`sm:col-span-3 text-ch-ink ${r.lead ? 'text-2xl' : 'text-xl'}`}>
                 {r.label}
               </h2>
               <div className="sm:col-span-3">
-                <span className={`text-ch-ink tabular ${r.lead ? 'text-4xl sm:text-5xl' : 'text-3xl'}`}>
+                <span className={`font-bold text-ch-ink tabular ${r.lead ? 'text-4xl sm:text-5xl' : 'text-3xl'}`}>
                   {r.price}
                 </span>
               </div>
               <p className="sm:col-span-3 text-sm text-ch-text-muted tabular">
                 {r.per}
                 {r.saving && (
-                  <span className="block text-ch-primary-dark font-medium">{r.saving}</span>
+                  <span className="block text-ch-secondary-dark font-medium">{r.saving}</span>
                 )}
               </p>
               <div className="sm:col-span-3 sm:text-right">
-                <Link href="/search">
-                  <Button
-                    className={
-                      r.lead
-                        ? 'bg-ch-primary-dark hover:bg-ch-ink text-white rounded-none h-11 px-6'
-                        : 'bg-transparent border border-ch-ink text-ch-ink hover:bg-ch-ink hover:text-white rounded-none h-10 px-5'
-                    }
-                  >
-                    {r.cta}
-                  </Button>
-                </Link>
+                <Button
+                  asChild
+                  variant={r.lead ? 'default' : 'outline'}
+                  className={
+                    r.lead
+                      ? 'h-11 px-6 bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold transition-colors duration-200 ease-out'
+                      : 'h-11 px-6 border-ch-primary text-ch-primary hover:bg-ch-primary hover:text-white transition-colors duration-200 ease-out'
+                  }
+                >
+                  <Link href="/search">{r.cta}</Link>
+                </Button>
               </div>
             </div>
           ))}
         </div>
 
         {/* What you get, once — it is identical at every rate. */}
-        <section className="mt-16">
-          <h2 className="text-2xl sm:text-3xl text-ch-ink">Every report contains</h2>
-          <ul className="mt-6 grid sm:grid-cols-2 gap-x-10 rule-t">
+        <section className="mt-20">
+          <h2 className="text-3xl sm:text-h2 text-ch-ink">Every report contains</h2>
+          <ul className="mt-8 surface-card p-6 grid sm:grid-cols-2 gap-x-10 gap-y-4">
             {included.map((f) => (
-              <li key={f} className="flex items-start gap-2.5 py-3 text-sm text-ch-text-secondary rule-b">
-                <Check className="w-4 h-4 text-ch-primary-dark shrink-0 mt-0.5" strokeWidth={2.5} aria-hidden />
+              <li key={f} className="flex items-start gap-2.5 text-ch-text-secondary">
+                <Check className="w-5 h-5 text-ch-secondary shrink-0 mt-0.5" strokeWidth={2.5} aria-hidden />
                 {f}
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-16">
-          <h2 className="text-2xl sm:text-3xl text-ch-ink">Paying</h2>
-          <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3 rule-y py-4">
+        <section className="mt-20">
+          <h2 className="text-3xl sm:text-h2 text-ch-ink">Paying</h2>
+          <ul className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
             {paymentMethods.map(({ Icon, label }) => (
-              <li key={label} className="flex items-center gap-2 text-sm text-ch-text-secondary">
-                <Icon className="w-4 h-4 text-ch-primary-dark" strokeWidth={2} aria-hidden />
+              <li key={label} className="surface-card p-4 flex items-center gap-3 text-sm font-medium text-ch-text">
+                <span className="w-9 h-9 rounded-lg bg-ch-primary-light text-ch-primary flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5" strokeWidth={2} aria-hidden />
+                </span>
                 {label}
               </li>
             ))}
@@ -146,13 +148,13 @@ export default function PricingPage() {
           </p>
         </section>
 
-        <section className="mt-16">
-          <h2 className="text-2xl sm:text-3xl text-ch-ink">Questions about paying</h2>
-          <dl className="mt-6 rule-t">
+        <section className="mt-20">
+          <h2 className="text-3xl sm:text-h2 text-ch-ink">Questions about paying</h2>
+          <dl className="mt-8 surface-card divide-y divide-ch-border">
             {faqs.map((f) => (
-              <div key={f.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 py-6 rule-b">
-                <dt className="sm:col-span-5 text-lg text-ch-ink font-display">{f.q}</dt>
-                <dd className="sm:col-span-7 measure text-ch-text-secondary leading-relaxed">{f.a}</dd>
+              <div key={f.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 p-6">
+                <dt className="sm:col-span-5 text-lg font-semibold text-ch-ink">{f.q}</dt>
+                <dd className="sm:col-span-7 text-ch-text-secondary">{f.a}</dd>
               </div>
             ))}
           </dl>

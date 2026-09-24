@@ -34,9 +34,9 @@ function rate(errors: number, calls: number): string {
 function rateClass(errors: number, calls: number): string {
   if (calls === 0) return 'text-ch-text-muted';
   const pct = (errors / calls) * 100;
-  if (pct === 0) return 'text-green-700';
+  if (pct === 0) return 'text-ch-secondary-dark';
   if (pct < 10) return 'text-amber-700';
-  return 'text-red-700 font-semibold';
+  return 'text-ch-red font-semibold';
 }
 
 interface CronRun {
@@ -78,7 +78,7 @@ export default function ApiStatsPanel() {
   const services = Array.from(new Set(stats.map((s) => s.service)));
 
   return (
-    <div className="bg-white border border-ch-border rounded-none p-6">
+    <div className="surface-card p-6">
       <div className="flex items-start justify-between mb-1">
         <h2 className="font-semibold text-ch-text flex items-center gap-2"><Activity className="w-4 h-4" /> API Call Monitoring</h2>
         <Button type="button" variant="outline" size="sm" onClick={load} disabled={loading} className="border-ch-border gap-1">
@@ -141,10 +141,10 @@ export default function ApiStatsPanel() {
         ) : (
           <div className="max-h-40 overflow-y-auto space-y-1">
             {cronRuns.map((c, i) => (
-              <div key={i} className={`text-xs rounded p-2 ${c.note?.startsWith('FAILED') ? 'bg-red-50' : 'bg-slate-50'}`}>
+              <div key={i} className={`text-xs rounded p-2 ${c.note?.startsWith('FAILED') ? 'bg-ch-red-light' : 'bg-ch-surface'}`}>
                 <span className="font-mono">{c.job}</span>
                 <span className="text-ch-text-secondary"> — {c.rows_deleted} row{c.rows_deleted === 1 ? '' : 's'} deleted</span>
-                {c.note && <span className={c.note.startsWith('FAILED') ? 'text-red-800' : 'text-ch-amber'}> · {c.note}</span>}
+                {c.note && <span className={c.note.startsWith('FAILED') ? 'text-ch-red' : 'text-ch-amber'}> · {c.note}</span>}
                 <span className="text-ch-text-muted"> · {new Date(c.created_at).toLocaleString()}</span>
               </div>
             ))}
@@ -155,14 +155,14 @@ export default function ApiStatsPanel() {
       <div className="mt-6 pt-4 border-t border-ch-border">
         <h3 className="text-sm font-semibold text-ch-text mb-2">Recent failures ({errors.length})</h3>
         {errors.length === 0 ? (
-          <p className="text-xs text-green-700">No failures in the last 7 days.</p>
+          <p className="text-xs text-ch-secondary-dark">No failures in the last 7 days.</p>
         ) : (
           <div className="max-h-64 overflow-y-auto space-y-1">
             {errors.map((e, i) => (
-              <div key={i} className="text-xs bg-red-50 rounded p-2">
+              <div key={i} className="text-xs bg-ch-red-light rounded p-2">
                 <span className="font-semibold">{SERVICE_LABELS[e.service] || e.service}</span>
                 <span className="font-mono"> {e.operation}</span>
-                {e.error_message && <span className="text-red-800"> — {e.error_message}</span>}
+                {e.error_message && <span className="text-ch-red"> — {e.error_message}</span>}
                 <span className="text-ch-text-muted"> · {new Date(e.created_at).toLocaleString()}</span>
               </div>
             ))}

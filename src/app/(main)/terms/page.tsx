@@ -95,17 +95,18 @@ const sections: { title: string; content: ReactNode }[] = [
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-ch-bg py-12 px-4">
+    <div className="min-h-screen bg-ch-surface pt-16 sm:pt-20 pb-20 px-4">
       <ScrollToHash />
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-ch-text mb-2">Terms of Service</h1>
-        <p className="text-ch-text-muted text-sm mb-8">Last updated: June 2026</p>
+        <p className="text-sm font-semibold text-ch-primary">Legal</p>
+        <h1 className="mt-4 text-4xl sm:text-h1 text-ch-ink">Terms of Service</h1>
+        <p className="mt-3 text-ch-text-muted text-sm mb-10">Last updated: June 2026</p>
 
-        <div className="bg-white border border-ch-border rounded-none p-6 sm:p-8 space-y-6">
+        <div className="surface-card p-6 sm:p-8 space-y-6">
           {sections.map((section) => (
             <div key={section.title} id={section.title.startsWith('11.') ? 'nmvtis-disclaimer' : undefined}>
-              <h2 className="text-lg font-semibold text-ch-text mb-2 scroll-mt-20">{section.title}</h2>
-              <div className="measure text-ch-text-secondary text-sm leading-relaxed">{section.content}</div>
+              <h2 className="text-lg font-semibold text-ch-ink mb-2 scroll-mt-20">{section.title}</h2>
+              <div className="measure text-ch-text-secondary text-sm">{section.content}</div>
             </div>
           ))}
         </div>

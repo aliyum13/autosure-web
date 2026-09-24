@@ -32,10 +32,10 @@ export default function ReferralCard({
   const shortfall = reportPriceKobo - balanceKobo;
 
   return (
-    <div className="bg-white border border-ch-border rounded-none p-6 mb-8">
+    <div className="surface-card p-6 mb-8">
       <div className="flex items-center gap-2 mb-1">
-        <Gift className="w-4 h-4 text-ch-primary" />
-        <h2 className="font-semibold text-ch-text">Refer a friend</h2>
+        <Gift className="w-5 h-5 text-ch-primary" aria-hidden />
+        <h2 className="text-lg font-semibold text-ch-ink">Refer a friend</h2>
       </div>
       <p className="text-sm text-ch-text-secondary mb-5">
         Share your link. When someone buys a report with it, you earn {naira(rewardKobo)} toward your next one.
@@ -43,7 +43,7 @@ export default function ReferralCard({
       </p>
 
       <div className="grid sm:grid-cols-2 gap-4 mb-5">
-        <div className="bg-ch-primary-light rounded-none p-4">
+        <div className="bg-ch-primary-light rounded-lg p-4">
           <p className="text-xs text-ch-text-secondary mb-1">Your balance</p>
           <p className="text-2xl font-bold text-ch-primary">{naira(balanceKobo)}</p>
           <p className="text-xs text-ch-text-muted mt-1">
@@ -52,7 +52,7 @@ export default function ReferralCard({
               : `${naira(shortfall)} more for a free report.`}
           </p>
         </div>
-        <div className="bg-slate-50 rounded-none p-4">
+        <div className="bg-ch-surface rounded-lg p-4">
           <p className="text-xs text-ch-text-secondary mb-1">Successful referrals</p>
           <p className="text-2xl font-bold text-ch-text">{confirmedReferrals}</p>
           {pendingReferrals > 0 && (
@@ -69,7 +69,7 @@ export default function ReferralCard({
           readOnly
           value={shareUrl}
           onFocus={(e) => e.currentTarget.select()}
-          className="flex-1 min-w-0 rounded-lg border border-ch-border bg-slate-50 px-3 py-2 text-sm font-mono text-ch-text"
+          className="flex-1 min-w-0 rounded-lg border border-ch-border bg-ch-surface px-3 py-2 text-sm font-mono text-ch-text"
         />
         <Button onClick={copy} variant="outline" className="border-ch-border shrink-0 gap-1">
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

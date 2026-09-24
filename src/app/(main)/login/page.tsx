@@ -65,15 +65,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 animate-fade-up">
-        <div className="w-16 h-16 bg-ch-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Mail className="w-8 h-8 text-ch-primary" />
+    <div className="min-h-screen bg-ch-surface flex items-center justify-center px-4 py-20">
+      <div className="max-w-md w-full surface-card p-8">
+        <div className="w-16 h-16 bg-ch-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
+          <Mail className="w-8 h-8 text-ch-primary" aria-hidden />
         </div>
 
         {step === 'email' ? (
           <>
-            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Log in to AutoSure</h1>
+            <h1 className="text-2xl text-ch-ink mb-2 text-center">Log in to AutoSure</h1>
             <p className="text-ch-text-secondary text-center mb-6">
               Enter the email you used at checkout — we&apos;ll send you a one-time code.
             </p>
@@ -90,15 +90,15 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                 />
               </div>
-              {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading} className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
+              {error && <p className="text-sm text-ch-red">{error}</p>}
+              <Button type="submit" disabled={loading} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send code'}
               </Button>
             </form>
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Enter your code</h1>
+            <h1 className="text-2xl text-ch-ink mb-2 text-center">Enter your code</h1>
             <p className="text-ch-text-secondary text-center mb-6">
               We sent a 6-digit code to <strong>{email}</strong>. It expires in 10 minutes.
             </p>
@@ -119,8 +119,8 @@ export default function LoginPage() {
                   className="text-center text-2xl tracking-[0.3em] font-mono h-12"
                 />
               </div>
-              {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
+              {error && <p className="text-sm text-ch-red">{error}</p>}
+              <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & log in'}
               </Button>
               <button

@@ -86,7 +86,7 @@ export default function ClearVinCreditsPanel() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-ch-border rounded-none p-6">
+      <div className="surface-card p-6">
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
       </div>
     );
@@ -94,11 +94,11 @@ export default function ClearVinCreditsPanel() {
 
   const alarm = !!data?.isLow || !!data?.baselineStale || !data?.synced;
   const shell = data?.isLow
-    ? 'bg-red-50 border-red-200'
+    ? 'bg-ch-red-light border-ch-red/30'
     : alarm ? 'bg-amber-50 border-amber-200' : 'bg-white border-ch-border';
 
   return (
-    <div className={`border rounded-none p-6 ${shell}`}>
+    <div className={`border rounded-lg p-6 ${shell}`}>
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         {alarm ? <AlertTriangle className="w-4 h-4 text-amber-600" /> : <Gauge className="w-4 h-4" />}
         ClearVin Credits
@@ -123,7 +123,7 @@ export default function ClearVinCreditsPanel() {
       {data?.synced && !data.baselineStale && (
         <>
           {data.isLow ? (
-            <p className="text-lg font-bold text-red-700">
+            <p className="text-lg font-bold text-ch-red">
               ⚠️ Estimated ClearVin credits low: ~{data.estimate} remaining. Confirm with Daria.
             </p>
           ) : (
@@ -133,7 +133,7 @@ export default function ClearVinCreditsPanel() {
           )}
 
           {data.estimate === 0 && (
-            <p className="text-sm text-red-700 font-medium mt-1">
+            <p className="text-sm text-ch-red font-medium mt-1">
               May already be exhausted — report generation will start failing.
             </p>
           )}
@@ -182,14 +182,14 @@ export default function ClearVinCreditsPanel() {
               placeholder="Daria, WhatsApp" className="mt-1" />
           </div>
           <div className="sm:col-span-3 flex items-center gap-3">
-            <Button type="submit" disabled={saving} className="bg-ch-primary-dark hover:bg-ch-ink text-white text-xs gap-1">
+            <Button type="submit" disabled={saving} className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs gap-1">
               {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Record
             </Button>
             <span className="text-xs text-ch-text-muted">
               Record it when Daria reports it, not later — usage is counted from this moment.
             </span>
           </div>
-          {error && <p className="sm:col-span-3 text-xs text-red-600">{error}</p>}
+          {error && <p className="sm:col-span-3 text-xs text-ch-red">{error}</p>}
         </form>
       )}
     </div>

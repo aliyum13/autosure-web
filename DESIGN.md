@@ -2,81 +2,62 @@
 
 Durable visual decisions. Product truth lives in PRODUCT.md.
 
-## The world: the motor page
+## The world: calm fintech
 
-AutoSure is built as **the motor page of a newspaper** — the classified and
-vehicle section of a daily, printed on cheap warm stock: ruled columns, a
-high-contrast masthead serif, hairline rules doing the work that borders and
-shadows do elsewhere, tabular figures, and a single spot colour used sparingly
-enough that it still means something when it appears.
+AutoSure looks like a financial product people already trust with money: light
+surfaces, one sans family, the logo's royal blue and teal, and restraint
+everywhere else. The page makes one argument — type a VIN — so the VIN bar is
+the focal point and nothing competes with it.
 
-**Why this world.** The product's mechanism is that *America already wrote this
-down*. A car written off in Texas carries that fact in a federal database no
-Lagos seller can reach or edit. The newspaper is the audience's existing mental
-model for that idea: the published record, dated and typeset, that exists
-whether or not it flatters you. A newspaper does not persuade by feeling
-trustworthy; it persuades by being on the record. That is the exact argument
-AutoSure has to make to a sceptical buyer in a car yard, and it is a world that
-scales into dense report data later without changing key.
-
-**Chosen against the rut.** This category ships one of two pages: the rounded
-SaaS landing (soft cards, gradient blobs, pill badges, drop shadows) or its
-predictable opposite, the dark "cyber-security" page. The incumbent look was the
-first of those and is the explicit anti-reference. Neither is in this system.
-
-Derived over: the US title certificate, the Copart auction sheet, the customs
-bill of lading, Lagos roadside signwriting, the clearing agent's folder, the
-instrument cluster.
+This replaced the Phase 5 "motor page of a newspaper" direction (serif pairing,
+cream stock, hairline rules, near-zero radii), which read editorial rather than
+trustworthy-with-your-money.
 
 ## Type
 
-- **Playfair Display** (`--font-heading`) — display. High-contrast transitional
-  serif, a masthead voice. Headlines only, tight leading, tracking pulled in at
-  display sizes.
-- **Crimson Text** (`--font-body`) — text, UI, labels, data. A book serif that
-  carries body copy, controls, and tabular figures.
-
-No third face. Body measure stays 65–75ch. Display caps at 6rem.
-
-Numerals in any data position use `font-variant-numeric: tabular-nums` so
-columns align the way a printed table does.
+- **Inter**, one family throughout (`--font-heading` and `--font-body` both
+  point at it; `font-sans` / `font-display` alias them).
+- Headings 600/700, leading ~1.15, tracking `-0.01em`. Body 400, leading 1.6.
+- Scale: h1 48px, h2 36px, h3 28px, h4 24px, body 16px, small 14px.
+- VIN codes and figures: monospace, tabular numerals.
 
 ## Colour
 
 Brand commitments are fixed (PRODUCT.md): the AutoSure logo, `#1E40AF` and `#0D9488`.
+The `ch-*` token names are kept; only their values move.
 
-- `--ch-paper` `#F7F5EF` — the stock everything prints on.
-- `--ch-ink` `#1A1A1A` — text and rules.
-- `--primary-color` / `--ch-primary` `#1E40AF` — the single spot colour. Rules under headlines,
-  the mark, primary actions, the live indicator. Used sparingly on purpose:
-  spot colour that appears everywhere stops reading as emphasis.
-- `--ch-primary-dark` `#1E3A8A` — pressed and hover states.
-- `--ch-primary-on-dark` `#93C5FD` — the brand blue on charcoal surfaces.
-- `--secondary-color` / `--ch-secondary` `#0D9488` — brand teal. Secondary
-  accents only; never competes with the primary for emphasis.
-- `--ch-gold` `#F5B400` — the stamp. Second-tier emphasis only.
-- Rules are ink at low alpha, never a grey token invented for the purpose.
+- `--primary-color` / `ch-primary` `#1E40AF` — heading accents, primary
+  buttons, icon glyphs, links. `ch-primary-dark` `#1E3A8A` for hover/pressed;
+  `ch-primary-light` `#EFF6FF` for icon tiles and tinted panels;
+  `ch-primary-on-dark` `#93C5FD` for blue on dark surfaces.
+- `--secondary-color` / `ch-secondary` `#0D9488` — verification marks, success
+  states, the focus ring. `ch-green` points at it.
+- `ch-paper` / `ch-bg` `#FFFFFF` — page background.
+- `ch-surface` `#F8FAFC` — alternate section background, for banding.
+- `ch-ink` / `ch-text` `#0F172A` — body text and the dark footer band.
+- `ch-text-secondary` `#475569`, `ch-text-muted` `#64748B`.
+- `ch-border` / `ch-rule` `#E2E8F0`.
+- `ch-red` stays the danger colour (rollback, title brands).
 
-Light, not dark: the use scene is a phone held outdoors in Nigerian daylight.
+## Surface
 
-## Structure
+- Cards: `surface-card` — 12px radius, 1px `#E2E8F0` border, shadow
+  `0 1px 3px rgba(0,0,0,.08)`. Interactive cards add `hover:shadow-card-hover`
+  (`0 2px 6px rgba(0,0,0,.12)`). Nothing heavier anywhere.
+- Buttons: 8px radius (`rounded-lg`), solid fill, no gradients.
+- ~80px between major sections (`py-20`).
+- Icons are drawn, from lucide, one stroke weight, usually in a tinted
+  rounded-square tile. Never emoji.
 
-- **Rules, not boxes.** Hairline rules and column dividers separate content.
-  Radii are near-zero. Shadows are not the depth system; overlap and rules are.
-- **No eyebrows.** No kicker or label above a heading, anywhere. The heading
-  carries itself.
-- **Icons are drawn**, from lucide, one stroke weight. Never emoji.
-- **Sections earn their own shape.** No page built from a row of identical
-  icon-heading-text cards, and no hero-metric strip.
+## Focus
 
-## Browser surfaces
-
-Selection, caret, focus ring, and scrollbar are themed from the palette rather
-than left to the browser. Focus is a visible ink ring, never removed.
+A 2px teal outline on every interactive element, always visible. Set once in
+`globals.css` and used by the shadcn Button and Input primitives instead of
+their own ring. Buttons that navigate are `<Button asChild><Link/></Button>`,
+never a button nested in a link — that is invalid markup and a double tab stop.
 
 ## Motion
 
-One authored moment: the masthead rule drawing in under the headline on first
-paint. Exponential ease-out from an already-visible default, so nothing depends
-on JavaScript to become readable. Everything else is state feedback. Respects
-`prefers-reduced-motion`.
+Micro-interactions only: 200ms ease-out on hover and focus. No entrance
+animations, no drawn-in rules. The only gradient is the single soft wash at the
+top of the hero.

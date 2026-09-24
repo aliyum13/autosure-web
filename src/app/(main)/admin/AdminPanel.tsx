@@ -178,7 +178,7 @@ export default function AdminPanel() {
         <ClearVinCreditsPanel />
 
         {/* Stuck report recovery */}
-        <div className="bg-white border border-amber-200 rounded-none p-6">
+        <div className="bg-white border border-amber-200 rounded-lg p-6">
           <h2 className="font-semibold text-ch-text mb-1">🔧 Recover Stuck Reports</h2>
           <p className="text-sm text-ch-text-secondary mb-4">
             Regenerates all paid reports stuck at PROCESSING/FAILED and emails them to customers.
@@ -192,14 +192,14 @@ export default function AdminPanel() {
             {recovering ? `Recovering… ${recoverRemaining ?? ''} left` : 'Start Recovery'}
           </Button>
           {recoverRemaining !== null && !recovering && (
-            <p className="text-sm font-semibold text-green-700 mt-3">
+            <p className="text-sm font-semibold text-ch-secondary-dark mt-3">
               {recoverRemaining === 0 ? '✓ All stuck reports recovered.' : `${recoverRemaining} remaining — tap again.`}
             </p>
           )}
           {recoverLog.length > 0 && (
-            <div className="mt-4 max-h-64 overflow-y-auto bg-slate-50 rounded-lg p-3 text-xs font-mono space-y-1">
+            <div className="mt-4 max-h-64 overflow-y-auto bg-ch-surface rounded-lg p-3 text-xs font-mono space-y-1">
               {recoverLog.map((line, i) => (
-                <div key={i} className={line.startsWith('✗') ? 'text-red-600' : 'text-slate-700'}>{line}</div>
+                <div key={i} className={line.startsWith('✗') ? 'text-ch-red' : 'text-ch-text'}>{line}</div>
               ))}
             </div>
           )}
@@ -212,7 +212,7 @@ export default function AdminPanel() {
         <CompReportPanel />
 
         {/* Create new code */}
-        <div className="bg-white border border-ch-border rounded-none p-6">
+        <div className="surface-card p-6">
           <h2 className="font-semibold text-ch-text mb-4">Create Referral Code</h2>
           {error && <p className="text-ch-red text-sm mb-3">{error}</p>}
           <form onSubmit={createCode} className="grid sm:grid-cols-2 gap-4">
@@ -237,7 +237,7 @@ export default function AdminPanel() {
                 placeholder="+234 800 000 0000" className="mt-1" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" disabled={creating} className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-2">
+              <Button type="submit" disabled={creating} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Create Code
               </Button>
@@ -246,14 +246,14 @@ export default function AdminPanel() {
         </div>
 
         {/* Codes list */}
-        <div className="bg-white border border-ch-border rounded-none overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className="px-5 py-4 border-b border-ch-border">
             <h2 className="font-semibold text-ch-text">Active Referral Codes ({codes.length})</h2>
             <p className="text-xs text-ch-text-muted mt-1">
               Earnings count only <strong>confirmed sales</strong> — a referred checkout that was actually paid.
               Started-but-unpaid checkouts are shown separately and are never owed.
             </p>
-            {settleMsg && <p className="text-xs text-green-700 mt-2">{settleMsg}</p>}
+            {settleMsg && <p className="text-xs text-ch-secondary-dark mt-2">{settleMsg}</p>}
           </div>
           {codes.length === 0 ? (
             <div className="py-12 text-center text-ch-text-muted">No referral codes yet</div>
@@ -266,7 +266,7 @@ export default function AdminPanel() {
                       <div className="flex items-center gap-2 mb-1">
                         <code className="text-sm font-bold text-ch-primary bg-ch-primary-light px-2 py-0.5 rounded">{rc.code}</code>
                         <span className="text-sm font-medium text-ch-text">{rc.name}</span>
-                        {!rc.is_active && <Badge className="bg-slate-100 text-slate-500 border-0 text-xs">Inactive</Badge>}
+                        {!rc.is_active && <Badge className="bg-ch-surface text-ch-text-muted border-0 text-xs">Inactive</Badge>}
                       </div>
                       {(rc.email || rc.phone) && (
                         <p className="text-xs text-ch-text-muted">{rc.email} {rc.phone && `• ${rc.phone}`}</p>
@@ -296,7 +296,7 @@ export default function AdminPanel() {
                       {Number(rc.unpaid_commission) > 0 && (
                         <Button size="sm" variant="outline" disabled={settling === rc.id}
                           onClick={() => settlePayout(rc)}
-                          className="border-ch-border text-xs gap-1 text-green-700">
+                          className="border-ch-border text-xs gap-1 text-ch-secondary-dark">
                           {settling === rc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <BadgeCheck className="w-3 h-3" />}
                           Mark paid
                         </Button>
