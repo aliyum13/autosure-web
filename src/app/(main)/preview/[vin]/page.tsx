@@ -414,7 +414,8 @@ export default function PreviewPage() {
           </Button>
           <div className="flex items-center justify-center gap-2 mt-3">
             <ShieldCheck className="w-4 h-4 text-ch-text-muted" />
-            <p className="text-xs text-ch-text-muted">Secured by Paystack · Report delivered instantly to your email</p>
+            {/* TODO(autosure-delivery-time): see payments/success — replace with the measured p90. */}
+            <p className="text-xs text-ch-text-muted">Secured by Paystack · Report emailed to you, usually within a few minutes</p>
           </div>
         </div>
       </div>

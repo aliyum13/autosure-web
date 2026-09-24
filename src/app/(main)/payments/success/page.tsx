@@ -179,8 +179,12 @@ function PaymentSuccessContent() {
           <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-lg p-5 my-6">
             <Loader2 className="w-8 h-8 text-ch-primary mx-auto mb-3 animate-spin" />
             <p className="text-ch-text font-semibold mb-1">Generating your report…</p>
+            {/* TODO(autosure-delivery-time): "usually within a few minutes" is the
+                defensible wording with no data yet. Replace it here, below and on
+                /preview/[vin] with the p90 of completed_at - created_at once
+                AutoSure has real completed reports. */}
             <p className="text-ch-text-secondary text-sm">
-              This usually takes under a minute. This page will update automatically —
+              This usually finishes within a few minutes. This page will update automatically —
               you don&apos;t need to refresh. We&apos;ll email you a copy too.
             </p>
           </div>
@@ -190,7 +194,7 @@ function PaymentSuccessContent() {
             <p className="text-ch-text font-semibold mb-1">Your report is on its way!</p>
             <p className="text-ch-text-secondary text-sm">
               We are generating your full vehicle history report right now.
-              It will be sent to your email as a PDF within the next few minutes.
+              It will be sent to your email as a PDF, usually within a few minutes.
             </p>
           </div>
         )}
@@ -198,7 +202,7 @@ function PaymentSuccessContent() {
         <ul className="space-y-2 text-sm text-ch-text-secondary mb-6 inline-block text-left">
           <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />Check your inbox (and spam folder)</li>
           <li className="flex items-center gap-2"><Paperclip className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />The report comes as a PDF attachment</li>
-          <li className="flex items-center gap-2"><Timer className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />Usually delivered in under 2 minutes</li>
+          <li className="flex items-center gap-2"><Timer className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />Usually delivered within a few minutes</li>
         </ul>
 
         <div className="flex flex-col gap-3">

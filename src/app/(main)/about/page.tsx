@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 const dataSources = [
   { name: 'NMVTIS', desc: 'National Motor Vehicle Title Information System — the federal title database' },
   { name: 'NHTSA', desc: 'National Highway Traffic Safety Administration — recall notices, per VIN' },
-  { name: 'State DMV records', desc: 'Title and registration data from all fifty US states' },
+  { name: 'State DMV records', desc: 'US state title records' },
   { name: 'Insurance databases', desc: 'US insurance claims and total-loss records' },
 ];
 
@@ -38,7 +38,7 @@ export default function AboutPage() {
               The paperwork already exists. It is just on the wrong continent.
             </h2>
             <p className="measure mt-6 text-ch-text-secondary">
-              Nigeria imports hundreds of thousands of used American vehicles a
+              Nigeria imports tens of thousands of used American vehicles a
               year, through Cotonou, Apapa and Tin Can Island. Every one of them
               left behind a paper trail in the United States: who titled it, what
               an insurer paid out on it, what the odometer read each time it
@@ -86,8 +86,9 @@ export default function AboutPage() {
         <section className="mt-20">
           <h2 className="text-3xl sm:text-h2 text-ch-ink">Nigeria first.</h2>
           <p className="measure mt-6 text-ch-text-secondary">
-            AutoSure launched in Nigeria because it is the largest Tokunbo market in
-            Africa and the one where buyers have had the least protection. The
+            AutoSure launched in Nigeria because it is one of Africa&apos;s largest
+            markets for imported used cars, and one where buyers have had the least
+            protection. The
             same databases cover every American car exported anywhere, so the same
             check works wherever those cars land next.
           </p>
