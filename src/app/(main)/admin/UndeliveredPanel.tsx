@@ -59,7 +59,7 @@ export default function UndeliveredPanel() {
 
   useEffect(() => { fetchRows(); }, []);
 
-  const reportUrl = (id: string) => `https://checkamvin.com/reports/${id}`;
+  const reportUrl = (id: string) => `https://autosurevin.com/reports/${id}`;
 
   const copyLink = (row: BlockRow) => {
     if (!row.report_id) return;
@@ -139,8 +139,8 @@ export default function UndeliveredPanel() {
             const wa = toWhatsAppNumber(row.guest_phone);
             const ready = row.report_status === 'COMPLETED' && !!row.report_id;
             const waText = ready
-              ? `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CheckAm. We could not deliver your report by email, so here is your link: ${reportUrl(row.report_id!)}`
-              : `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is CheckAm about your vehicle report — we could not reach you by email.`;
+              ? `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is AutoSure. We could not deliver your report by email, so here is your link: ${reportUrl(row.report_id!)}`
+              : `Hi ${row.guest_name?.split(' ')[0] || 'there'}, this is AutoSure about your vehicle report — we could not reach you by email.`;
 
             return (
               <div key={row.id} className="border border-ch-border rounded-lg p-4">

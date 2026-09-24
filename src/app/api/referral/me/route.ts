@@ -13,7 +13,7 @@ export async function GET() {
   const session = await verifySession();
 
   try {
-    const code = await getOrCreateReferralCode(session.userId, 'CheckAm customer');
+    const code = await getOrCreateReferralCode(session.userId, 'AutoSure customer');
     const balanceKobo = await getReferralBalance(session.email);
 
     // Only converted referrals count — migration 011's whole point. A referred
@@ -38,7 +38,7 @@ export async function GET() {
 
     return NextResponse.json({
       code,
-      share_url: `https://checkamvin.com/?ref=${code}`,
+      share_url: `https://autosurevin.com/?ref=${code}`,
       balance_kobo: balanceKobo,
       reward_per_referral_kobo: CUSTOMER_REFERRAL_REWARD_KOBO,
       confirmed_referrals: Number(counts[0]?.confirmed ?? 0),

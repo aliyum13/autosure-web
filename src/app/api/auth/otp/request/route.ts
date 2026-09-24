@@ -31,13 +31,13 @@ export async function POST(req: NextRequest) {
       await logDeliveryBlock({ email, context: 'otp_login', origin: suppression.origin });
       return NextResponse.json(
         {
-          // TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet.
+          // TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet.
           // This branch fires exactly when email to the customer is already
           // failing, so directing them to another inbox is a weak fallback.
-          // It is the only channel CheckAm has today — give this one a real
+          // It is the only channel AutoSure has today — give this one a real
           // WhatsApp number first when one exists.
           error: 'We can no longer deliver email to this address, so we cannot send you a code. '
-            + 'Contact us at support@checkamvin.com from another address and we will send your report directly.',
+            + 'Contact us at support@autosurevin.com from another address and we will send your report directly.',
         },
         { status: 403 }
       );

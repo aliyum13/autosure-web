@@ -52,7 +52,7 @@ export default function ReferralDashboard() {
     );
   }
 
-  const referralLink = `https://checkamvin.com/?ref=${stats.code}`;
+  const referralLink = `https://autosurevin.com/?ref=${stats.code}`;
   const paidCommission = stats.total_commission_ngn - stats.unpaid_commission_ngn;
 
   return (
@@ -66,7 +66,7 @@ export default function ReferralDashboard() {
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="text-white/80 text-xs font-medium uppercase tracking-wider">CheckAm Partner</p>
+              <p className="text-white/80 text-xs font-medium uppercase tracking-wider">AutoSure Partner</p>
               <h1 className="text-xl font-bold">{stats.name}</h1>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function ReferralDashboard() {
         )}
 
         <p className="text-center text-xs text-slate-400 pb-4">
-          Payouts are processed monthly to your bank account · CheckAm
+          Payouts are processed monthly to your bank account · AutoSure
         </p>
 
       </div>

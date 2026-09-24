@@ -39,13 +39,13 @@ export async function raiseAlert(
   // alerting path itself is degraded.
   try {
     await sendTrackedEmail('send_admin_alert', {
-      from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
       to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
-      subject: `${severity === 'critical' ? '🔴' : '⚠️'} CheckAm ${severity}: ${probe}`,
+      subject: `${severity === 'critical' ? '🔴' : '⚠️'} AutoSure ${severity}: ${probe}`,
       html: `<p><strong>${probe}</strong> is failing.</p>
              <p>${detail}</p>
              <p>Raised ${new Date().toISOString()}. You will not be emailed again for this
-             probe until it recovers. See <a href="https://checkamvin.com/admin">the admin panel</a>.</p>`,
+             probe until it recovers. See <a href="https://autosurevin.com/admin">the admin panel</a>.</p>`,
     });
     await prisma.$executeRawUnsafe(
       `UPDATE system_alerts SET notified_at = NOW() WHERE id = $1`, id
@@ -80,9 +80,9 @@ export async function resolveAlert(probe: string): Promise<boolean> {
   // a fixed problem look identical from the inbox.
   try {
     await sendTrackedEmail('send_admin_alert', {
-      from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
       to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
-      subject: `✅ CheckAm recovered: ${probe}`,
+      subject: `✅ AutoSure recovered: ${probe}`,
       html: `<p><strong>${probe}</strong> is healthy again after about ${minutes} minute(s).</p>
              <p>It had been failing with: ${rows[0].detail}</p>`,
     });

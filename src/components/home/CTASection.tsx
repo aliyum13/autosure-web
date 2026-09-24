@@ -8,7 +8,7 @@ export default function CTASection() {
         <div className="grid lg:grid-cols-12 gap-8 items-end">
           <div className="lg:col-span-7">
             <h2 className="text-4xl sm:text-6xl text-white">
-              Check am before
+              Be sure before
               <br />
               you pay.
             </h2>

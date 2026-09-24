@@ -9,7 +9,6 @@ const included = [
   'Open NHTSA recall alerts',
   'Theft and stolen vehicle records',
   'Auction sale history and photos',
-  'Overall grade (A–F) with risk score',
   'PDF download and shareable link',
 ];
 

@@ -47,7 +47,7 @@ export async function GET(
         status: 200,
         headers: {
           'Content-Type': 'application/pdf',
-          'Content-Disposition': `${disposition}; filename="CheckAm-Report-${report.vin}.pdf"`,
+          'Content-Disposition': `${disposition}; filename="AutoSure-Report-${report.vin}.pdf"`,
         },
       });
     }
@@ -93,7 +93,7 @@ export async function GET(
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `${disposition}; filename="CheckAm-Report-${report.vin}.pdf"`,
+        'Content-Disposition': `${disposition}; filename="AutoSure-Report-${report.vin}.pdf"`,
       },
     });
   } catch (error) {

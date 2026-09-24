@@ -133,7 +133,7 @@ export default function RefundsPanel() {
                     </Button>
                     {wa && (
                       <a href={`https://wa.me/${wa}?text=${encodeURIComponent(
-                        `Hi ${o.guest_name?.split(' ')[0] || 'there'}, this is CheckAm. We couldn't produce a report for ${o.vin}, so we're refunding your ${naira(o.amount_ngn)}.`
+                        `Hi ${o.guest_name?.split(' ')[0] || 'there'}, this is AutoSure. We couldn't produce a report for ${o.vin}, so we're refunding your ${naira(o.amount_ngn)}.`
                       )}`} target="_blank" rel="noopener noreferrer">
                         <Button size="sm" variant="outline" className="border-ch-border text-xs gap-1">
                           <MessageCircle className="w-3 h-3" /> Tell them

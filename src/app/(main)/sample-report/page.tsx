@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { ShieldCheck, FileText } from 'lucide-react';
 
 export const metadata = {
-  title: 'Sample Report — CheckAm',
-  description: 'See a real CheckAm vehicle history report before you buy.',
+  title: 'Sample Report — AutoSure',
+  description: 'See a real AutoSure vehicle history report before you buy.',
 };
 
 export default function SampleReportPage() {
@@ -17,7 +17,7 @@ export default function SampleReportPage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-ch-ink mb-2">Sample CheckAm Report</h1>
+          <h1 className="text-2xl font-bold text-ch-ink mb-2">Sample AutoSure Report</h1>
           <p className="text-sm text-ch-text-secondary leading-relaxed">
             This is a real vehicle history report for a <strong className="text-ch-ink">2016 Mercedes-Benz C300</strong> — exactly what you receive after payment. Salvage title, stolen & recovered, front-end damage, odometer rollback. Sold in Nigeria as clean Tokunbo.
           </p>

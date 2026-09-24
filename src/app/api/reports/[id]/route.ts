@@ -13,7 +13,7 @@ export async function GET(
     // the column holds 0.6-2MB of binary per report, and returning it here would
     // ship that as base64 JSON on every report view.
     const reports = await prisma.$queryRawUnsafe(
-      `SELECT id, vin, status, overall_grade, risk_score, grade_label, grade_colour,
+      `SELECT id, vin, status,
               processed_data, ai_summary, share_token, is_public, completed_at, created_at, user_id,
               (pdf_data IS NOT NULL) AS has_pdf
        FROM reports WHERE id = $1 AND status = 'COMPLETED' LIMIT 1`,
@@ -28,10 +28,6 @@ export async function GET(
       vin: report.vin,
       search_identifier: report.vin,
       status: report.status,
-      overall_grade: report.overall_grade ?? '',
-      risk_score: report.risk_score ?? 0,
-      grade_label: report.grade_label ?? '',
-      grade_colour: report.grade_colour ?? '',
       processed_data: report.processed_data,
       ai_summary: report.ai_summary,
       share_token: report.share_token,

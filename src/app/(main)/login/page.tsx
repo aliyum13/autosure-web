@@ -73,7 +73,7 @@ export default function LoginPage() {
 
         {step === 'email' ? (
           <>
-            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Log in to CheckAm</h1>
+            <h1 className="text-2xl font-bold text-ch-text mb-2 text-center">Log in to AutoSure</h1>
             <p className="text-ch-text-secondary text-center mb-6">
               Enter the email you used at checkout — we&apos;ll send you a one-time code.
             </p>
@@ -135,7 +135,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-ch-text-secondary text-xs text-center mt-6">
-          Need help? <a href="mailto:support@checkamvin.com" className="text-ch-primary">support@checkamvin.com</a>
+          Need help? <a href="mailto:support@autosurevin.com" className="text-ch-primary">support@autosurevin.com</a>
         </p>
       </div>
     </div>

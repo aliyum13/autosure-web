@@ -20,13 +20,15 @@ export default function AboutPage() {
     <div className="min-h-screen bg-ch-paper">
       <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
         <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
-          Check am.
+          Use AutoSure to be sure.
         </h1>
         <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
-          It is Nigerian Pidgin, and it means exactly what it sounds like: check
-          it. Before you hand over the money, before you trust the mileage on the
-          dash, before you believe the story about one careful owner in Houston —
-          check am.
+          Auto, as in the car. Sure, as in certain — not &ldquo;the seller
+          swore,&rdquo; not &ldquo;e dey kampe,&rdquo; certain. Before you hand
+          over the money, before you trust the mileage on the dash, before you
+          believe the story about one careful owner in Houston, AutoSure puts the
+          car&apos;s American record in front of you. Every vehicle you check is
+          one you can be confident about.
         </p>
 
         <section className="mt-16 grid lg:grid-cols-12 gap-10 lg:gap-12">
@@ -82,7 +84,7 @@ export default function AboutPage() {
         <section className="mt-16">
           <h2 className="text-2xl sm:text-4xl text-ch-ink">Nigeria first.</h2>
           <p className="measure mt-6 text-ch-text-secondary leading-relaxed">
-            CheckAm launched in Nigeria because it is the largest Tokunbo market in
+            AutoSure launched in Nigeria because it is the largest Tokunbo market in
             Africa and the one where buyers have had the least protection. The
             same databases cover every American car exported anywhere, so the same
             check works wherever those cars land next.

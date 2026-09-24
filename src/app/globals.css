@@ -7,10 +7,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-archivo);
-  --font-display: var(--font-fraunces);
+  /* Brand faces (see layout.tsx): Playfair Display for headings, Crimson Text
+     for body. `font-heading` / `font-body` are the named tokens; `sans` and
+     `display` alias them so existing utility classes keep working. */
+  --font-heading: var(--font-playfair), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-crimson), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-heading: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,12 +52,12 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* CheckAm design tokens — available as bg-ch-*, text-ch-*, border-ch-* etc.
+  /* AutoSure design tokens — available as bg-ch-*, text-ch-*, border-ch-* etc.
      The `ch-` prefix predates the rename and still reads correctly.
 
-     `ch-primary` is the brand/CTA green. `ch-green` is the SUCCESS green and
-     happens to share its value today — they are kept separate because they
-     answer different questions ("is this a CheckAm action?" vs "did something
+     `ch-primary` is the brand/CTA blue and `ch-secondary` the brand teal.
+     `ch-green` is the SUCCESS green — kept separate from the brand because they
+     answer different questions ("is this an AutoSure action?" vs "did something
      go right?"), and only one of them should move if the brand ever shifts.
      Neither is the report grade scale: that lives in lib/generate.ts and is
      deliberately built from different values so a page full of green CTAs
@@ -64,12 +68,15 @@
   /* Rules are ink at low alpha, never an invented grey. */
   --color-ch-rule: rgba(26, 26, 26, 0.16);
   --color-ch-rule-strong: rgba(26, 26, 26, 0.42);
-  --color-ch-primary: #16A34A;
-  /* #16A34A is 3.02:1 as small text on paper and 3.30:1 behind white — both
-     fail AA. It stays the brand colour for the mark, rules and large display
-     accents (which only need 3:1); anything small or filled uses this. */
-  --color-ch-primary-dark: #0F7A38;
-  --color-ch-primary-light: #E9F7EF;
+  --color-ch-primary: var(--primary-color);
+  /* #1E40AF clears AA as small text on paper and behind white, so -dark is only
+     for hover/pressed states. -on-dark is the brand blue for charcoal surfaces,
+     where #1E40AF itself sinks below 3:1. */
+  --color-ch-primary-dark: #1E3A8A;
+  --color-ch-primary-light: #EFF6FF;
+  --color-ch-primary-on-dark: #93C5FD;
+  --color-ch-secondary: var(--secondary-color);
+  --color-ch-secondary-light: #F0FDFA;
   --color-ch-gold: #F5B400;
   --color-ch-gold-light: #FEF6E0;
   --color-ch-green: #16A34A;
@@ -88,6 +95,9 @@
 }
 
 :root {
+  /* AutoSure brand tokens. Everything brand-coloured reads from these. */
+  --primary-color: #1E40AF;
+  --secondary-color: #0D9488;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -172,7 +182,7 @@
   }
 
   h1, h2, h3 {
-    font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif;
+    font-family: var(--font-heading);
     font-weight: 600;
     letter-spacing: -0.028em;
     line-height: 1.04;
@@ -195,7 +205,7 @@
   ::-webkit-scrollbar-thumb { background: var(--color-ch-rule-strong); border: 3px solid var(--color-ch-paper); }
 }
 
-@utility font-display { font-family: var(--font-fraunces), Georgia, 'Times New Roman', serif; }
+@utility font-display { font-family: var(--font-heading); }
 
 /* Rules do the separating. Declared with @utility, not as plain classes in
    @layer utilities, so responsive variants like lg:rule-l actually compile. */

@@ -71,7 +71,7 @@ function StatusBadge({ status }: { status: string | null }) {
 async function getReferralSummary(accountId: string, email: string) {
   try {
     const [code, balanceKobo, counts] = await Promise.all([
-      getOrCreateReferralCode(accountId, 'CheckAm customer'),
+      getOrCreateReferralCode(accountId, 'AutoSure customer'),
       getReferralBalance(email),
       db.$queryRawUnsafe(
         `SELECT COUNT(*) FILTER (WHERE r.converted_at IS NOT NULL)::int AS confirmed,
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-ch-text mb-1">Your CheckAm Dashboard</h1>
+            <h1 className="text-2xl font-bold text-ch-text mb-1">Your AutoSure Dashboard</h1>
             <p className="text-ch-text-secondary">{session.email}</p>
           </div>
           <LogoutButton />
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
         {referral && (
           <ReferralCard
             code={referral.code}
-            shareUrl={`https://checkamvin.com/?ref=${referral.code}`}
+            shareUrl={`https://autosurevin.com/?ref=${referral.code}`}
             balanceKobo={referral.balanceKobo}
             rewardKobo={CUSTOMER_REFERRAL_REWARD_KOBO}
             confirmedReferrals={referral.confirmed}

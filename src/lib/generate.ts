@@ -121,18 +121,6 @@ export async function generateReportAndEmail(
     }
   }
 
-  // Grade
-  const score = Math.max(0, 100 - recallsList.length * 5);
-  const grade = score>=90?'A':score>=75?'B':score>=55?'C':score>=35?'D':'F';
-  const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
-  // Deliberately NOT the brand green (#16A34A). That colour is on every button
-  // and CTA in the app, so reusing it here would make "this is a CheckAm
-  // action" and "this car scored 90+" look identical. A is a deeper green and
-  // B is the brand gold, which also turns the scale into a proper heat ramp —
-  // green, gold, amber, orange, red — instead of the odd green/blue/amber it
-  // was. Kept in step with the badge colours in app/(main)/reports/[id].
-  const colour = score>=90?'#0F7A38':score>=75?'#F5B400':score>=55?'#d97706':score>=35?'#ea580c':'#dc2626';
-
   // If ClearVin returned nothing at all, don't deliver an empty report — flag for retry.
   if (!clearvinHtml && !pdfBuffer) {
     // ClearVin permanently rejects some VINs ("Vin ... is not valid") — distinct
@@ -162,7 +150,7 @@ export async function generateReportAndEmail(
     );
     try {
       await sendTrackedEmail('send_admin_alert', {
-        from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+        from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
         to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
         subject: isPermanentlyInvalid
           ? `ClearVin rejects VIN ${vin} as invalid — not retryable`
@@ -178,13 +166,13 @@ export async function generateReportAndEmail(
     : { data_source: 'CLEARVIN_PDF', vehicle: { vin, make, model, year }, recalls: recallsList, pdf_delivered: true };
 
   await prisma.$executeRawUnsafe(
-    `UPDATE reports SET status='COMPLETED', overall_grade=$1, risk_score=$2,
-       grade_colour=$3, processed_data=$4::jsonb, pdf_data=$5, completed_at=NOW(), updated_at=NOW()
-     WHERE id=$6`,
-    grade, score, colour, JSON.stringify(processedData), pdfBuffer ? Buffer.from(pdfBuffer) : null, reportId
+    `UPDATE reports SET status='COMPLETED', processed_data=$1::jsonb, pdf_data=$2,
+       completed_at=NOW(), updated_at=NOW()
+     WHERE id=$3`,
+    JSON.stringify(processedData), pdfBuffer ? Buffer.from(pdfBuffer) : null, reportId
   );
-  // Stored separately for the same reason as grade_label — and non-fatal: a
-  // missing id costs a future charged re-fetch, never the report itself.
+  // Stored separately so a failure here is non-fatal: a missing id costs a
+  // future charged re-fetch, never the report itself.
   if (clearvinReportId) {
     try {
       await prisma.$executeRawUnsafe(
@@ -193,12 +181,6 @@ export async function generateReportAndEmail(
     } catch (e) { console.warn('[generate] clearvin_report_id set failed (non-fatal):', (e as Error).message); }
   }
 
-  // Set grade_label separately (proven to fail when combined in the write above)
-  try {
-    await prisma.$executeRawUnsafe(
-      `UPDATE reports SET grade_label=$1 WHERE id=$2`, label, reportId
-    );
-  } catch (e) { console.warn('[generate] grade_label set failed (non-fatal):', (e as Error).message); }
   console.log('[generate] COMPLETED, source:', clearvinHtml ? 'CLEARVIN(html)' : 'CLEARVIN_PDF');
 
   // Email (non-fatal if it fails)
@@ -218,12 +200,12 @@ export async function generateReportAndEmail(
         });
         try {
           await sendTrackedEmail('send_admin_alert', {
-            from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+            from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
             to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
             html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list${suppression.origin ? ` (origin: <strong>${suppression.origin}</strong>)` : ''}.
               Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>
-              <p>Open the <a href="https://checkamvin.com/admin">admin panel</a> — this customer is now in the
+              <p>Open the <a href="https://autosurevin.com/admin">admin panel</a> — this customer is now in the
               "Undelivered Reports" queue with their report link and WhatsApp number.</p>`,
           });
         } catch (e) { console.error('[generate] admin suppression alert failed:', e); }

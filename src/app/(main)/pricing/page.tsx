@@ -8,8 +8,6 @@ const included = [
   'Accident and damage records',
   'Open NHTSA recall alerts',
   'Theft records',
-  'AI plain-English summary',
-  'Overall grade (A–F) with risk score',
   'PDF download and shareable link',
 ];
 
@@ -52,7 +50,7 @@ const paymentMethods = [
 const faqs = [
   {
     q: 'What if there is no data for my VIN?',
-    a: 'You get a full refund. Some cars were never registered in the United States and have no US history to return. Email support@checkamvin.com within 24 hours of paying.',
+    a: 'You get a full refund. Some cars were never registered in the United States and have no US history to return. Email support@autosurevin.com within 24 hours of paying.',
   },
   {
     q: 'How long does a report take?',
@@ -144,7 +142,7 @@ export default function PricingPage() {
             ))}
           </ul>
           <p className="measure mt-4 text-sm text-ch-text-muted">
-            All payments run through Paystack. CheckAm never sees your card details.
+            All payments run through Paystack. AutoSure never sees your card details.
           </p>
         </section>
 

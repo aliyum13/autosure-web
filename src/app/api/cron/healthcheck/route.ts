@@ -24,7 +24,7 @@ function baseUrl(): string {
   // against production, so in practice this is the production domain; the
   // fallbacks matter for manual triggering on a preview.
   if (process.env.VERCEL_ENV === 'production') {
-    return process.env.NEXT_PUBLIC_BASE_URL || 'https://checkamvin.com';
+    return process.env.NEXT_PUBLIC_BASE_URL || 'https://autosurevin.com';
   }
   if (process.env.VERCEL_BRANCH_URL) return `https://${process.env.VERCEL_BRANCH_URL}`;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
@@ -42,7 +42,7 @@ async function probe(
       signal: AbortSignal.timeout(TIMEOUT_MS),
       // Marks canary traffic in the runtime logs so it is not mistaken for a
       // real customer when reading them back.
-      headers: { 'User-Agent': 'CheckAm-Healthcheck/1.0' },
+      headers: { 'User-Agent': 'AutoSure-Healthcheck/1.0' },
     });
 
     if (!res.ok) {
@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
     }
 
     results.push(await probe('referral_validate', `${base}/api/referral/validate?code=__canary__`));
-    results.push(await probe('credits_check', `${base}/api/credits/check?email=__canary__%40checkam.test`));
+    results.push(await probe('credits_check', `${base}/api/credits/check?email=__canary__%40autosure.test`));
 
     // Dependency health, read from our own log rather than by calling anyone.
     // Catches a ClearVin/Paystack/Resend outage without spending a credit.
