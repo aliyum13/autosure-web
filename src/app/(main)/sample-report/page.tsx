@@ -19,7 +19,7 @@ export default function SampleReportPage() {
         <div>
           <h1 className="text-2xl text-ch-ink mb-2">Sample AutoSure Report</h1>
           <p className="text-sm text-ch-text-secondary leading-relaxed">
-            This is a real vehicle history report for a <strong className="text-ch-ink">2016 Mercedes-Benz C300</strong> — exactly what you receive after payment. Salvage title, stolen & recovered, front-end damage, odometer rollback. Sold in Nigeria as clean Tokunbo.
+            This is a real vehicle history report for a <strong className="text-ch-ink">2016 Toyota Highlander</strong> — exactly what you receive after payment. Insurance total loss, New Jersey salvage title, possible odometer rollback (94,212 miles, then 11 miles two months later), sold at auction for $2,600 against $14,250 average retail — and flagged for export.
           </p>
         </div>
 
