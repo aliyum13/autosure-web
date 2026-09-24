@@ -8,8 +8,6 @@ const included = [
   'Accident and damage records',
   'Open NHTSA recall alerts',
   'Theft records',
-  'AI plain-English summary',
-  'Overall grade (A–F) with risk score',
   'PDF download and shareable link',
 ];
 

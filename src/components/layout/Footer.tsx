@@ -114,10 +114,6 @@ export default function Footer() {
             <p className="text-sm text-white/60 leading-relaxed mb-3">
               Nigeria&apos;s vehicle intelligence platform. Know the truth about every Tokunbo car before you buy.
             </p>
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-ch-green rounded-full animate-pulse" />
-              <span className="text-xs text-white/60">All systems operational</span>
-            </div>
           </div>
 
           {/* Links */}
@@ -144,7 +140,7 @@ export default function Footer() {
 
         <div className="border-t border-white/15 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-white/60">
-            © 2026 AutoSure Nigeria. All rights reserved. Powered by USA government records.
+            © 2026 AutoSure Nigeria. All rights reserved. Powered by ClearVin.
           </p>
           <div className="flex items-center gap-4">
             {socials.map((s) => (

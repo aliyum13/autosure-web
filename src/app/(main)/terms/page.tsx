@@ -28,7 +28,7 @@ const sections: { title: string; content: ReactNode }[] = [
   },
   {
     title: '4. Data Accuracy',
-    content: 'AutoSure provides data in good faith from official US government sources. However, we cannot guarantee that all incidents are recorded in these databases. A clean report does not guarantee a clean vehicle. Always conduct a physical inspection.',
+    content: 'AutoSure provides data in good faith, licensed from ClearVin, which sources official US government databases. However, we cannot guarantee that all incidents are recorded in these databases. A clean report does not guarantee a clean vehicle. Always conduct a physical inspection.',
   },
   {
     title: '5. User Accounts',

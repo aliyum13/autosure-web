@@ -37,10 +37,6 @@ export interface Report {
   id: string;
   vin: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'INVALID_VIN';
-  overall_grade: string;
-  risk_score: number;
-  grade_label: string;
-  grade_colour: string;
   processed_data: ProcessedData;
   ai_summary: string | null;
   share_token: string;
@@ -55,8 +51,6 @@ export interface ReportListItem {
   id: string;
   vin: string;
   status: string;
-  overall_grade: string;
-  risk_score: number | null;
   created_at: string;
   // alias for vin in list views
   search_identifier: string;

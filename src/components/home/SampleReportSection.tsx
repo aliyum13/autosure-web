@@ -12,11 +12,9 @@ const SAMPLE_VIN = '5TDBKRFH7GS348731';
 const SAMPLE_VEHICLE = '2016 Toyota Highlander';
 
 // Fixed illustrative gauge, not computed from live data — this section shows
-// one specific real report, not a live widget. Coordinates are a hand-plotted
-// semicircle (cx=100, cy=110, r=90) split into four 45° zones matching the
-// exact badge colours app/(main)/reports/[id] uses for a grade (A/B/C, then
-// D and F share the same red — that precedent decides the needle colour here
-// too, since ClearVin's own D sits in that same "bad" band).
+// ClearVin's own rating from one specific real report, not a live widget.
+// Coordinates are a hand-plotted semicircle (cx=100, cy=110, r=90) split into
+// four 45° zones, good to bad; ClearVin's D sits in the red "bad" zone.
 function RatingGauge() {
   return (
     <div>

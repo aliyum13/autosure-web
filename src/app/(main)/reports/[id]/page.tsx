@@ -10,9 +10,6 @@ interface Report {
   id: string;
   vin: string;
   status: string;
-  overall_grade: string;
-  risk_score: number;
-  grade_label: string;
   processed_data: {
     clearvin_html?: string;
     clearvin_report_id?: string;
@@ -363,32 +360,17 @@ export default function ReportPage() {
   const theft = data?.theft || [];
   const odometer = data?.odometer_records || [];
 
-  // Mirrors the scale in lib/generate.ts — keep the two in step. Grade B is
-  // gold, which needs dark text: white on #F5B400 is about 1.9:1 and fails
-  // contrast at badge size.
-  const gradeColor = report.overall_grade === 'A' ? 'bg-ch-primary-dark text-white' :
-    report.overall_grade === 'B' ? 'bg-ch-gold text-ch-charcoal' :
-    report.overall_grade === 'C' ? 'bg-ch-amber text-white' : 'bg-ch-red text-white';
-
   return (
     <div className="min-h-screen bg-ch-bg py-8 px-4">
       <div className="max-w-3xl mx-auto space-y-4">
         <div className="bg-white border border-ch-border rounded-none p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-ch-primary font-semibold mb-1">US Vehicle History Report</p>
-              <h1 className="text-2xl font-bold text-ch-text">
-                {String(vehicle?.year ?? '')} {String(vehicle?.make ?? '')} {String(vehicle?.model ?? '')}
-              </h1>
-              <div className="flex items-center gap-3 mt-2 flex-wrap">
-                <code className="text-xs font-mono text-ch-text-muted bg-slate-100 px-2 py-1 rounded">{report.vin}</code>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded ${gradeColor}`}>Grade {report.overall_grade}</span>
-              </div>
-            </div>
-            <div className="bg-slate-50 rounded-none p-4 text-center shrink-0">
-              <p className="text-xs uppercase tracking-wide text-ch-text-muted mb-1">Risk Score</p>
-              <p className="text-3xl font-extrabold text-ch-primary">{report.risk_score}</p>
-              <p className="text-xs text-ch-text-muted">out of 100</p>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-ch-primary font-semibold mb-1">US Vehicle History Report</p>
+            <h1 className="text-2xl font-bold text-ch-text">
+              {String(vehicle?.year ?? '')} {String(vehicle?.make ?? '')} {String(vehicle?.model ?? '')}
+            </h1>
+            <div className="flex items-center gap-3 mt-2 flex-wrap">
+              <code className="text-xs font-mono text-ch-text-muted bg-slate-100 px-2 py-1 rounded">{report.vin}</code>
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-ch-border flex gap-2 flex-wrap">

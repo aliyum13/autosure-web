@@ -154,7 +154,7 @@ export async function sendReportReadyEmail({
         <!-- Footer -->
         <tr><td style="background:#1A1A1A;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
           <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 AutoSure Nigeria. All rights reserved.</p>
-          <p style="color:#64748b;font-size:11px;margin:0;">Powered by USA government records (NMVTIS) via ClearVin</p>
+          <p style="color:#64748b;font-size:11px;margin:0;">Powered by ClearVin (NMVTIS data)</p>
         </td></tr>
 
       </table>

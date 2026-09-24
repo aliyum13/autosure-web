@@ -8,11 +8,11 @@ const faqs = [
       },
       {
         q: 'What does the report include?',
-        a: 'Each report includes: title history (salvage, rebuilt, flood, junk), odometer records and rollback detection, accident and damage history, open NHTSA safety recalls, theft records, market valuation, an overall grade (A–F) with risk score, and an AI plain-English summary.',
+        a: 'Each report includes: title history (salvage, rebuilt, flood, junk), odometer records and rollback detection, accident and damage history, open NHTSA safety recalls, theft records, and market valuation.',
       },
       {
         q: 'How accurate is the data?',
-        a: 'Our data comes directly from official US government databases. However, not all accidents or incidents are reported to these databases. Always conduct a physical inspection in addition to checking the report.',
+        a: 'Our data is licensed from ClearVin, which aggregates official US government databases including NMVTIS and state DMV records. However, not all accidents or incidents are reported to these databases. Always conduct a physical inspection in addition to checking the report.',
       },
     ],
   },
@@ -60,10 +60,6 @@ const faqs = [
       {
         q: 'What is an open safety recall?',
         a: "An open safety recall means the manufacturer has identified a safety defect in the vehicle and issued a recall notice, but the repair has not yet been performed. Open recalls should be fixed by an authorised dealer — they're usually free of charge.",
-      },
-      {
-        q: "What does the A–F grade mean?",
-        a: "The overall grade summarises the vehicle's history: A (Excellent, 90–100), B (Good, 75–89), C (Fair, 55–74), D (Poor, 35–54), F (High Risk, below 35). There is no E grade. The score is calculated from title brands, accidents, recalls, odometer issues and theft records.",
       },
     ],
   },
