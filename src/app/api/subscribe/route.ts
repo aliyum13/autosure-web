@@ -11,32 +11,32 @@ export async function POST(req: NextRequest) {
     // Add to Resend audience (creates contact for email marketing)
     // Also send a welcome email
     await sendTrackedEmail('send_subscribe_welcome', {
-      from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
       to: email,
-      subject: 'You\'re on the CheckAm Insights list 🚗',
+      subject: 'You\'re on the AutoSure Insights list 🚗',
       html: `
         <div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#fff;">
           <div style="margin-bottom:24px;">
-            <span style="font-size:20px;font-weight:700;color:#1A1A1A;">Check</span><span style="font-size:20px;font-weight:700;color:#16A34A;">Am</span>
+            <span style="font-size:20px;font-weight:700;color:#1A1A1A;">Auto</span><span style="font-size:20px;font-weight:700;color:#1E40AF;">Sure</span>
           </div>
           <h1 style="font-size:22px;font-weight:700;color:#1A1A1A;margin:0 0 12px;">You're in! 🎉</h1>
           <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 20px;">
-            You'll now receive CheckAm Insights — tips on spotting Tokunbo car scams, what to check before buying, and updates from the platform.
+            You'll now receive AutoSure Insights — tips on spotting Tokunbo car scams, what to check before buying, and updates from the platform.
           </p>
           <p style="font-size:15px;color:#475569;line-height:1.7;margin:0 0 28px;">
             In the meantime, check a VIN before your next purchase — it could save you millions.
           </p>
-          <a href="https://checkamvin.com" style="display:inline-block;background:#16A34A;color:#fff;font-weight:600;font-size:14px;padding:12px 24px;border-radius:10px;text-decoration:none;">
+          <a href="https://autosurevin.com" style="display:inline-block;background:#1E40AF;color:#fff;font-weight:600;font-size:14px;padding:12px 24px;border-radius:10px;text-decoration:none;">
             Check a Car Now
           </a>
-          <p style="font-size:12px;color:#94a3b8;margin-top:32px;">CheckAm Nigeria · checkamvin.com</p>
+          <p style="font-size:12px;color:#94a3b8;margin-top:32px;">AutoSure Nigeria · autosurevin.com</p>
         </div>
       `,
     });
 
     // Notify admin
     await sendTrackedEmail('send_admin_alert', {
-      from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+      from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
       to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
       subject: `New Insights subscriber: ${email}`,
       html: `<p>New subscriber: <strong>${email}</strong></p>`,

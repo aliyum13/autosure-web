@@ -1,4 +1,4 @@
-# CheckAm — product truth
+# AutoSure — product truth
 
 Durable facts about what this product is and who it serves. Visual decisions live
 in DESIGN.md, never here.
@@ -18,7 +18,7 @@ single decision: *is this car what the seller says it is, and should I hand over
 my money?*
 
 They arrive sceptical of the site itself as well as the car. Nothing about
-CheckAm is familiar to them, they are being asked for ₦15,000 up front, and
+AutoSure is familiar to them, they are being asked for ₦15,000 up front, and
 Nigerian used-car buying has trained them to expect to be cheated. Trust has to
 be earned before the VIN box, not after.
 
@@ -40,7 +40,7 @@ and a plain-English summary.
 the United States forces them to. NMVTIS is a federal title database; NHTSA
 publishes recalls; US insurers report total losses. A car that was written off in
 Texas carries that fact in a US government system no Nigerian seller can reach,
-edit, or talk their way around. CheckAm is a window into paperwork that already
+edit, or talk their way around. AutoSure is a window into paperwork that already
 exists on the other side of the ocean, not an opinion or an inspection.
 
 That is the honest position: not "we know cars" but "America wrote this down."
@@ -61,18 +61,19 @@ That is the honest position: not "we know cars" but "America wrote this down."
 - **Payments are Paystack**, priced in naira, single report ₦15,000 with
   multi-report bundles. Bundle credits and referral earnings can pay for a
   report instead of cash.
-- **Brand commitments:** the name CheckAm (Nigerian Pidgin, "check it"), the
-  circular checkmark mark, and the brand green `#16A34A`. Confirmed as fixed by
-  the user; a redesign works around them.
-- **Contact is currently email only** (`support@checkamvin.com`). There is no
+- **Brand commitments:** the name AutoSure (domain autosurevin.com), the
+  AutoSure logo, brand blue `#1E40AF` and brand teal `#0D9488`, set in
+  Playfair Display and Crimson Text. Confirmed as fixed by the user; a
+  redesign works around them.
+- **Contact is currently email only** (`support@autosurevin.com`). There is no
   WhatsApp line or social account yet, and the design must not imply otherwise.
-  See `TODO(checkam-contact)` in the code.
-- **No customer testimonials exist.** CheckAm has served no customers under this
+  See `TODO(autosure-contact)` in the code.
+- **No customer testimonials exist.** AutoSure has served no customers under this
   brand. Any social proof must come from the data source or the guarantee, never
   from invented quotes. A previous set of inherited testimonials was removed for
   exactly this reason.
 - **Legal entity is not yet formalised**, so the privacy policy publishes no
-  registered address. See `TODO(checkam-legal)`.
+  registered address. See `TODO(autosure-legal)`.
 
 ## Voice
 

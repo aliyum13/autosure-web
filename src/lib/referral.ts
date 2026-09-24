@@ -73,7 +73,7 @@ export async function getOrCreateReferralCode(accountId: string, name?: string):
       await prisma.$executeRawUnsafe(
         `INSERT INTO referral_codes (id, code, name, owner_account_id, created_at, updated_at)
          VALUES ($1, $2, $3, $4, NOW(), NOW())`,
-        id, code, name || 'CheckAm customer', accountId
+        id, code, name || 'AutoSure customer', accountId
       );
       return code;
     } catch (e) {

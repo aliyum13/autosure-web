@@ -19,7 +19,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           <div className="lg:col-span-7">
             <h1 className="rule-draw inline-block text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[4.25rem] text-ch-ink animate-fade-up">
-              Check am
+              Be sure
               <br />
               before you buy.
             </h1>

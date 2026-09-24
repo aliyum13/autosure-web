@@ -543,9 +543,9 @@ export default function PreviewPage() {
               <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
 
               <p className="text-center text-xs text-slate-500">
-                {/* TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet. */}
+                {/* TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet. */}
                 Questions before you pay? Email us:{' '}
-                <a href="mailto:support@checkamvin.com" className="text-ch-primary font-semibold">support@checkamvin.com</a>
+                <a href="mailto:support@autosurevin.com" className="text-ch-primary font-semibold">support@autosurevin.com</a>
               </p>
 
               <p className="text-center text-xs text-slate-400">

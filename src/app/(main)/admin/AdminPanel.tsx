@@ -146,7 +146,7 @@ export default function AdminPanel() {
   };
 
   const copyLink = (code: string) => {
-    navigator.clipboard.writeText(`https://checkamvin.com?ref=${code}`);
+    navigator.clipboard.writeText(`https://autosurevin.com?ref=${code}`);
     setCopied(code);
     setTimeout(() => setCopied(null), 2000);
   };

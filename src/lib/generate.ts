@@ -125,8 +125,8 @@ export async function generateReportAndEmail(
   const score = Math.max(0, 100 - recallsList.length * 5);
   const grade = score>=90?'A':score>=75?'B':score>=55?'C':score>=35?'D':'F';
   const label = score>=90?'Excellent':score>=75?'Good':score>=55?'Fair':score>=35?'Poor':'High Risk';
-  // Deliberately NOT the brand green (#16A34A). That colour is on every button
-  // and CTA in the app, so reusing it here would make "this is a CheckAm
+  // Deliberately NOT the brand blue (#1E40AF). That colour is on every button
+  // and CTA in the app, so reusing it here would make "this is an AutoSure
   // action" and "this car scored 90+" look identical. A is a deeper green and
   // B is the brand gold, which also turns the scale into a proper heat ramp —
   // green, gold, amber, orange, red — instead of the odd green/blue/amber it
@@ -162,7 +162,7 @@ export async function generateReportAndEmail(
     );
     try {
       await sendTrackedEmail('send_admin_alert', {
-        from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+        from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
         to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
         subject: isPermanentlyInvalid
           ? `ClearVin rejects VIN ${vin} as invalid — not retryable`
@@ -218,12 +218,12 @@ export async function generateReportAndEmail(
         });
         try {
           await sendTrackedEmail('send_admin_alert', {
-            from: process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>',
+            from: process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>',
             to: process.env.ADMIN_EMAIL || 'checkamafrica@gmail.com',
             subject: `⚠️ Suppressed email — report ${reportId} generated but NOT delivered`,
             html: `<p>Customer <strong>${guestEmail}</strong> is on Resend's suppression list${suppression.origin ? ` (origin: <strong>${suppression.origin}</strong>)` : ''}.
               Report ${reportId} for VIN <strong>${vin}</strong> completed successfully but was NOT emailed.</p>
-              <p>Open the <a href="https://checkamvin.com/admin">admin panel</a> — this customer is now in the
+              <p>Open the <a href="https://autosurevin.com/admin">admin panel</a> — this customer is now in the
               "Undelivered Reports" queue with their report link and WhatsApp number.</p>`,
           });
         } catch (e) { console.error('[generate] admin suppression alert failed:', e); }

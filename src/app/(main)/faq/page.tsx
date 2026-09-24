@@ -3,8 +3,8 @@ const faqs = [
     category: 'About Reports',
     items: [
       {
-        q: 'What is a CheckAm US Vehicle Report?',
-        a: 'A CheckAm report pulls data from NMVTIS (National Motor Vehicle Title Information System), NHTSA (National Highway Traffic Safety Administration), US state DMV records, and US insurance databases to give you a comprehensive history of any USA-imported vehicle.',
+        q: 'What is an AutoSure US Vehicle Report?',
+        a: 'An AutoSure report pulls data from NMVTIS (National Motor Vehicle Title Information System), NHTSA (National Highway Traffic Safety Administration), US state DMV records, and US insurance databases to give you a comprehensive history of any USA-imported vehicle.',
       },
       {
         q: 'What does the report include?',
@@ -25,11 +25,11 @@ const faqs = [
       },
       {
         q: 'What if my VIN is less than 17 characters?',
-        a: 'USA VINs are always exactly 17 characters. If the number you have is shorter, it may be a chassis number from a Japanese vehicle, which CheckAm does not currently support. Please verify the VIN with the seller.',
+        a: 'USA VINs are always exactly 17 characters. If the number you have is shorter, it may be a chassis number from a Japanese vehicle, which AutoSure does not currently support. Please verify the VIN with the seller.',
       },
       {
         q: 'Can I check a locally registered Nigerian vehicle?',
-        a: 'Currently CheckAm only supports USA-imported vehicles (Tokunbo cars). We are working on expanding to locally registered vehicles in a future update.',
+        a: 'Currently AutoSure only supports USA-imported vehicles (Tokunbo cars). We are working on expanding to locally registered vehicles in a future update.',
       },
     ],
   },
@@ -42,11 +42,11 @@ const faqs = [
       },
       {
         q: 'What if no data is found for my VIN?',
-        a: 'If CheckAm cannot retrieve any data for your VIN, we will issue a full refund. Email us at support@checkamvin.com within 24 hours of your purchase.',
+        a: 'If AutoSure cannot retrieve any data for your VIN, we will issue a full refund. Email us at support@autosurevin.com within 24 hours of your purchase.',
       },
       {
         q: 'Is my payment secure?',
-        a: 'Yes. All payments are processed by Paystack, a PCI-DSS compliant payment processor trusted by thousands of Nigerian businesses. CheckAm never stores your card details.',
+        a: 'Yes. All payments are processed by Paystack, a PCI-DSS compliant payment processor trusted by thousands of Nigerian businesses. AutoSure never stores your card details.',
       },
     ],
   },
@@ -102,13 +102,13 @@ export default function FAQPage() {
           <p className="measure mt-3 text-white/70 leading-relaxed">
             Email us and a person will answer. We have no phone line yet.
           </p>
-          {/* TODO(checkam-contact): a WhatsApp button sat here pointing at
-              CarHaki's channel. Restore it when CheckAm has one of its own. */}
+          {/* TODO(autosure-contact): a WhatsApp button sat here pointing at
+              CarHaki's channel. Restore it when AutoSure has one of its own. */}
           <a
-            href="mailto:support@checkamvin.com"
+            href="mailto:support@autosurevin.com"
             className="inline-block mt-6 bg-white text-ch-ink hover:bg-white/90 text-sm font-semibold px-6 py-3 transition-colors"
           >
-            support@checkamvin.com
+            support@autosurevin.com
           </a>
         </section>
       </div>

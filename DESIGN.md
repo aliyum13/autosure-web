@@ -1,10 +1,10 @@
-# CheckAm — visual world
+# AutoSure — visual world
 
 Durable visual decisions. Product truth lives in PRODUCT.md.
 
 ## The world: the motor page
 
-CheckAm is built as **the motor page of a newspaper** — the classified and
+AutoSure is built as **the motor page of a newspaper** — the classified and
 vehicle section of a daily, printed on cheap warm stock: ruled columns, a
 high-contrast masthead serif, hairline rules doing the work that borders and
 shadows do elsewhere, tabular figures, and a single spot colour used sparingly
@@ -16,7 +16,7 @@ Lagos seller can reach or edit. The newspaper is the audience's existing mental
 model for that idea: the published record, dated and typeset, that exists
 whether or not it flatters you. A newspaper does not persuade by feeling
 trustworthy; it persuades by being on the record. That is the exact argument
-CheckAm has to make to a sceptical buyer in a car yard, and it is a world that
+AutoSure has to make to a sceptical buyer in a car yard, and it is a world that
 scales into dense report data later without changing key.
 
 **Chosen against the rut.** This category ships one of two pages: the rounded
@@ -30,11 +30,11 @@ instrument cluster.
 
 ## Type
 
-- **Fraunces** — display. Variable, high optical contrast, a masthead voice with
-  enough wonk to stay warm rather than austere. Headlines only, tight leading,
-  tracking pulled in at display sizes.
-- **Archivo** — text, UI, labels, data. A news grotesque. Carries body copy,
-  controls, and tabular figures.
+- **Playfair Display** (`--font-heading`) — display. High-contrast transitional
+  serif, a masthead voice. Headlines only, tight leading, tracking pulled in at
+  display sizes.
+- **Crimson Text** (`--font-body`) — text, UI, labels, data. A book serif that
+  carries body copy, controls, and tabular figures.
 
 No third face. Body measure stays 65–75ch. Display caps at 6rem.
 
@@ -43,14 +43,17 @@ columns align the way a printed table does.
 
 ## Colour
 
-Brand commitments are fixed (PRODUCT.md): the checkmark mark and `#16A34A`.
+Brand commitments are fixed (PRODUCT.md): the AutoSure logo, `#1E40AF` and `#0D9488`.
 
 - `--ch-paper` `#F7F5EF` — the stock everything prints on.
 - `--ch-ink` `#1A1A1A` — text and rules.
-- `--ch-primary` `#16A34A` — the single spot colour. Rules under headlines,
+- `--primary-color` / `--ch-primary` `#1E40AF` — the single spot colour. Rules under headlines,
   the mark, primary actions, the live indicator. Used sparingly on purpose:
   spot colour that appears everywhere stops reading as emphasis.
-- `--ch-primary-dark` `#0F7A38` — pressed and hover states.
+- `--ch-primary-dark` `#1E3A8A` — pressed and hover states.
+- `--ch-primary-on-dark` `#93C5FD` — the brand blue on charcoal surfaces.
+- `--secondary-color` / `--ch-secondary` `#0D9488` — brand teal. Secondary
+  accents only; never competes with the primary for emphasis.
 - `--ch-gold` `#F5B400` — the stamp. Second-tier emphasis only.
 - Rules are ink at low alpha, never a grey token invented for the purpose.
 

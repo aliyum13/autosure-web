@@ -13,9 +13,9 @@ const navLinks = [
   { href: '/pricing', label: 'Pricing' },
   { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
-  // TODO(checkam-contact): this pointed at CarHaki's WhatsApp group. Point it
-  // at CheckAm's own support channel once one exists.
-  { href: 'mailto:support@checkamvin.com', label: 'Support', external: true },
+  // TODO(autosure-contact): this pointed at CarHaki's WhatsApp group. Point it
+  // at AutoSure's own support channel once one exists.
+  { href: 'mailto:support@autosurevin.com', label: 'Support', external: true },
 ];
 
 // `checkam_authed` is the non-httpOnly UI-hint cookie set alongside the real
@@ -51,8 +51,8 @@ export default function Navbar() {
               <Search className="w-[18px] h-[18px] text-white" strokeWidth={3} />
             </div>
             <span className="font-display tracking-tight font-bold text-lg">
-              <span className="text-ch-text">Check</span>
-              <span className="text-ch-primary-dark">Am</span>
+              <span className="text-ch-text">Auto</span>
+              <span className="text-ch-primary-dark">Sure</span>
             </span>
           </Link>
 

@@ -67,13 +67,13 @@ export async function sendReportReadyEmail({
 }) {
   const carName = [year, make, model].filter(Boolean).join(' ') || vin;
   const firstName = name?.split(' ')[0] || 'there';
-  const reportUrl = reportId ? `https://checkamvin.com/reports/${reportId}` : 'https://checkamvin.com';
+  const reportUrl = reportId ? `https://autosurevin.com/reports/${reportId}` : 'https://autosurevin.com';
 
   const attachments = pdfBuffer
-    ? [{ filename: `CheckAm-Report-${vin}.pdf`, content: Buffer.from(pdfBuffer) }]
+    ? [{ filename: `AutoSure-Report-${vin}.pdf`, content: Buffer.from(pdfBuffer) }]
     : [];
 
-  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>';
+  const fromAddr = process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>';
   console.log('Sending email to:', to, '| PDF:', !!pdfBuffer);
 
 
@@ -87,7 +87,7 @@ export async function sendReportReadyEmail({
   const result = await sendTrackedEmail('send_report_ready', {
     from: fromAddr,
     to,
-    subject: `Your CheckAm Report is Ready — ${carName} (${vin})`,
+    subject: `Your AutoSure Report is Ready — ${carName} (${vin})`,
     attachments,
     html: `
 <!DOCTYPE html>
@@ -100,10 +100,10 @@ export async function sendReportReadyEmail({
 
         <!-- Header -->
         <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://www.checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
+          <img src="https://www.autosurevin.com/images/logo-180.png" width="48" height="48" style="width:48px;height:48px;border-radius:8px;margin-bottom:8px;" alt="AutoSure">
           <br>
-          <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
-          <p style="color:#BBF7D0;margin:6px 0 0;font-size:13px;">Check am before you buy</p>
+          <span style="color:#ffffff;font-size:22px;font-weight:800;">Auto<span style="color:#93C5FD;">Sure</span></span>
+          <p style="color:#BFDBFE;margin:6px 0 0;font-size:13px;">Be sure about the car you are buying</p>
         </td></tr>
 
         <!-- Body -->
@@ -111,7 +111,7 @@ export async function sendReportReadyEmail({
           <h1 style="color:#1A1A1A;font-size:22px;margin:0 0 8px;">Your Report is Ready! 🎉</h1>
           <p style="color:#64748b;margin:0 0 20px;">Hello ${firstName},</p>
           <p style="color:#475569;margin:0 0 24px;line-height:1.6;">
-            Your CheckAm vehicle history report for the <strong>${carName}</strong> has been generated.
+            Your AutoSure vehicle history report for the <strong>${carName}</strong> has been generated.
             ${pdfBuffer ? 'The full official ClearVin report is <strong>attached as a PDF</strong>.' : 'Your report has been generated successfully.'}
           </p>
 
@@ -124,7 +124,7 @@ export async function sendReportReadyEmail({
 
           <!-- View Report Online button — always works even if PDF attachment fails -->
           <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr><td align="center">
-            <a href="${reportUrl}" style="display:inline-block;background:#16A34A;color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;">
+            <a href="${reportUrl}" style="display:inline-block;background:#1E40AF;color:#ffffff;font-size:16px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:10px;">
               View Your Full Report →
             </a>
           </td></tr></table>
@@ -139,21 +139,21 @@ export async function sendReportReadyEmail({
               Want all your reports in one place?
             </p>
             <p style="margin:0;font-size:13px;color:#475569;line-height:1.6;">
-              Sign in at <a href="https://checkamvin.com/login" style="color:#16A34A;">checkamvin.com/login</a>
+              Sign in at <a href="https://autosurevin.com/login" style="color:#1E40AF;">autosurevin.com/login</a>
               using <strong>this email address</strong> — no password needed, we&rsquo;ll send you a code.
               Every report you&rsquo;ve bought, including this one, will be there.
             </p>
           </div>
 
           <p style="color:#94a3b8;font-size:13px;margin:0;line-height:1.6;">
-            <!-- TODO(checkam-contact): add CheckAm's WhatsApp number back here once it exists. -->
-            Need help? Email us at <a href="mailto:support@checkamvin.com" style="color:#16A34A;">support@checkamvin.com</a>.
+            <!-- TODO(autosure-contact): add AutoSure's WhatsApp number back here once it exists. -->
+            Need help? Email us at <a href="mailto:support@autosurevin.com" style="color:#1E40AF;">support@autosurevin.com</a>.
           </p>
         </td></tr>
 
         <!-- Footer -->
         <tr><td style="background:#1A1A1A;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
-          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CheckAm Nigeria. All rights reserved.</p>
+          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 AutoSure Nigeria. All rights reserved.</p>
           <p style="color:#64748b;font-size:11px;margin:0;">Powered by USA government records (NMVTIS) via ClearVin</p>
         </td></tr>
 
@@ -169,12 +169,12 @@ export async function sendReportReadyEmail({
 }
 
 export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
-  const fromAddr = process.env.RESEND_FROM_EMAIL || 'CheckAm <reports@checkamvin.com>';
+  const fromAddr = process.env.RESEND_FROM_EMAIL || 'AutoSure <reports@autosurevin.com>';
 
   return sendTrackedEmail('send_otp', {
     from: fromAddr,
     to,
-    subject: `${code} is your CheckAm login code`,
+    subject: `${code} is your AutoSure login code`,
     html: `
 <!DOCTYPE html>
 <html>
@@ -186,15 +186,15 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
 
         <!-- Header -->
         <tr><td style="background:#1A1A1A;border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-          <img src="https://www.checkamvin.com/logo-icon.png" width="48" height="48" style="width:48px;height:48px;border-radius:50%;margin-bottom:8px;" alt="CheckAm">
+          <img src="https://www.autosurevin.com/images/logo-180.png" width="48" height="48" style="width:48px;height:48px;border-radius:8px;margin-bottom:8px;" alt="AutoSure">
           <br>
-          <span style="color:#ffffff;font-size:22px;font-weight:800;">Check<span style="color:#4ADE80;">Am</span></span>
+          <span style="color:#ffffff;font-size:22px;font-weight:800;">Auto<span style="color:#93C5FD;">Sure</span></span>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="background:#ffffff;padding:32px;text-align:center;">
           <h1 style="color:#1A1A1A;font-size:20px;margin:0 0 8px;">Your login code</h1>
-          <p style="color:#64748b;margin:0 0 24px;">Enter this code to sign in to CheckAm:</p>
+          <p style="color:#64748b;margin:0 0 24px;">Enter this code to sign in to AutoSure:</p>
 
           <div style="background:#F2EFE7;border-radius:12px;padding:20px;margin:0 0 24px;">
             <p style="margin:0;font-size:32px;font-weight:800;letter-spacing:0.15em;color:#1A1A1A;font-family:monospace;">${code}</p>
@@ -207,7 +207,7 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
 
         <!-- Footer -->
         <tr><td style="background:#1A1A1A;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
-          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 CheckAm Nigeria. All rights reserved.</p>
+          <p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">© 2026 AutoSure Nigeria. All rights reserved.</p>
         </td></tr>
 
       </table>

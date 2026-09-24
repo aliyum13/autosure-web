@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const headers: Record<string, string> = {
-      'User-Agent': 'Mozilla/5.0 (compatible; CheckAm/1.0)',
+      'User-Agent': 'Mozilla/5.0 (compatible; AutoSure/1.0)',
       'Accept': 'image/*,*/*',
       'Referer': 'https://www.clearvin.com/',
     };

@@ -29,22 +29,22 @@ export default function PrivacyPage() {
             },
             {
               title: '6. Your Rights (NDPA 2023)',
-              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at support@checkamvin.com to exercise these rights.',
+              content: 'Under the Nigeria Data Protection Act 2023, you have the right to: access your personal data, correct inaccurate data, request deletion of your data, and withdraw consent. Contact us at support@autosurevin.com to exercise these rights.',
             },
             {
               title: '7. Cookies',
               content: 'We use httpOnly cookies for authentication (JWT tokens). We do not use tracking or advertising cookies. You can clear cookies at any time through your browser settings.',
             },
             {
-              // TODO(checkam-legal): no registered address here yet, and that
+              // TODO(autosure-legal): no registered address here yet, and that
               // is a known compliance gap rather than an oversight. Nigeria's
               // NDPA generally expects a data controller to publish a physical
               // address alongside its contact details. The address that used to
               // sit here arrived with the CarHaki rename and was that business's,
-              // so it has been removed rather than misattributed. Put CheckAm's
+              // so it has been removed rather than misattributed. Put AutoSure's
               // own registered address back once the entity is formalised.
               title: '8. Contact',
-              content: 'Data Controller: CheckAm | support@checkamvin.com',
+              content: 'Data Controller: AutoSure | support@autosurevin.com',
             },
           ].map((section) => (
             <div key={section.title}>

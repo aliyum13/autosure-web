@@ -12,11 +12,11 @@ const footerLinks = {
   ],
   Support: [
     { label: 'FAQ', href: '/faq' },
-    { label: 'About CheckAm', href: '/about' },
-    // TODO(checkam-contact): CheckAm has no WhatsApp line or social accounts yet.
+    { label: 'About AutoSure', href: '/about' },
+    // TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet.
     // A phone row and a community-group row sat here, both CarHaki's.
-    // Restore them once CheckAm has its own.
-    { label: 'support@checkamvin.com', href: 'mailto:support@checkamvin.com' },
+    // Restore them once AutoSure has its own.
+    { label: 'support@autosurevin.com', href: 'mailto:support@autosurevin.com' },
   ],
   Legal: [
     { label: 'Terms of Service', href: '/terms' },
@@ -24,9 +24,9 @@ const footerLinks = {
   ],
 };
 
-// TODO(checkam-contact): CheckAm has no social accounts yet. These were
-// CarHaki's handles, and pointing at them would hand CheckAm's traffic to
-// another brand. Empty until CheckAm has its own — the Footer renders
+// TODO(autosure-contact): AutoSure has no social accounts yet. These were
+// CarHaki's handles, and pointing at them would hand AutoSure's traffic to
+// another brand. Empty until AutoSure has its own — the Footer renders
 // nothing for the row while it is.
 const socials: { label: string; href: string }[] = [];
 
@@ -88,7 +88,7 @@ export default function Footer() {
         {/* Subscribe to Insights banner */}
         <div className="bg-white/[0.06] rounded-none px-6 py-6 mb-10 flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1">
-            <h3 className="font-display text-lg text-white mb-1">CheckAm Insights</h3>
+            <h3 className="font-display text-lg text-white mb-1">AutoSure Insights</h3>
             <p className="measure text-sm text-white/60 leading-relaxed">
               Tips on spotting Tokunbo scams, what to check before buying, and platform updates. No spam — ever.
             </p>
@@ -107,8 +107,8 @@ export default function Footer() {
                 <Search className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
               <span className="font-display tracking-tight font-bold">
-                <span className="text-white">Check</span>
-                <span className="text-ch-primary">Am</span>
+                <span className="text-white">Auto</span>
+                <span className="text-ch-primary-on-dark">Sure</span>
               </span>
             </div>
             <p className="text-sm text-white/60 leading-relaxed mb-3">
@@ -144,7 +144,7 @@ export default function Footer() {
 
         <div className="border-t border-white/15 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-xs text-white/60">
-            © 2026 CheckAm Nigeria. All rights reserved. Powered by USA government records.
+            © 2026 AutoSure Nigeria. All rights reserved. Powered by USA government records.
           </p>
           <div className="flex items-center gap-4">
             {socials.map((s) => (

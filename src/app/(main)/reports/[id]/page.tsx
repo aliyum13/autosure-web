@@ -91,11 +91,11 @@ function ClearVinFrame({ html }: { html: string }) {
     const injectedScript = `
       <base target="_blank">
       <style>
-        /* Hide ClearVin's own download/print links - we handle these in CheckAm toolbar */
+        /* Hide ClearVin's own download/print links - we handle these in AutoSure toolbar */
         a[href*="download"][href*="format=pdf"],
         a[href*="format=pdf"] { display: none !important; }
         
-        /* Offset anchor jump targets to account for CheckAm sticky toolbar (~56px) */
+        /* Offset anchor jump targets to account for AutoSure sticky toolbar (~56px) */
         [id]::before {
           content: '';
           display: block;
@@ -231,7 +231,7 @@ export default function ReportPage() {
         <div className="text-5xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-ch-text mb-2">Report Not Found</h2>
         <p className="text-ch-text-secondary mb-6">This report may not exist or is still being generated. If you just paid, please check your dashboard.</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-primary-dark hover:bg-ch-ink text-white">Go to CheckAm</Button>
+        <Button onClick={() => router.push('/')} className="bg-ch-primary-dark hover:bg-ch-ink text-white">Go to AutoSure</Button>
       </div>
     </div>
   );
@@ -256,7 +256,7 @@ export default function ReportPage() {
             {/* Back button */}
             <Button variant="outline" size="sm" onClick={() => router.push(authed ? '/dashboard' : '/')} className="border-ch-border gap-1 shrink-0">
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{authed ? 'Dashboard' : 'CheckAm'}</span>
+              <span className="hidden sm:inline">{authed ? 'Dashboard' : 'AutoSure'}</span>
             </Button>
 
             {/* VIN + date — takes remaining space */}
@@ -279,7 +279,7 @@ export default function ReportPage() {
                 <Copy className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline text-xs">{copied ? 'Copied!' : 'Copy Link'}</span>
               </Button>
-              <a href={`https://wa.me/?text=CheckAm Report: ${typeof window !== 'undefined' ? window.location.href : ''}`} target="_blank" rel="noopener noreferrer">
+              <a href={`https://wa.me/?text=AutoSure Report: ${typeof window !== 'undefined' ? window.location.href : ''}`} target="_blank" rel="noopener noreferrer">
                 <Button size="sm" variant="outline" className="border-ch-border gap-1.5 px-2 sm:px-3">
                   <Share2 className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline text-xs">Share</span>

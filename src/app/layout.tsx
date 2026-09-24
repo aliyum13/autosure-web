@@ -1,44 +1,47 @@
 import type { Metadata } from 'next';
-import { Fraunces, Archivo } from 'next/font/google';
+import { Playfair_Display, Crimson_Text } from 'next/font/google';
 import './globals.css';
 
-// Fraunces carries the masthead voice; Archivo is the news grotesque doing
-// body, UI and tabular data. See DESIGN.md — no third face.
-const fraunces = Fraunces({
+// Playfair Display carries headings; Crimson Text carries body copy. The
+// variables are set on <html>, not <body>, because globals.css resolves
+// --font-heading / --font-body at :root and they must be defined there.
+const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-fraunces',
-  axes: ['SOFT', 'WONK', 'opsz'],
+  variable: '--font-playfair',
 });
 
-const archivo = Archivo({
+// Crimson Text is not a variable font, so its weights are listed explicitly.
+const crimson = Crimson_Text({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-archivo',
+  weight: ['400', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-crimson',
 });
 
 export const metadata: Metadata = {
-  title: 'CheckAm — Check Am Before You Buy',
-  description: 'Vehicle history reports for Nigerian Tokunbo buyers. Accident records, title brands, mileage and safety recalls — check am before you pay anybody.',
-  keywords: 'vehicle history, tokunbo cars, car check nigeria, VIN check, CheckAm',
+  title: 'AutoSure — Be Sure About the Car You Are Buying',
+  description: 'Be sure about every car you buy before paying. AutoSure provides detailed vehicle history reports.',
+  keywords: 'vehicle history, tokunbo cars, car check nigeria, VIN check, AutoSure, autosurevin',
+  // Built from public/images/logo.png by scripts/gen-favicons.js.
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/logo-512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/images/logo-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/images/logo-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/images/logo-512.png', sizes: '512x512', type: 'image/png' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/images/logo-180.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/logo-icon.png',
   },
-  metadataBase: new URL('https://checkamvin.com'),
+  metadataBase: new URL('https://autosurevin.com'),
   openGraph: {
-    title: 'CheckAm — Check Am Before You Buy',
+    title: 'AutoSure — Be Sure About the Car You Are Buying',
     description: 'Vehicle history reports for Nigerian Tokunbo buyers.',
-    url: 'https://checkamvin.com',
-    siteName: 'CheckAm',
+    url: 'https://autosurevin.com',
+    siteName: 'AutoSure',
     locale: 'en_NG',
     type: 'website',
     // No `images` here on purpose: app/opengraph-image.tsx generates the card
@@ -47,15 +50,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CheckAm — Check Am Before You Buy',
+    title: 'AutoSure — Be Sure About the Car You Are Buying',
     description: 'Vehicle history reports for Nigerian Tokunbo buyers.',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${fraunces.variable} ${archivo.variable} font-sans`}>
+    <html lang="en" className={`${playfair.variable} ${crimson.variable}`}>
+      <body className="font-sans">
         {children}
       </body>
     </html>
