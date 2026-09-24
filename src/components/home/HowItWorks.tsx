@@ -15,7 +15,7 @@ const steps = [
     n: '2',
     Icon: CreditCard,
     title: 'Pay ₦15,000',
-    body: 'Card or bank transfer through Paystack. If there is no US record for your VIN, you get your money back.',
+    body: 'Card or bank transfer through Paystack. If there is no US record for your VIN, email us within 24 hours for your money back.',
   },
   {
     n: '3',

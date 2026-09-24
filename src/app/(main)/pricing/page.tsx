@@ -74,7 +74,8 @@ export default function PricingPage() {
         <h1 className="mt-4 text-4xl sm:text-h1 text-ch-ink">₦15,000 a car.</h1>
         <p className="measure mt-4 text-lg text-ch-text-secondary">
           No subscription, no account required. You pay for one car at a time, and
-          if America holds no record of it you get your money back.
+          if America holds no record of it you get your money back — just email us
+          within 24 hours.
         </p>
 
         {/* Rate card: one row per rate, read across. The single report is the

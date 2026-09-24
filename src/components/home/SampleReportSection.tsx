@@ -54,9 +54,10 @@ function OdometerChart() {
 const statusChips = ['Salvage title', 'Not Actual mileage', 'Possible rollback', 'ClearVin rating: D'];
 
 const findings = [
-  'Salvage title — declared total loss after a front-end collision',
-  'Odometer rollback flagged by NMVTIS',
-  'Sold at salvage auction for $2,600 vs. ~$14,250 average clean retail value',
+  'Salvage title — declared a total loss by the insurer',
+  'Possible odometer rollback — 94,212 mi in February 2024, 11 mi two months later',
+  'Sold at salvage auction for $2,600 vs. ~$14,250 average retail value',
+  'Flagged for export at the salvage yard',
   'ClearVin rates it D (Bad)',
 ];
 

@@ -18,7 +18,7 @@ export default function CTASection() {
           </h2>
           <p className="mt-3 text-lg text-white/85">
             One VIN, one report, ₦15,000. If America has no record of the car,
-            you get your money back.
+            email us within 24 hours and you get your money back.
           </p>
         </div>
         <Button asChild className="shrink-0 h-12 px-8 rounded-lg bg-white text-ch-primary hover:bg-ch-primary-light text-base font-semibold transition-colors duration-200 ease-out">
