@@ -24,10 +24,10 @@ interface BlockRow {
 function OriginBadge({ origin }: { origin: string | null }) {
   const map: Record<string, { cls: string; text: string }> = {
     bounce: { cls: 'bg-amber-50 text-amber-700', text: 'Bounced — likely a typo' },
-    complaint: { cls: 'bg-red-50 text-red-700', text: 'Spam complaint — do NOT re-mail' },
-    manual: { cls: 'bg-slate-100 text-slate-600', text: 'Manually suppressed' },
+    complaint: { cls: 'bg-ch-red-light text-ch-red', text: 'Spam complaint — do NOT re-mail' },
+    manual: { cls: 'bg-ch-surface text-ch-text-secondary', text: 'Manually suppressed' },
   };
-  const m = map[origin || ''] || { cls: 'bg-slate-100 text-slate-600', text: 'Suppressed — reason unknown' };
+  const m = map[origin || ''] || { cls: 'bg-ch-surface text-ch-text-secondary', text: 'Suppressed — reason unknown' };
   return <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${m.cls}`}>{m.text}</span>;
 }
 
@@ -118,7 +118,7 @@ export default function UndeliveredPanel() {
   };
 
   return (
-    <div className="bg-white border border-ch-border rounded-none p-6">
+    <div className="surface-card p-6">
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
         <MailX className="w-4 h-4" /> Undelivered Reports ({rows.length})
       </h2>
@@ -127,12 +127,12 @@ export default function UndeliveredPanel() {
         not a login code — so reach them on WhatsApp and send the report link, which works without logging in.
       </p>
 
-      {banner && <p className="text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2 mb-4">{banner}</p>}
+      {banner && <p className="text-sm text-ch-secondary-dark bg-ch-secondary-light rounded-lg px-3 py-2 mb-4">{banner}</p>}
 
       {loading ? (
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
       ) : rows.length === 0 ? (
-        <p className="text-sm text-green-700">✓ Nothing undelivered — every customer is reachable.</p>
+        <p className="text-sm text-ch-secondary-dark">✓ Nothing undelivered — every customer is reachable.</p>
       ) : (
         <div className="space-y-3">
           {rows.map((row) => {
@@ -168,11 +168,9 @@ export default function UndeliveredPanel() {
 
                 <div className="flex flex-wrap items-center gap-2 mt-3">
                   {wa && (
-                    <a href={`https://wa.me/${wa}?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white text-xs gap-1">
-                        <MessageCircle className="w-3 h-3" /> WhatsApp {row.guest_phone}
-                      </Button>
-                    </a>
+                    <Button asChild size="sm" className="bg-ch-secondary hover:bg-ch-secondary-dark text-white text-xs gap-1">
+                      <a href={`https://wa.me/${wa}?text=${encodeURIComponent(waText)}`} target="_blank" rel="noopener noreferrer"><MessageCircle className="w-3 h-3" /> WhatsApp {row.guest_phone}</a>
+                    </Button>
                   )}
                   {ready && (
                     <Button size="sm" variant="outline" onClick={() => copyLink(row)} className="border-ch-border text-xs gap-1">
@@ -196,7 +194,7 @@ export default function UndeliveredPanel() {
                 </div>
 
                 {editing === row.id && (
-                  <div className="mt-3 bg-slate-50 rounded-lg p-3">
+                  <div className="mt-3 bg-ch-surface rounded-lg p-3">
                     <p className="text-xs text-ch-text-secondary mb-2">
                       Confirm the correct address with the customer first. This updates their order and re-sends the
                       report — no new ClearVin charge — and lets them log in with the new address.
@@ -212,7 +210,7 @@ export default function UndeliveredPanel() {
                   </div>
                 )}
 
-                {rowError?.id === row.id && <p className="text-xs text-red-600 mt-2">{rowError.message}</p>}
+                {rowError?.id === row.id && <p className="text-xs text-ch-red mt-2">{rowError.message}</p>}
               </div>
             );
           })}

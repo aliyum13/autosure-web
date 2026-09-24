@@ -52,7 +52,7 @@ export default function AlertsPanel() {
 
   if (loading) {
     return (
-      <div className="bg-white border border-ch-border rounded-none p-6">
+      <div className="surface-card p-6">
         <Loader2 className="w-5 h-5 animate-spin text-ch-text-muted" />
       </div>
     );
@@ -60,7 +60,7 @@ export default function AlertsPanel() {
 
   if (loadFailed) {
     return (
-      <div className="border rounded-none p-6 bg-amber-50 border-amber-200">
+      <div className="border rounded-lg p-6 bg-amber-50 border-amber-200">
         <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
           <ShieldAlert className="w-4 h-4 text-amber-600" /> System Health
         </h2>
@@ -76,14 +76,14 @@ export default function AlertsPanel() {
   const open = data?.openAlerts ?? [];
   const hb = data?.heartbeat;
   const critical = open.some((a) => a.severity === 'critical');
-  const shell = critical ? 'bg-red-50 border-red-200'
+  const shell = critical ? 'bg-ch-red-light border-ch-red/30'
     : open.length > 0 || hb?.stale ? 'bg-amber-50 border-amber-200'
     : 'bg-white border-ch-border';
 
   return (
-    <div className={`border rounded-none p-6 ${shell}`}>
+    <div className={`border rounded-lg p-6 ${shell}`}>
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2">
-        {open.length > 0 ? <ShieldAlert className="w-4 h-4 text-red-600" /> : <ShieldCheck className="w-4 h-4 text-green-600" />}
+        {open.length > 0 ? <ShieldAlert className="w-4 h-4 text-ch-red" /> : <ShieldCheck className="w-4 h-4 text-ch-secondary-dark" />}
         System Health
       </h2>
 
@@ -96,7 +96,7 @@ export default function AlertsPanel() {
       )}
 
       {open.length === 0 ? (
-        <p className="text-sm text-green-700">
+        <p className="text-sm text-ch-secondary-dark">
           ✓ All probes healthy{hb?.lastRun && !hb.stale ? ` — last checked ${ago(hb.lastRun)}` : ''}.
         </p>
       ) : (
@@ -105,7 +105,7 @@ export default function AlertsPanel() {
             <div key={a.id} className="bg-white/70 rounded-lg p-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                  a.severity === 'critical' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'
+                  a.severity === 'critical' ? 'bg-ch-red-light text-ch-red' : 'bg-amber-100 text-amber-800'
                 }`}>{a.severity}</span>
                 <span className="font-mono text-sm font-medium text-ch-text">{a.probe}</span>
                 <span className="text-xs text-ch-text-muted">failing since {ago(a.created_at)}</span>
@@ -113,7 +113,7 @@ export default function AlertsPanel() {
               <p className="text-xs text-ch-text-secondary mt-1 break-words">{a.detail}</p>
               {/* Worse than the alert itself: it means the push channel is down. */}
               {a.emailFailed && (
-                <p className="text-xs text-red-700 mt-1 flex items-center gap-1">
+                <p className="text-xs text-ch-red mt-1 flex items-center gap-1">
                   <MailWarning className="w-3 h-3" /> Raised but the alert email failed — this panel is the only notice.
                 </p>
               )}

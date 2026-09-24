@@ -102,7 +102,7 @@ export default function CompReportPanel() {
   };
 
   return (
-    <div className="bg-white border border-ch-border rounded-none p-6">
+    <div className="surface-card p-6">
       <h2 className="font-semibold text-ch-text mb-1 flex items-center gap-2"><Gift className="w-4 h-4" /> Issue Comp Report</h2>
       <p className="text-sm text-ch-text-secondary mb-4">
         For &quot;paid but didn&apos;t receive report&quot; cases. Must link to the customer&apos;s original paid order, or give an explicit reason if there isn&apos;t one.
@@ -118,11 +118,11 @@ export default function CompReportPanel() {
               Look up orders
             </Button>
           </div>
-          {lookupError && <p className="text-xs text-red-600 mt-1">{lookupError}</p>}
+          {lookupError && <p className="text-xs text-ch-red mt-1">{lookupError}</p>}
         </div>
 
         {priorOrders !== null && (
-          <div className="bg-slate-50 rounded-lg p-3">
+          <div className="bg-ch-surface rounded-lg p-3">
             {priorOrders.length === 0 ? (
               <p className="text-xs text-ch-text-secondary">No paid orders found for this email. You&apos;ll need to give a reason below.</p>
             ) : (
@@ -161,8 +161,8 @@ export default function CompReportPanel() {
           </div>
         </div>
 
-        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
-        {submitOk && <p className="text-sm text-green-700">{submitOk}</p>}
+        {submitError && <p className="text-sm text-ch-red">{submitError}</p>}
+        {submitOk && <p className="text-sm text-ch-secondary-dark">{submitOk}</p>}
         <Button type="submit" disabled={submitting} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
           Issue Free Report
@@ -178,7 +178,7 @@ export default function CompReportPanel() {
         ) : (
           <div className="max-h-64 overflow-y-auto space-y-1">
             {log.map((l) => (
-              <div key={l.id} className="text-xs bg-slate-50 rounded p-2">
+              <div key={l.id} className="text-xs bg-ch-surface rounded p-2">
                 <span className="font-semibold">{l.admin_email}</span> issued <span className="font-mono">{l.vin}</span> to {l.guest_email}
                 {l.linked_order_id ? <span> — linked to order <span className="font-mono">{l.linked_order_id}</span></span> : <span className="text-amber-700"> — no linked order: &quot;{l.reason}&quot;</span>}
                 <span className="text-ch-text-muted"> · {new Date(l.created_at).toLocaleString()}</span>
