@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -74,10 +74,51 @@ export default function VinInput({
   return (
     <div className={cn('w-full', className)}>
       <form onSubmit={handleSubmit}>
-        <div className={cn(
-          'flex gap-2',
-          size === 'large' ? 'flex-col sm:flex-row' : 'flex-row'
-        )}>
+        {size === 'large' ? (
+          // The page's focal point: one tall field with the submit button
+          // attached inside its right edge. The outline lives on the bar as a
+          // whole (focus-within), so the input inside suppresses its own.
+          <div className={cn(
+            'flex items-center h-14 pl-4 pr-1.5 gap-3 bg-white border rounded-xl shadow-card transition-shadow duration-200 ease-out',
+            'focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ch-secondary',
+            error ? 'border-ch-red' : looksValid ? 'border-ch-secondary' : 'border-ch-border'
+          )}>
+            <Car className="w-5 h-5 text-ch-text-muted shrink-0" aria-hidden />
+            <input
+              value={vin}
+              onChange={(e) => {
+                setVin(e.target.value.toUpperCase());
+                setError('');
+              }}
+              placeholder={placeholder}
+              maxLength={17}
+              aria-label="Vehicle Identification Number (VIN)"
+              aria-invalid={!!error}
+              className="flex-1 min-w-0 h-full bg-transparent font-mono text-base text-ch-text placeholder:text-ch-text-muted focus-visible:outline-none"
+            />
+            {vin.length > 0 && (
+              <span className={cn(
+                'hidden sm:inline text-xs font-mono font-semibold pointer-events-none shrink-0',
+                looksValid ? 'text-ch-secondary' : 'text-ch-text-muted'
+              )}>
+                {looksValid ? '✓ 17' : `${vin.length}/17`}
+              </span>
+            )}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="h-11 px-4 sm:px-5 rounded-lg bg-ch-primary hover:bg-ch-primary-dark text-white text-sm font-semibold shrink-0 transition-colors duration-200 ease-out"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin sm:mr-2" />
+              ) : (
+                <Search className="w-4 h-4 sm:mr-2" />
+              )}
+              <span className="sr-only sm:not-sr-only">{buttonText}</span>
+            </Button>
+          </div>
+        ) : (
+        <div className="flex gap-2 flex-row">
           <div className="relative flex-1">
             <Input
               value={vin}
@@ -88,16 +129,15 @@ export default function VinInput({
               placeholder={placeholder}
               maxLength={17}
               className={cn(
-                'font-mono w-full border-ch-border focus-visible:ring-ch-primary pr-14',
-                size === 'large' ? 'h-12 text-base' : 'h-10',
-                error && 'border-ch-red focus-visible:ring-ch-red',
-                looksValid && !error && 'border-green-500 focus-visible:ring-green-500'
+                'font-mono w-full h-10 border-ch-border pr-14',
+                error && 'border-ch-red',
+                looksValid && !error && 'border-ch-secondary'
               )}
             />
             {vin.length > 0 && (
               <span className={cn(
                 'absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold pointer-events-none',
-                looksValid ? 'text-green-500' : 'text-ch-text-muted'
+                looksValid ? 'text-ch-secondary' : 'text-ch-text-muted'
               )}>
                 {looksValid ? '✓ 17' : `${vin.length}/17`}
               </span>
@@ -106,10 +146,7 @@ export default function VinInput({
           <Button
             type="submit"
             disabled={loading}
-            className={cn(
-              'bg-ch-primary-dark hover:bg-ch-ink text-white shrink-0',
-              size === 'large' ? 'h-12 px-6' : 'h-10 px-4'
-            )}
+            className="bg-ch-primary hover:bg-ch-primary-dark text-white shrink-0 h-10 px-4"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -119,6 +156,7 @@ export default function VinInput({
             {buttonText}
           </Button>
         </div>
+        )}
       </form>
 
       {error && (
@@ -133,7 +171,7 @@ export default function VinInput({
             key={v}
             type="button"
             onClick={() => setVin(v)}
-            className="text-xs font-mono bg-slate-100 hover:bg-ch-primary-light text-ch-text-secondary hover:text-ch-primary px-2 py-1 rounded transition-colors"
+            className="text-xs font-mono bg-ch-surface border border-ch-border hover:bg-ch-primary-light text-ch-text-secondary hover:text-ch-primary px-2 py-1 rounded-md transition-colors duration-200 ease-out"
           >
             {v}
           </button>

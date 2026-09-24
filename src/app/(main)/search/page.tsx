@@ -36,17 +36,17 @@ export default function SearchPage() {
           <div className="absolute -top-20 right-0 w-80 h-80 bg-ch-primary-light rounded-full blur-3xl opacity-60" />
         </div>
         <div className="relative max-w-2xl mx-auto text-center">
-          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-primary bg-ch-primary-light px-3 py-1 rounded-full mb-4 animate-fade-up">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-ch-primary bg-ch-primary-light px-3 py-1 rounded-full mb-4">
             USA Vehicle Records
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3 animate-fade-up-delay-1">
+          <h1 className="text-3xl sm:text-4xl font-bold text-ch-text mb-3">
             Check Your Tokunbo Car&apos;s History
           </h1>
-          <p className="text-ch-text-secondary mb-8 animate-fade-up-delay-2">
+          <p className="text-ch-text-secondary mb-8">
             Enter the 17-character VIN from the car&apos;s dashboard, door sticker, or import documents.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 animate-fade-up-delay-3">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
             <Input
               value={vin}
               onChange={(e) => { setVin(e.target.value.toUpperCase()); setError(''); }}
@@ -57,7 +57,7 @@ export default function SearchPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="h-12 px-6 bg-ch-primary-dark hover:bg-ch-ink text-white"
+              className="h-12 px-6 bg-ch-primary hover:bg-ch-primary-dark text-white"
             >
               {loading
                 ? <Loader2 className="w-4 h-4 animate-spin mr-2" />

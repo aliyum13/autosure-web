@@ -13,7 +13,7 @@ export default function PaymentFailedPage() {
         </p>
         <div className="flex flex-col gap-3">
           <Link href="/search">
-            <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Try Again</Button>
+            <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Try Again</Button>
           </Link>
           {/* TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet. */}
           <a href="mailto:support@autosurevin.com">

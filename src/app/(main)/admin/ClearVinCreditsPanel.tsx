@@ -182,7 +182,7 @@ export default function ClearVinCreditsPanel() {
               placeholder="Daria, WhatsApp" className="mt-1" />
           </div>
           <div className="sm:col-span-3 flex items-center gap-3">
-            <Button type="submit" disabled={saving} className="bg-ch-primary-dark hover:bg-ch-ink text-white text-xs gap-1">
+            <Button type="submit" disabled={saving} className="bg-ch-primary hover:bg-ch-primary-dark text-white text-xs gap-1">
               {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Record
             </Button>
             <span className="text-xs text-ch-text-muted">

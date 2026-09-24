@@ -163,7 +163,7 @@ export default function CompReportPanel() {
 
         {submitError && <p className="text-sm text-red-600">{submitError}</p>}
         {submitOk && <p className="text-sm text-green-700">{submitOk}</p>}
-        <Button type="submit" disabled={submitting} className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-2">
+        <Button type="submit" disabled={submitting} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Gift className="w-4 h-4" />}
           Issue Free Report
         </Button>

@@ -235,7 +235,7 @@ export default function PreviewPage() {
         <div className="text-5xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-ch-text mb-2">Vehicle Not Found</h2>
         <p className="text-ch-text-secondary mb-6">{error || 'No data found for this VIN.'}</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-primary-dark hover:bg-ch-ink text-white">Try Another VIN</Button>
+        <Button onClick={() => router.push('/')} className="bg-ch-primary hover:bg-ch-primary-dark text-white">Try Another VIN</Button>
       </div>
     </div>
   );
@@ -408,7 +408,7 @@ export default function PreviewPage() {
           </div>
           <h2 className="text-lg font-bold text-slate-900 mb-1">Unlock the Complete Report</h2>
           <p className="text-sm text-slate-500 mb-5">Auction photos, title records, accident history & more — delivered to your email as PDF</p>
-          <Button onClick={() => setShowModal(true)} className="bg-ch-primary-dark hover:bg-ch-ink text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-none">
+          <Button onClick={() => setShowModal(true)} className="bg-ch-primary hover:bg-ch-primary-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-none">
             🔓 Unlock Full Report — ₦15,000
           </Button>
           <div className="flex items-center justify-center gap-2 mt-3">
@@ -536,7 +536,7 @@ export default function PreviewPage() {
                 for the full data source disclosure.
               </p>
 
-              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary-dark hover:bg-ch-ink text-white font-bold text-base rounded-none">
+              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary hover:bg-ch-primary-dark text-white font-bold text-base rounded-none">
                 {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
               </Button>
 

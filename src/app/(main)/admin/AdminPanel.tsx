@@ -237,7 +237,7 @@ export default function AdminPanel() {
                 placeholder="+234 800 000 0000" className="mt-1" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" disabled={creating} className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-2">
+              <Button type="submit" disabled={creating} className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-2">
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Create Code
               </Button>

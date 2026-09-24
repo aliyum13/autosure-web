@@ -180,7 +180,7 @@ export default async function DashboardPage() {
                       <Button variant="outline" size="sm" className="border-ch-border">View</Button>
                     </Link>
                     <a href={`/api/reports/${o.report_id}/pdf?download=1`}>
-                      <Button size="sm" className="bg-ch-primary-dark hover:bg-ch-ink text-white gap-1">
+                      <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-1">
                         <Download className="w-3.5 h-3.5" /> PDF
                       </Button>
                     </a>

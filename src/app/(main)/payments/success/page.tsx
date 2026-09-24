@@ -124,7 +124,7 @@ function PaymentSuccessContent() {
           </p>
           <div className="flex flex-col gap-3">
             <Link href="/">
-              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Try Again</Button>
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Try Again</Button>
             </Link>
             <a href="mailto:support@autosurevin.com">
               <Button variant="outline" className="w-full border-ch-border">support@autosurevin.com</Button>
@@ -137,7 +137,7 @@ function PaymentSuccessContent() {
 
   return (
     <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 text-center animate-fade-up">
+      <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 text-center">
         
         {/* Success icon */}
         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -172,7 +172,7 @@ function PaymentSuccessContent() {
               We&apos;ve also emailed you a copy, but you can open it right now.
             </p>
             <Link href={`/reports/${reportId}`}>
-              <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">
+              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
                 View Your Report
               </Button>
             </Link>
@@ -205,7 +205,7 @@ function PaymentSuccessContent() {
 
         <div className="flex flex-col gap-3">
           <Link href="/">
-            <Button className="w-full bg-ch-primary-dark hover:bg-ch-ink text-white">Check Another Car</Button>
+            <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Check Another Car</Button>
           </Link>
           <a href="mailto:support@autosurevin.com">
             <Button variant="outline" className="w-full border-ch-border text-sm">

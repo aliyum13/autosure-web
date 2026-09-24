@@ -1,23 +1,14 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Crimson_Text } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 
-// Playfair Display carries headings; Crimson Text carries body copy. The
-// variables are set on <html>, not <body>, because globals.css resolves
-// --font-heading / --font-body at :root and they must be defined there.
-const playfair = Playfair_Display({
+// One sans family throughout. The variable is set on <html>, not <body>,
+// because globals.css resolves --font-heading / --font-body at :root and it
+// must be defined there.
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-playfair',
-});
-
-// Crimson Text is not a variable font, so its weights are listed explicitly.
-const crimson = Crimson_Text({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-crimson',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -57,7 +48,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${crimson.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body className="font-sans">
         {children}
       </body>

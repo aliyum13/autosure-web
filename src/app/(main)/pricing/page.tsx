@@ -106,7 +106,7 @@ export default function PricingPage() {
                   <Button
                     className={
                       r.lead
-                        ? 'bg-ch-primary-dark hover:bg-ch-ink text-white rounded-none h-11 px-6'
+                        ? 'bg-ch-primary hover:bg-ch-primary-dark text-white rounded-none h-11 px-6'
                         : 'bg-transparent border border-ch-ink text-ch-ink hover:bg-ch-ink hover:text-white rounded-none h-10 px-5'
                     }
                   >

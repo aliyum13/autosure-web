@@ -24,7 +24,7 @@ export default function SampleReportPage() {
         </div>
 
         <a href="/sample-report.pdf" target="_blank" rel="noopener noreferrer" className="block">
-          <Button className="bg-ch-primary-dark hover:bg-ch-ink text-white w-full h-12 text-base font-semibold">
+          <Button className="bg-ch-primary hover:bg-ch-primary-dark text-white w-full h-12 text-base font-semibold">
             View Sample Report (PDF)
           </Button>
         </a>
