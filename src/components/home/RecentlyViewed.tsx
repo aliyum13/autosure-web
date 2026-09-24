@@ -38,8 +38,8 @@ export default function RecentlyViewed() {
   return (
     <div className="max-w-xl mt-4">
       <div className="flex items-center gap-1.5 mb-2">
-        <Clock className="w-3.5 h-3.5 text-slate-400" />
-        <span className="text-xs text-slate-400 font-medium">Recently checked</span>
+        <Clock className="w-3.5 h-3.5 text-ch-text-muted" />
+        <span className="text-xs text-ch-text-muted font-medium">Recently checked</span>
       </div>
       <div className="flex flex-wrap gap-2">
         {recents.map((entry) => (
@@ -49,14 +49,14 @@ export default function RecentlyViewed() {
             className="flex items-center gap-2 bg-white hover:bg-ch-surface border border-ch-border rounded-lg px-3 py-2 transition-colors duration-200 ease-out group"
           >
             <div className="text-left">
-              <p className="text-xs font-semibold text-slate-700 font-mono">{entry.vin}</p>
+              <p className="text-xs font-semibold text-ch-text font-mono">{entry.vin}</p>
               {(entry.year || entry.make || entry.model) && (
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-ch-text-muted">
                   {[entry.year, entry.make, entry.model].filter(Boolean).join(' ')}
                 </p>
               )}
             </div>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors" />
+            <ChevronRight className="w-3.5 h-3.5 text-ch-rule-strong group-hover:text-ch-text-muted transition-colors duration-200 ease-out" />
           </button>
         ))}
       </div>

@@ -52,16 +52,16 @@ async function getDashboardData(email: string, accountId: string) {
 
 function StatusBadge({ status }: { status: string | null }) {
   if (status === 'COMPLETED') {
-    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-full"><CheckCircle2 className="w-3 h-3" /> Ready</span>;
+    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-ch-secondary-dark bg-ch-secondary-light px-2 py-0.5 rounded-full"><CheckCircle2 className="w-3 h-3" /> Ready</span>;
   }
   if (status === 'PROCESSING' || status === 'PENDING') {
     return <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full"><Clock className="w-3 h-3" /> Processing</span>;
   }
   if (status === 'FAILED') {
-    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Failed</span>;
+    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-ch-red bg-ch-red-light px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Failed</span>;
   }
   if (status === 'INVALID_VIN') {
-    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Invalid VIN</span>;
+    return <span className="inline-flex items-center gap-1 text-xs font-semibold text-ch-red bg-ch-red-light px-2 py-0.5 rounded-full"><XCircle className="w-3 h-3" /> Invalid VIN</span>;
   }
   return null;
 }
@@ -101,12 +101,13 @@ export default async function DashboardPage() {
   const referral = await getReferralSummary(session.userId, session.email);
 
   return (
-    <div className="min-h-screen bg-ch-bg px-4 py-10">
+    <div className="min-h-screen bg-ch-surface px-4 pt-16 sm:pt-20 pb-20">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex items-start justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-2xl font-bold text-ch-text mb-1">Your AutoSure Dashboard</h1>
-            <p className="text-ch-text-secondary">{session.email}</p>
+            <p className="text-sm font-semibold text-ch-primary">Dashboard</p>
+            <h1 className="mt-2 text-3xl sm:text-h2 text-ch-ink">Your AutoSure account</h1>
+            <p className="mt-2 text-ch-text-secondary break-all">{session.email}</p>
           </div>
           <LogoutButton />
         </div>
@@ -120,8 +121,8 @@ export default async function DashboardPage() {
             /api/orders/create. A search started here therefore inherits the
             account prefill, the locked email and the credits/earnings balances
             already shipped, with no checkout logic duplicated. */}
-        <div className="bg-white border border-ch-border rounded-none p-6 mb-6">
-          <h2 className="font-semibold text-ch-text mb-1">Check another VIN</h2>
+        <div className="surface-card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-ch-ink mb-1">Check another VIN</h2>
           <p className="text-sm text-ch-text-secondary mb-4">
             Your details and any credits or earnings are applied automatically at checkout.
           </p>
@@ -129,14 +130,14 @@ export default async function DashboardPage() {
         </div>
 
         {/* Credits remaining */}
-        <div className="bg-white border border-ch-border rounded-none p-6 mb-8 flex items-center justify-between">
+        <div className="surface-card p-6 mb-8 flex items-center justify-between">
           <div>
             <p className="text-sm text-ch-text-secondary">Bundle credits remaining</p>
-            <p className="text-3xl font-bold text-ch-text">{creditsRemaining}</p>
+            <p className="text-3xl font-bold text-ch-ink tabular">{creditsRemaining}</p>
           </div>
-          <Link href="/pricing">
-            <Button variant="outline" className="border-ch-border">Buy more</Button>
-          </Link>
+          <Button asChild variant="outline" className="h-10 px-5 border-ch-primary text-ch-primary hover:bg-ch-primary hover:text-white transition-colors duration-200 ease-out">
+            <Link href="/pricing">Buy more</Link>
+          </Button>
         </div>
 
         {referral && (
@@ -152,14 +153,14 @@ export default async function DashboardPage() {
         )}
 
         {/* Order history */}
-        <h2 className="text-lg font-bold text-ch-text mb-4">Your Reports</h2>
+        <h2 className="text-2xl sm:text-h4 text-ch-ink mb-4">Your reports</h2>
         {orders.length === 0 ? (
-          <div className="bg-white border border-ch-border rounded-none p-8 text-center">
+          <div className="surface-card p-8 text-center">
             <FileText className="w-10 h-10 text-ch-text-muted mx-auto mb-3" />
             <p className="text-ch-text-secondary">No reports yet — enter a VIN above to run your first check.</p>
           </div>
         ) : (
-          <div className="bg-white border border-ch-border rounded-none divide-y divide-ch-border overflow-hidden">
+          <div className="surface-card divide-y divide-ch-border overflow-hidden">
             {orders.map((o) => (
               <div key={o.order_id} className="p-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
@@ -176,14 +177,12 @@ export default async function DashboardPage() {
                 </div>
                 {o.report_id && o.report_status === 'COMPLETED' && (
                   <div className="flex gap-2 shrink-0">
-                    <Link href={`/reports/${o.report_id}`}>
-                      <Button variant="outline" size="sm" className="border-ch-border">View</Button>
-                    </Link>
-                    <a href={`/api/reports/${o.report_id}/pdf?download=1`}>
-                      <Button size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-1">
-                        <Download className="w-3.5 h-3.5" /> PDF
-                      </Button>
-                    </a>
+                    <Button asChild variant="outline" size="sm" className="border-ch-border">
+                      <Link href={`/reports/${o.report_id}`}>View</Link>
+                    </Button>
+                    <Button asChild size="sm" className="bg-ch-primary hover:bg-ch-primary-dark text-white gap-1">
+                      <a href={`/api/reports/${o.report_id}/pdf?download=1`}><Download className="w-3.5 h-3.5" /> PDF</a>
+                    </Button>
                   </div>
                 )}
               </div>
