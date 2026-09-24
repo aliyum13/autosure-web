@@ -59,7 +59,7 @@ export default function PricingPreview() {
                   <h4 className="text-base text-ch-ink">{b.label}</h4>
                   <span className="text-2xl font-bold text-ch-ink tabular">{b.price}</span>
                 </div>
-                <p className="mt-1 text-sm font-medium text-ch-secondary">{b.saving}</p>
+                <p className="mt-1 text-sm font-medium text-ch-secondary-dark">{b.saving}</p>
                 <Button
                   asChild
                   variant="outline"

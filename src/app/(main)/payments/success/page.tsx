@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, Loader2, Mail, FileText } from 'lucide-react';
+import { CheckCircle, Loader2, Mail, FileText, XCircle, Paperclip, Timer, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function PaymentSuccessContent() {
@@ -100,7 +100,7 @@ function PaymentSuccessContent() {
 
   if (status === 'verifying') {
     return (
-      <div className="min-h-screen bg-ch-bg flex items-center justify-center">
+      <div className="min-h-screen bg-ch-surface flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-ch-primary mx-auto mb-4" />
           <p className="text-ch-text font-semibold">Verifying your payment...</p>
@@ -114,21 +114,21 @@ function PaymentSuccessContent() {
 
   if (status === 'failed') {
     return (
-      <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 text-center">
-          <div className="text-5xl mb-4">❌</div>
-          <h1 className="text-2xl font-bold text-ch-text mb-2">Payment Not Confirmed</h1>
+      <div className="min-h-screen bg-ch-surface flex items-center justify-center px-4 py-20">
+        <div className="max-w-md w-full surface-card p-8 text-center">
+          <XCircle className="w-12 h-12 text-ch-red mx-auto mb-4" strokeWidth={1.75} aria-hidden />
+          <h1 className="text-2xl text-ch-ink mb-2">Payment Not Confirmed</h1>
           <p className="text-ch-text-secondary mb-6">
             We couldn&apos;t confirm your payment. If you were charged, your report will be sent to your email shortly.
             If you need help, contact us.
           </p>
           <div className="flex flex-col gap-3">
-            <Link href="/">
-              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Try Again</Button>
-            </Link>
-            <a href="mailto:support@autosurevin.com">
-              <Button variant="outline" className="w-full border-ch-border">support@autosurevin.com</Button>
-            </a>
+            <Button asChild className="w-full h-11 bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold">
+              <Link href="/">Try Again</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full h-11 border-ch-border">
+              <a href="mailto:support@autosurevin.com">support@autosurevin.com</a>
+            </Button>
           </div>
         </div>
       </div>
@@ -136,25 +136,25 @@ function PaymentSuccessContent() {
   }
 
   return (
-    <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white border border-ch-border rounded-none p-8 text-center">
-        
+    <div className="min-h-screen bg-ch-surface flex items-center justify-center px-4 py-20">
+      <div className="max-w-md w-full surface-card p-8 text-center">
         {/* Success icon */}
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-10 h-10 text-green-600" />
+        <div className="w-20 h-20 bg-ch-secondary-light rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="w-12 h-12 text-ch-secondary" strokeWidth={1.75} aria-hidden />
         </div>
 
-        <h1 className="text-2xl font-bold text-ch-text mb-2">
-          {isCredit ? 'Report Requested! 🎉' : 'Payment Successful! 🎉'}
+        <h1 className="text-2xl text-ch-ink mb-2">
+          {isCredit ? 'Report Requested' : 'Payment Successful'}
         </h1>
 
         {/* Bundle credit remaining banner */}
         {isCredit && (
-          <div className="bg-green-50 border border-green-200 rounded-none p-4 mb-2">
-            <p className="text-green-800 font-semibold text-sm">
-              This report was covered by your bundle 🎁
+          <div className="bg-ch-secondary-light border border-ch-secondary/30 rounded-lg p-4 mb-2">
+            <p className="text-ch-secondary-dark font-semibold text-sm inline-flex items-center gap-1.5">
+              <Gift className="w-4 h-4" aria-hidden />
+              This report was covered by your bundle
             </p>
-            <p className="text-green-700 text-sm mt-1">
+            <p className="text-ch-secondary-dark text-sm mt-1">
               You have <strong>{creditsRemaining}</strong> {creditsRemaining === 1 ? 'report' : 'reports'} remaining.
               Use the same email to check more cars — no extra payment needed.
             </p>
@@ -165,20 +165,18 @@ function PaymentSuccessContent() {
             know the report id, so the customer is never dependent on an email
             arriving to reach something they've already paid for. */}
         {reportState === 'ready' && reportId ? (
-          <div className="bg-green-50 border border-green-200 rounded-none p-5 my-6">
-            <FileText className="w-8 h-8 text-green-700 mx-auto mb-3" />
+          <div className="bg-ch-secondary-light border border-ch-secondary/30 rounded-lg p-5 my-6">
+            <FileText className="w-8 h-8 text-ch-secondary mx-auto mb-3" />
             <p className="text-ch-text font-semibold mb-1">Your report is ready</p>
             <p className="text-ch-text-secondary text-sm mb-4">
               We&apos;ve also emailed you a copy, but you can open it right now.
             </p>
-            <Link href={`/reports/${reportId}`}>
-              <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">
-                View Your Report
-              </Button>
-            </Link>
+            <Button asChild className="w-full h-11 bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold">
+              <Link href={`/reports/${reportId}`}>View Your Report</Link>
+            </Button>
           </div>
         ) : reportState === 'generating' ? (
-          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-none p-5 my-6">
+          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-lg p-5 my-6">
             <Loader2 className="w-8 h-8 text-ch-primary mx-auto mb-3 animate-spin" />
             <p className="text-ch-text font-semibold mb-1">Generating your report…</p>
             <p className="text-ch-text-secondary text-sm">
@@ -187,7 +185,7 @@ function PaymentSuccessContent() {
             </p>
           </div>
         ) : (
-          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-none p-5 my-6">
+          <div className="bg-ch-primary/5 border border-ch-primary/20 rounded-lg p-5 my-6">
             <Mail className="w-8 h-8 text-ch-primary mx-auto mb-3" />
             <p className="text-ch-text font-semibold mb-1">Your report is on its way!</p>
             <p className="text-ch-text-secondary text-sm">
@@ -197,21 +195,19 @@ function PaymentSuccessContent() {
           </div>
         )}
 
-        <div className="space-y-2 text-sm text-ch-text-secondary mb-6">
-          <p>📧 Check your inbox (and spam folder)</p>
-          <p>📎 The report comes as a PDF attachment</p>
-          <p>⏱ Usually delivered in under 2 minutes</p>
-        </div>
+        <ul className="space-y-2 text-sm text-ch-text-secondary mb-6 inline-block text-left">
+          <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />Check your inbox (and spam folder)</li>
+          <li className="flex items-center gap-2"><Paperclip className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />The report comes as a PDF attachment</li>
+          <li className="flex items-center gap-2"><Timer className="w-4 h-4 text-ch-primary shrink-0" aria-hidden />Usually delivered in under 2 minutes</li>
+        </ul>
 
         <div className="flex flex-col gap-3">
-          <Link href="/">
-            <Button className="w-full bg-ch-primary hover:bg-ch-primary-dark text-white">Check Another Car</Button>
-          </Link>
-          <a href="mailto:support@autosurevin.com">
-            <Button variant="outline" className="w-full border-ch-border text-sm">
-              Need help? support@autosurevin.com
-            </Button>
-          </a>
+          <Button asChild className="w-full h-11 bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold">
+            <Link href="/">Check Another Car</Link>
+          </Button>
+          <Button asChild variant="outline" className="w-full h-11 border-ch-border text-sm">
+            <a href="mailto:support@autosurevin.com">Need help? support@autosurevin.com</a>
+          </Button>
         </div>
 
       </div>
@@ -222,7 +218,7 @@ function PaymentSuccessContent() {
 export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-ch-bg flex items-center justify-center">
+      <div className="min-h-screen bg-ch-surface flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-ch-primary" />
       </div>
     }>

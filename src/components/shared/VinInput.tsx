@@ -99,7 +99,7 @@ export default function VinInput({
             {vin.length > 0 && (
               <span className={cn(
                 'hidden sm:inline text-xs font-mono font-semibold pointer-events-none shrink-0',
-                looksValid ? 'text-ch-secondary' : 'text-ch-text-muted'
+                looksValid ? 'text-ch-secondary-dark' : 'text-ch-text-muted'
               )}>
                 {looksValid ? '✓ 17' : `${vin.length}/17`}
               </span>
@@ -137,7 +137,7 @@ export default function VinInput({
             {vin.length > 0 && (
               <span className={cn(
                 'absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold pointer-events-none',
-                looksValid ? 'text-ch-secondary' : 'text-ch-text-muted'
+                looksValid ? 'text-ch-secondary-dark' : 'text-ch-text-muted'
               )}>
                 {looksValid ? '✓ 17' : `${vin.length}/17`}
               </span>

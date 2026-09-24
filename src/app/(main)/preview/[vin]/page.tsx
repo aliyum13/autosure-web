@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, ShieldCheck, Lock, X, CheckCircle2, Users, Gauge, FileText, AlertTriangle, ShoppingCart, Flame, Tag, Car, Shield, Link2 } from 'lucide-react';
+import { Loader2, ShieldCheck, Lock, LockOpen, X, CheckCircle2, Users, Gauge, FileText, AlertTriangle, ShoppingCart, Flame, Tag, Car, Shield, Link2, SearchX, OctagonAlert, Camera, Wallet, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -221,7 +221,7 @@ export default function PreviewPage() {
   );
 
   if (loading) return (
-    <div className="min-h-screen bg-ch-bg flex items-center justify-center">
+    <div className="min-h-screen bg-ch-surface flex items-center justify-center">
       <div className="text-center">
         <Loader2 className="w-8 h-8 animate-spin text-ch-primary mx-auto mb-3" />
         <p className="text-ch-text-secondary">Checking vehicle records...</p>
@@ -230,12 +230,12 @@ export default function PreviewPage() {
   );
 
   if (error || !preview) return (
-    <div className="min-h-screen bg-ch-bg flex items-center justify-center px-4">
-      <div className="text-center max-w-md">
-        <div className="text-5xl mb-4">🔍</div>
-        <h2 className="text-xl font-bold text-ch-text mb-2">Vehicle Not Found</h2>
+    <div className="min-h-screen bg-ch-surface flex items-center justify-center px-4">
+      <div className="text-center max-w-md surface-card p-8">
+        <SearchX className="w-12 h-12 text-ch-text-muted mx-auto mb-4" strokeWidth={1.75} aria-hidden />
+        <h1 className="text-2xl text-ch-ink mb-2">Vehicle Not Found</h1>
         <p className="text-ch-text-secondary mb-6">{error || 'No data found for this VIN.'}</p>
-        <Button onClick={() => router.push('/')} className="bg-ch-primary hover:bg-ch-primary-dark text-white">Try Another VIN</Button>
+        <Button onClick={() => router.push('/')} className="h-11 px-6 bg-ch-primary hover:bg-ch-primary-dark text-white font-semibold">Try Another VIN</Button>
       </div>
     </div>
   );
@@ -258,8 +258,8 @@ export default function PreviewPage() {
   const selected = BUNDLES.find((b) => b.id === selectedBundle)!;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+    <div className="min-h-screen bg-ch-surface">
+      <div className="max-w-3xl mx-auto px-4 py-10 sm:py-14 space-y-4">
 
         {/* Header card */}
         {/* Three states, not one. The old notice fired identically whether the
@@ -267,13 +267,13 @@ export default function PreviewPage() {
             our provider has no records for — so the only recoverable case was
             buried in wording about neither. */}
         {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk === false && (
-          <div className="bg-red-50 border border-red-200 rounded-none p-4 mb-4 flex items-start gap-3">
-            <span className="text-lg shrink-0">🛑</span>
+          <div className="bg-ch-red-light border border-ch-red/30 rounded-xl p-4 flex items-start gap-3">
+            <OctagonAlert className="w-5 h-5 text-ch-red shrink-0 mt-0.5" aria-hidden />
             <div>
-              <p className="text-sm font-semibold text-red-800 mb-1">
+              <p className="text-sm font-semibold text-ch-red mb-1">
                 This VIN looks mistyped — a report probably can&apos;t be generated
               </p>
-              <p className="text-xs text-red-700 leading-relaxed">
+              <p className="text-xs text-ch-red leading-relaxed">
                 Our data provider rejected <span className="font-mono font-semibold">{vin}</span> as invalid, and its
                 built-in checksum doesn&apos;t match either. Together that almost always means a character was typed
                 wrong. Compare it against your vehicle&apos;s VIN plate — <strong>0 and O, 1 and I, 5 and S, 8 and B</strong>{' '}
@@ -285,8 +285,8 @@ export default function PreviewPage() {
         )}
 
         {preview.source === 'nhtsa' && preview.fallback_reason === 'vin_rejected' && checkDigitOk !== false && (
-          <div className="bg-amber-50 border border-amber-200 rounded-none p-4 mb-4 flex items-start gap-3">
-            <span className="text-lg shrink-0">⚠️</span>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" aria-hidden />
             <div>
               <p className="text-sm font-semibold text-amber-800 mb-1">
                 Our provider has no record of this vehicle
@@ -302,8 +302,8 @@ export default function PreviewPage() {
         )}
 
         {preview.source === 'nhtsa' && preview.fallback_reason !== 'vin_rejected' && (
-          <div className="bg-amber-50 border border-amber-200 rounded-none p-4 mb-4 flex items-start gap-3">
-            <span className="text-lg shrink-0">⚠️</span>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" aria-hidden />
             <div>
               <p className="text-sm font-semibold text-amber-800 mb-1">
                 Limited data — a full report may be unavailable for this VIN
@@ -318,64 +318,64 @@ export default function PreviewPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-none overflow-hidden border border-slate-200 shadow-sm">
-          <div className="px-6 pt-6 pb-4 border-b border-slate-100">
+        <div className="surface-card overflow-hidden">
+          <div className="px-6 pt-6 pb-4 border-b border-ch-border">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm text-slate-500 mb-1">Vehicle History Report For</p>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">VIN# {vin}</h1>
+                <p className="text-sm text-ch-text-muted mb-1">Vehicle History Report For</p>
+                <h1 className="text-xl sm:text-2xl text-ch-ink font-mono tabular break-all">VIN# {vin}</h1>
               </div>
-              <div className="shrink-0 flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
+              <div className="shrink-0 flex items-center gap-1.5 bg-ch-surface border border-ch-border rounded-lg px-3 py-1.5">
                 <ShieldCheck className="w-4 h-4 text-ch-primary" />
                 <span className="text-xs font-bold text-ch-primary">CLEARVIN</span>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-0">
-            <div className="relative bg-slate-100 min-h-[200px] flex items-center justify-center overflow-hidden">
+            <div className="relative bg-ch-surface min-h-[200px] flex items-center justify-center overflow-hidden">
               {preview.preview_image ? (
                 <img src={`/api/proxy/image?url=${encodeURIComponent(preview.preview_image)}`} alt="Vehicle" className="w-full h-full object-cover max-h-64" />
               ) : (
-                <div className="text-slate-400 text-center p-8"><Car className="w-16 h-16 mx-auto mb-2 opacity-30" /><p className="text-sm">Preview Only</p></div>
+                <div className="text-ch-text-muted text-center p-8"><Car className="w-16 h-16 mx-auto mb-2 opacity-30" /><p className="text-sm">Preview Only</p></div>
               )}
               {(preview.images_count ?? 0) > 0 && (
-                <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">📸 {preview.images_count} auction photos</div>
+                <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full inline-flex items-center gap-1.5"><Camera className="w-3.5 h-3.5" aria-hidden />{preview.images_count} auction photos</div>
               )}
             </div>
             <div className="p-5 space-y-3">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">{preview.year} {preview.make} {preview.model}</h2>
-                {preview.trim && <p className="text-sm text-slate-500">{preview.trim}</p>}
+                <h2 className="text-lg font-bold text-ch-ink">{preview.year} {preview.make} {preview.model}</h2>
+                {preview.trim && <p className="text-sm text-ch-text-muted">{preview.trim}</p>}
               </div>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between border-b border-slate-100 pb-2"><span className="text-slate-500">Report ID:</span><span className="font-semibold text-slate-700">PREVIEW-MODE</span></div>
-                <div className="flex justify-between border-b border-slate-100 pb-2"><span className="text-slate-500">Date:</span><span className="font-semibold text-slate-700">{new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
-                {recallCount > 0 && <div className="flex justify-between border-b border-slate-100 pb-2"><span className="text-slate-500">Recalls:</span><span className="font-semibold text-amber-600">⚠ {recallCount} found</span></div>}
+                <div className="flex justify-between border-b border-ch-border pb-2"><span className="text-ch-text-muted">Report ID:</span><span className="font-semibold text-ch-text">PREVIEW-MODE</span></div>
+                <div className="flex justify-between border-b border-ch-border pb-2"><span className="text-ch-text-muted">Date:</span><span className="font-semibold text-ch-text">{new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+                {recallCount > 0 && <div className="flex justify-between border-b border-ch-border pb-2"><span className="text-ch-text-muted">Recalls:</span><span className="font-semibold text-amber-600 inline-flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5" aria-hidden />{recallCount} found</span></div>}
               </div>
-              <div className="bg-slate-50 rounded-none p-3 text-center border border-slate-200">
-                <Lock className="w-5 h-5 text-slate-400 mx-auto mb-1" />
-                <p className="text-xs text-slate-500 font-medium">ClearVin Vehicle Rating</p>
-                <p className="text-xs text-slate-400">Unlock full report to view</p>
+              <div className="bg-ch-surface rounded-lg p-3 text-center border border-ch-border">
+                <Lock className="w-5 h-5 text-ch-text-muted mx-auto mb-1" />
+                <p className="text-xs text-ch-text-muted font-medium">ClearVin Vehicle Rating</p>
+                <p className="text-xs text-ch-text-muted">Unlock full report to view</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Summary cards */}
-        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-5">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Report Summary</h3>
+        <div className="surface-card p-5">
+          <h3 className="text-xs font-semibold text-ch-text-muted mb-4 uppercase tracking-wide">Report Summary</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {summaryCards.map((card) => (
-              <div key={card.label} className={`relative rounded-none border p-3 text-center transition-all ${card.status === 'warn' ? 'border-amber-200 bg-amber-50' : card.status === 'lock' ? 'border-slate-200 bg-slate-50 opacity-75' : 'border-green-200 bg-green-50'}`}>
-                <div className={`absolute top-1.5 right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${card.status === 'warn' ? 'bg-amber-500 text-white' : card.status === 'lock' ? 'bg-slate-300 text-slate-500' : 'bg-green-500 text-white'}`}>
+              <div key={card.label} className={`relative rounded-lg border p-3 text-center transition-all ${card.status === 'warn' ? 'border-amber-200 bg-amber-50' : card.status === 'lock' ? 'border-ch-border bg-ch-surface opacity-75' : 'border-ch-secondary/30 bg-ch-secondary-light'}`}>
+                <div className={`absolute top-1.5 right-1.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${card.status === 'warn' ? 'bg-amber-500 text-white' : card.status === 'lock' ? 'bg-ch-rule-strong text-ch-text-muted' : 'bg-ch-secondary text-white'}`}>
                   {card.status === 'warn' ? '!' : card.status === 'lock' ? '–' : '✓'}
                 </div>
-                <div className={`mx-auto mb-2 w-8 h-8 flex items-center justify-center rounded-full ${card.status === 'warn' ? 'text-amber-600' : card.status === 'lock' ? 'text-slate-400' : 'text-green-600'}`}>{card.icon}</div>
-                <p className="text-[11px] font-semibold text-slate-700 leading-tight mb-1">{card.label}</p>
+                <div className={`mx-auto mb-2 w-8 h-8 flex items-center justify-center rounded-full ${card.status === 'warn' ? 'text-amber-600' : card.status === 'lock' ? 'text-ch-text-muted' : 'text-ch-secondary'}`}>{card.icon}</div>
+                <p className="text-[11px] font-semibold text-ch-text leading-tight mb-1">{card.label}</p>
                 {card.status === 'lock' ? (
-                  <p className="text-[10px] leading-tight text-slate-300 select-none blur-[3px]">X record(s) found</p>
+                  <p className="text-[10px] leading-tight text-ch-rule-strong select-none blur-[3px]">X record(s) found</p>
                 ) : (
-                  <p className={`text-[10px] leading-tight ${card.status === 'warn' ? 'text-amber-700' : 'text-green-700'}`}>{card.value}</p>
+                  <p className={`text-[10px] leading-tight ${card.status === 'warn' ? 'text-amber-700' : 'text-ch-secondary-dark'}`}>{card.value}</p>
                 )}
               </div>
             ))}
@@ -383,8 +383,8 @@ export default function PreviewPage() {
         </div>
 
         {/* Specs */}
-        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-5">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Vehicle Specifications <span className="text-slate-400 font-normal normal-case">(free)</span></h3>
+        <div className="surface-card p-5">
+          <h3 className="text-xs font-semibold text-ch-text-muted mb-4 uppercase tracking-wide">Vehicle Specifications <span className="text-ch-text-muted font-normal normal-case">(free)</span></h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {[
               { label: 'Make', value: preview.make }, { label: 'Model', value: preview.model },
@@ -392,28 +392,29 @@ export default function PreviewPage() {
               { label: 'Fuel Type', value: preview.fuel_type }, { label: 'Body Type', value: preview.body_type },
               { label: 'Manufactured', value: preview.country_of_manufacture },
             ].map((spec) => spec.value && (
-              <div key={spec.label} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
-                <p className="text-[10px] uppercase tracking-wide text-slate-400 mb-0.5">{spec.label}</p>
-                <p className="text-sm font-semibold text-slate-800">{spec.value}</p>
+              <div key={spec.label} className="bg-ch-surface rounded-lg p-3 border border-ch-border">
+                <p className="text-[10px] uppercase tracking-wide text-ch-text-muted mb-0.5">{spec.label}</p>
+                <p className="text-sm font-semibold text-ch-text">{spec.value}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* CTA */}
-        <div className="bg-white rounded-none border border-slate-200 shadow-sm p-6 text-center">
+        <div className="surface-card p-6 text-center">
           <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-full px-4 py-1.5 mb-3">
             <Lock className="w-3.5 h-3.5 text-amber-600" />
             <span className="text-xs font-semibold text-amber-700">Full History Analysis Available</span>
           </div>
-          <h2 className="text-lg font-bold text-slate-900 mb-1">Unlock the Complete Report</h2>
-          <p className="text-sm text-slate-500 mb-5">Auction photos, title records, accident history & more — delivered to your email as PDF</p>
-          <Button onClick={() => setShowModal(true)} className="bg-ch-primary hover:bg-ch-primary-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-none">
-            🔓 Unlock Full Report — ₦15,000
+          <h2 className="text-2xl text-ch-ink mb-2">Unlock the Complete Report</h2>
+          <p className="text-sm text-ch-text-muted mb-5">Auction photos, title records, accident history & more — delivered to your email as PDF</p>
+          <Button onClick={() => setShowModal(true)} className="bg-ch-primary hover:bg-ch-primary-dark text-white px-8 h-12 text-base font-semibold w-full sm:w-auto rounded-lg">
+            <LockOpen className="w-5 h-5 mr-2" aria-hidden />
+            Unlock Full Report — ₦15,000
           </Button>
           <div className="flex items-center justify-center gap-2 mt-3">
-            <ShieldCheck className="w-4 h-4 text-slate-400" />
-            <p className="text-xs text-slate-400">Secured by Paystack · Report delivered instantly to your email</p>
+            <ShieldCheck className="w-4 h-4 text-ch-text-muted" />
+            <p className="text-xs text-ch-text-muted">Secured by Paystack · Report delivered instantly to your email</p>
           </div>
         </div>
       </div>
@@ -421,114 +422,114 @@ export default function PreviewPage() {
       {/* Checkout Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
-          <div className="bg-white rounded-none w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-card w-full max-w-md max-h-[90vh] overflow-y-auto">
             {/* Modal header */}
-            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+            <div className="flex items-center justify-between p-5 border-b border-ch-border">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-ch-primary rounded-full flex items-center justify-center">
                   <ShieldCheck className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Unlock Full History</h3>
-                  <p className="text-xs text-slate-500">SECURE DOCUMENT ACCESS</p>
+                  <h3 className="font-bold text-ch-ink">Unlock Full History</h3>
+                  <p className="text-xs text-ch-text-muted">SECURE DOCUMENT ACCESS</p>
                 </div>
               </div>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowModal(false)} aria-label="Close" className="p-1 rounded-lg text-ch-text-muted hover:text-ch-text transition-colors duration-200 ease-out"><X className="w-5 h-5" /></button>
             </div>
 
             <div className="p-5 space-y-4">
-              <p className="text-sm text-slate-600">Your <strong>email is mandatory</strong> to receive the official ClearVin PDF report after payment.</p>
+              <p className="text-sm text-ch-text-secondary">Your <strong>email is mandatory</strong> to receive the official ClearVin PDF report after payment.</p>
 
               {/* Form */}
               <div className="space-y-3">
                 <div>
-                  <Label className="text-xs text-slate-500 uppercase tracking-wide">FULL NAME <span className="text-red-500">* REQUIRED</span></Label>
+                  <Label className="text-xs text-ch-text-muted uppercase tracking-wide">FULL NAME <span className="text-ch-red">* REQUIRED</span></Label>
                   <Input value={form.name} onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))}
                     placeholder="e.g. Adebayo Chukwuma" className="mt-1" />
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-500 uppercase tracking-wide">EMAIL ADDRESS <span className="text-red-500">* REQUIRED</span></Label>
+                  <Label className="text-xs text-ch-text-muted uppercase tracking-wide">EMAIL ADDRESS <span className="text-ch-red">* REQUIRED</span></Label>
                   <Input type="email" value={form.email} onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
                     onBlur={(e) => checkCredits(e.target.value)}
                     placeholder="yourname@example.com" className="mt-1"
                     disabled={!!accountEmail && !editingEmail} />
                   {accountEmail && !editingEmail && (
-                    <p className="text-xs text-slate-500 mt-1">
-                      Buying as <span className="font-medium text-slate-700">{accountEmail}</span> ·{' '}
+                    <p className="text-xs text-ch-text-muted mt-1">
+                      Buying as <span className="font-medium text-ch-text">{accountEmail}</span> ·{' '}
                       <button type="button" onClick={() => setEditingEmail(true)}
                         className="text-ch-primary underline underline-offset-2">use a different email</button>
                     </p>
                   )}
                   {accountEmail && editingEmail && form.email.trim().toLowerCase() !== accountEmail.toLowerCase() && (
                     <p className="text-xs text-amber-700 mt-1">
-                      ⚠ This report will be sent to that address and <strong>won&apos;t appear in your dashboard</strong>,
+                      <AlertTriangle className="inline w-3.5 h-3.5 -mt-0.5 mr-1" aria-hidden />This report will be sent to that address and <strong>won&apos;t appear in your dashboard</strong>,
                       and your credits and earnings won&apos;t apply to it.
                     </p>
                   )}
                   {availableCredits === 0 && earningsKobo >= selected.price * 100 && (
-                    <div className="bg-green-50 border border-green-100 rounded-lg p-3 mt-3">
-                      <p className="text-sm text-green-800 font-medium">
-                        💰 You have ₦{(earningsKobo / 100).toLocaleString()} in referral earnings — this report is covered.
+                    <div className="bg-ch-secondary-light border border-ch-secondary/20 rounded-lg p-3 mt-3">
+                      <p className="text-sm text-ch-secondary-dark font-medium">
+                        <Wallet className="inline w-4 h-4 -mt-0.5 mr-1.5" aria-hidden />You have ₦{(earningsKobo / 100).toLocaleString()} in referral earnings — this report is covered.
                       </p>
                     </div>
                   )}
                   {availableCredits > 0 && (
-                    <div className="mt-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-                      <p className="text-sm text-green-800 font-medium">
-                        🎁 You have {availableCredits} bundle {availableCredits === 1 ? 'report' : 'reports'} available — this check is free!
+                    <div className="mt-2 bg-ch-secondary-light border border-ch-secondary/30 rounded-lg px-3 py-2">
+                      <p className="text-sm text-ch-secondary-dark font-medium">
+                        <Gift className="inline w-4 h-4 -mt-0.5 mr-1.5" aria-hidden />You have {availableCredits} bundle {availableCredits === 1 ? 'report' : 'reports'} available — this check is free!
                       </p>
                     </div>
                   )}
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-500 uppercase tracking-wide">WHATSAPP PHONE</Label>
+                  <Label className="text-xs text-ch-text-muted uppercase tracking-wide">WHATSAPP PHONE</Label>
                   <Input value={form.phone} onChange={(e) => setForm(p => ({ ...p, phone: e.target.value }))}
                     placeholder="e.g. 08012345678" required className="mt-1" />
-                  <p className="text-xs text-slate-500 mt-1">So we can send your report on WhatsApp if email fails.</p>
+                  <p className="text-xs text-ch-text-muted mt-1">So we can send your report on WhatsApp if email fails.</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-slate-500 uppercase tracking-wide">DISCOUNT / AFFILIATE CODE (OPTIONAL)</Label>
+                  <Label className="text-xs text-ch-text-muted uppercase tracking-wide">DISCOUNT / AFFILIATE CODE (OPTIONAL)</Label>
                   <div className="flex gap-2 mt-1">
                     <Input value={form.ref_code} onChange={(e) => { setForm(p => ({ ...p, ref_code: e.target.value.toUpperCase() })); setRefValid(null); }}
                       placeholder="E.G. HASSAN10" className="font-mono" />
                     <Button variant="outline" onClick={applyRefCode} className="shrink-0">Apply</Button>
                   </div>
-                  {refValid === true && <p className="text-xs text-green-600 mt-1 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Code applied!</p>}
-                  {refValid === false && <p className="text-xs text-red-500 mt-1">Invalid code</p>}
+                  {refValid === true && <p className="text-xs text-ch-secondary-dark mt-1 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Code applied!</p>}
+                  {refValid === false && <p className="text-xs text-ch-red mt-1">Invalid code</p>}
                 </div>
               </div>
 
               {/* Bundle selector */}
               <div>
-                <Label className="text-xs text-slate-500 uppercase tracking-wide mb-2 block">SELECT PACKAGE</Label>
+                <Label className="text-xs text-ch-text-muted uppercase tracking-wide mb-2 block">SELECT PACKAGE</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {BUNDLES.map((bundle) => (
                     <button key={bundle.id} onClick={() => setSelectedBundle(bundle.id)}
-                      className={`relative rounded-none border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-primary bg-ch-primary/5' : 'border-slate-200'}`}>
+                      className={`relative rounded-lg border-2 p-2 text-left transition-all ${selectedBundle === bundle.id ? 'border-ch-primary bg-ch-primary/5' : 'border-ch-border'}`}>
                       {bundle.badge && <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-ch-primary text-white whitespace-nowrap">{bundle.badge}</span>}
-                      <p className="text-xs font-semibold text-slate-700">{bundle.label}</p>
+                      <p className="text-xs font-semibold text-ch-text">{bundle.label}</p>
                       <p className="text-sm font-bold text-ch-primary">₦{bundle.price.toLocaleString()}</p>
-                      {bundle.saving && <p className="text-[10px] text-green-600 font-medium">{bundle.saving}</p>}
+                      {bundle.saving && <p className="text-[10px] text-ch-secondary-dark font-medium">{bundle.saving}</p>}
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Price summary */}
-              <div className="bg-slate-50 rounded-none p-3 border border-slate-100">
+              <div className="bg-ch-surface rounded-lg p-3 border border-ch-border">
                 <div className="flex justify-between text-sm mb-1">
-                  <span className="text-slate-600">Vehicle History Report</span>
+                  <span className="text-ch-text-secondary">Vehicle History Report</span>
                   <span className="font-medium">₦{selected.price.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between font-bold text-slate-900 border-t border-slate-200 pt-2 mt-2">
+                <div className="flex justify-between font-bold text-ch-ink border-t border-ch-border pt-2 mt-2">
                   <span>Total</span>
                   <span>₦{selected.price.toLocaleString()}</span>
                 </div>
               </div>
 
-              {orderError && <p className="text-sm text-red-500">{orderError}</p>}
+              {orderError && <p className="text-sm text-ch-red">{orderError}</p>}
 
-              <p className="text-center text-xs text-slate-500">
+              <p className="text-center text-xs text-ch-text-muted">
                 This report uses official NMVTIS federal vehicle data. See our{' '}
                 <a href="/terms#nmvtis-disclaimer" className="text-ch-primary font-semibold hover:underline">
                   Terms
@@ -536,26 +537,29 @@ export default function PreviewPage() {
                 for the full data source disclosure.
               </p>
 
-              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary hover:bg-ch-primary-dark text-white font-bold text-base rounded-none">
-                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</> : availableCredits > 0 ? '🎁 USE BUNDLE REPORT — FREE' : earningsKobo >= selected.price * 100 ? '💰 USE REFERRAL EARNINGS — FREE' : `🛒 ORDER REPORT NOW — ₦${selected.price.toLocaleString()}`}
+              <Button onClick={handleOrder} disabled={ordering} className="w-full h-12 bg-ch-primary hover:bg-ch-primary-dark text-white font-bold text-base rounded-lg">
+                {ordering ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Processing...</>
+                  : availableCredits > 0 ? <><Gift className="w-4 h-4 mr-2" aria-hidden />USE BUNDLE REPORT — FREE</>
+                  : earningsKobo >= selected.price * 100 ? <><Wallet className="w-4 h-4 mr-2" aria-hidden />USE REFERRAL EARNINGS — FREE</>
+                  : <><ShoppingCart className="w-4 h-4 mr-2" aria-hidden />ORDER REPORT NOW — ₦{selected.price.toLocaleString()}</>}
               </Button>
 
-              <p className="text-center text-xs text-slate-500">after the payment you will be redirected to your vehicle report</p>
+              <p className="text-center text-xs text-ch-text-muted">after the payment you will be redirected to your vehicle report</p>
 
-              <p className="text-center text-xs text-slate-500">
+              <p className="text-center text-xs text-ch-text-muted">
                 {/* TODO(autosure-contact): AutoSure has no WhatsApp line or social accounts yet. */}
                 Questions before you pay? Email us:{' '}
                 <a href="mailto:support@autosurevin.com" className="text-ch-primary font-semibold">support@autosurevin.com</a>
               </p>
 
-              <p className="text-center text-xs text-slate-400">
+              <p className="text-center text-xs text-ch-text-muted">
                 By clicking ORDER REPORT NOW you agree to{' '}
                 <a href="/terms" className="text-ch-primary hover:underline">Terms and Conditions</a>{' '}
                 and <a href="/terms#nmvtis-disclaimer" className="text-ch-primary hover:underline">NMVTIS disclaimer</a>.
               </p>
 
-              <div className="bg-slate-50 rounded-none p-3 border border-slate-100">
-                <p className="text-[10px] text-slate-500 leading-relaxed">
+              <div className="bg-ch-surface rounded-lg p-3 border border-ch-border">
+                <p className="text-[10px] text-ch-text-muted leading-relaxed">
                   <strong>NMVTIS DISCLAIMER:</strong> The National Motor Vehicle Title Information System (NMVTIS) is an electronic system that contains information on certain automobiles titled in the United States. NMVTIS is intended to serve as a reliable source of title and brand history for automobiles, but it does not contain detailed information regarding a vehicle&apos;s repair history. A vehicle history report is NOT a substitute for an independent vehicle inspection.{' '}
                   <a href="/terms#nmvtis-disclaimer" className="text-ch-primary hover:underline">Read full disclaimer →</a>
                 </p>
