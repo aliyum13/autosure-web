@@ -67,24 +67,23 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="min-h-screen bg-ch-paper">
-      <div className="max-w-5xl mx-auto px-4 pt-14 sm:pt-20 pb-20">
-        <h1 className="rule-draw inline-block text-4xl sm:text-6xl text-ch-ink">
-          Questions.
-        </h1>
-        <p className="measure mt-12 text-lg text-ch-text-secondary leading-relaxed">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-5xl mx-auto px-4 pt-16 sm:pt-20 pb-20">
+        <p className="text-sm font-semibold text-ch-primary">FAQ</p>
+        <h1 className="mt-4 text-4xl sm:text-h1 text-ch-ink">Questions.</h1>
+        <p className="measure mt-4 text-lg text-ch-text-secondary">
           What the report covers, where the data comes from, and what it cannot
           tell you.
         </p>
 
         {faqs.map((section) => (
           <section key={section.category} className="mt-16">
-            <h2 className="text-2xl sm:text-3xl text-ch-ink">{section.category}</h2>
-            <dl className="mt-6 rule-t">
+            <h2 className="text-2xl sm:text-h3 text-ch-ink">{section.category}</h2>
+            <dl className="mt-6 surface-card divide-y divide-ch-border">
               {section.items.map((item) => (
-                <div key={item.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 py-6 rule-b">
-                  <dt className="sm:col-span-5 font-display text-lg text-ch-ink">{item.q}</dt>
-                  <dd className="sm:col-span-7 measure text-ch-text-secondary leading-relaxed">
+                <div key={item.q} className="grid sm:grid-cols-12 gap-2 sm:gap-8 p-6">
+                  <dt className="sm:col-span-5 text-lg font-semibold text-ch-ink">{item.q}</dt>
+                  <dd className="sm:col-span-7 text-ch-text-secondary">
                     {item.a}
                   </dd>
                 </div>
@@ -93,16 +92,16 @@ export default function FAQPage() {
           </section>
         ))}
 
-        <section className="mt-16 bg-ch-ink text-white p-8 sm:p-10">
-          <h2 className="text-2xl sm:text-3xl text-white">Still stuck?</h2>
-          <p className="measure mt-3 text-white/70 leading-relaxed">
+        <section className="mt-20 rounded-2xl bg-ch-primary text-white p-8 sm:p-10">
+          <h2 className="text-2xl sm:text-h3 text-white">Still stuck?</h2>
+          <p className="measure mt-3 text-white/85">
             Email us and a person will answer. We have no phone line yet.
           </p>
           {/* TODO(autosure-contact): a WhatsApp button sat here pointing at
               CarHaki's channel. Restore it when AutoSure has one of its own. */}
           <a
             href="mailto:support@autosurevin.com"
-            className="inline-block mt-6 bg-white text-ch-ink hover:bg-white/90 text-sm font-semibold px-6 py-3 transition-colors"
+            className="inline-flex items-center h-11 mt-6 rounded-lg bg-white text-ch-primary hover:bg-ch-primary-light text-sm font-semibold px-6 transition-colors duration-200 ease-out"
           >
             support@autosurevin.com
           </a>

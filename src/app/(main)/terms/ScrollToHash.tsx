@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 
-// html has `scroll-behavior: smooth` site-wide (globals.css) for the masthead
-// rule-draw motion elsewhere. That combination is a known Chromium footgun:
+// html has `scroll-behavior: smooth` site-wide (globals.css). That is a known
+// Chromium footgun:
 // navigating straight to a URL with a #hash does not reliably trigger the
 // native fragment-jump when smooth scrolling is enabled — the browser can
 // drop the initial scroll instead of animating it. Confirmed on this page:

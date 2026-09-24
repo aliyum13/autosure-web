@@ -65,6 +65,14 @@ export default function RiskSection() {
             </li>
           ))}
         </ul>
+
+        {/* The premise of the product: why a US record exists at all. */}
+        <p className="measure mt-10 text-lg text-ch-text-secondary">
+          <span className="font-semibold text-ch-ink">
+            A car written off in Texas carries that fact in a US government record.
+          </span>{' '}
+          The seller in front of you cannot edit it, delete it, or talk his way around it.
+        </p>
       </div>
     </section>
   );

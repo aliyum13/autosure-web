@@ -7,7 +7,9 @@ import { Landmark, Database, Timer, Lock, BadgeCheck } from 'lucide-react';
 // quiet row under the VIN bar so they support it rather than compete with it.
 const provenance = [
   { Icon: Landmark, label: 'NMVTIS', detail: 'US federal title database' },
-  { Icon: Database, label: 'Official records', detail: 'US titles, recalls, insurance claims' },
+  // Attribution matches Phase 6.5: the data is licensed from ClearVin, which
+  // sources NMVTIS — not "official government records" direct.
+  { Icon: Database, label: 'Licensed from ClearVin', detail: 'Title, insurance and recall records' },
   { Icon: Timer, label: 'Straight after payment', detail: 'Emailed to you as a PDF' },
   { Icon: Lock, label: 'Paystack', detail: 'Card or bank transfer' },
 ];

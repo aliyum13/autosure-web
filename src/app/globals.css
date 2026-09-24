@@ -247,24 +247,6 @@
   transition: box-shadow 200ms ease-out;
 }
 
-@layer utilities {
-
-  /* A short primary accent under a page headline. Static — no draw-in. */
-  .rule-draw {
-    position: relative;
-  }
-  .rule-draw::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -0.75rem;
-    height: 3px;
-    width: 3rem;
-    border-radius: 2px;
-    background: var(--color-ch-primary);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
